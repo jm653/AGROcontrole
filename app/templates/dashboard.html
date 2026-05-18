@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- CARDS -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard bg-coffee">
+
+                <div class="card-body">
+
+                    <h5>Total de Lavouras</h5>
+
+                    <h1>12</h1>
+
+                    <i class="bi bi-tree-fill fs-1"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <h5>Sacas em Estoque</h5>
+
+                    <h1>845</h1>
+
+                    <i class="bi bi-box-seam fs-1 text-success"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <h5>Lotes Ativos</h5>
+
+                    <h1>26</h1>
+
+                    <i class="bi bi-cup-hot fs-1 text-warning"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <h5>Produção Mensal</h5>
+
+                    <h1>320</h1>
+
+                    <i class="bi bi-bar-chart-fill fs-1 text-primary"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GRÁFICOS -->
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <h5 class="mb-4">
+                        Produção Mensal
+                    </h5>
+
+                    <canvas id="graficoProducao"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <h5 class="mb-4">
+                        Etapas dos Lotes
+                    </h5>
+
+                    <canvas id="graficoLotes"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    // GRÁFICO DE PRODUÇÃO
+
+    new Chart(
+        document.getElementById('graficoProducao'),
+        {
+            type: 'line',
+
+            data: {
+                labels: [
+                    'Jan',
+                    'Fev',
+                    'Mar',
+                    'Abr',
+                    'Mai',
+                    'Jun'
+                ],
+
+                datasets: [{
+                    label: 'Sacas Produzidas',
+                    data: [120, 190, 300, 250, 420, 500],
+                    borderWidth: 3
+                }]
+            }
+        }
+    );
+
+    // GRÁFICO DE LOTES
+
+    new Chart(
+        document.getElementById('graficoLotes'),
+        {
+            type: 'doughnut',
+
+            data: {
+                labels: [
+                    'Plantio',
+                    'Colheita',
+                    'Secagem',
+                    'Venda'
+                ],
+
+                datasets: [{
+                    data: [10, 20, 15, 5],
+                    borderWidth: 1
+                }]
+            }
+        }
+    );
+
+</script>
+
+{% endblock %}

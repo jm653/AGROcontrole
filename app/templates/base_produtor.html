@@ -1,0 +1,16 @@
+<div class="sidebar">
+
+    <a href="#">Dashboard</a>
+    <a href="#">Lavouras</a>
+    <a href="#">Lotes</a>
+    <a href="#">Financeiro</a>
+
+</div>
+
+{% block content %}
+{% endblock %}
+
+<a href="{% url 'cadastrar_lavoura' %}">
+    <i class="bi bi-plus-circle"></i>
+    Nova Lavoura
+</a>

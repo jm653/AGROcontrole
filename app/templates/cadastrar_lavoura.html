@@ -1,0 +1,37 @@
+{% extends 'base_produtor.html' %}
+
+{% block title %}
+Cadastrar Lavoura
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card card-dashboard">
+
+        <div class="card-body">
+
+            <h3 class="mb-4">
+                Nova Lavoura
+            </h3>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button class="btn btn-dark">
+                    Salvar
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
