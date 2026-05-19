@@ -19,72 +19,133 @@
 
     <style>
 
-        body{
-            background-color: #F5F5DC;
-            overflow-x: hidden;
-        }
+    body{
+        background-color: #F5F5DC;
+        overflow-x: hidden;
+    }
 
-        .sidebar{
-            width: 260px;
-            height: 100vh;
-            background: #3E2723;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding-top: 20px;
-        }
+    .text-coffee{
+        color: #4E342E;
+    }
 
-        .sidebar h3{
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
+    
 
-        .sidebar a{
-            display: block;
-            color: #F5F5DC;
-            padding: 15px 20px;
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 16px;
-        }
+    .sidebar{
+        width: 260px;
+        height: 100vh;
+        background: linear-gradient(180deg, #3E2723, #4E342E);
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding-top: 20px;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+    }
 
-        .sidebar a:hover{
-            background: #4E342E;
-            padding-left: 25px;
-        }
+    .sidebar h3{
+        color: white;
+        text-align: center;
+        margin-bottom: 40px;
+        font-weight: bold;
+    }
 
-        .content{
-            margin-left: 260px;
-            padding: 30px;
-        }
+    .sidebar a{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #F5F5DC;
+        padding: 16px 24px;
+        text-decoration: none;
+        transition: 0.3s;
+        font-size: 17px;
+        border-left: 4px solid transparent;
+    }
 
-        .card-dashboard{
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: 0.3s;
-        }
+    .sidebar a:hover{
+        background: rgba(255,255,255,0.08);
+        border-left: 4px solid #D7CCC8;
+        padding-left: 30px;
+    }
 
-        .card-dashboard:hover{
-            transform: translateY(-5px);
-        }
+    .content{
+        margin-left: 260px;
+        padding: 30px;
+    }
 
-        .bg-coffee{
-            background: #4E342E;
-            color: white;
-        }
+    .card-dashboard{
+        border: none;
+        border-radius: 22px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: 0.3s;
+        background: white;
+    }
 
-        .navbar-custom{
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
+    .card-dashboard:hover{
+        transform: translateY(-6px);
+    }
 
-    </style>
+    .bg-coffee{
+        background: linear-gradient(135deg, #4E342E, #6D4C41);
+        color: white;
+    }
+
+    .text-coffee{
+    color: #5D4037;
+}
+
+    .navbar-custom{
+        background: white;
+        border-radius: 20px;
+        padding: 18px 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    .chart-container{
+        background: white;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+    .text-coffee {
+    color: #4E342E;
+}
+
+.icon-card {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.15);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-card-coffee {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    background: rgba(78,52,46,0.10);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #4E342E;
+}
+
+.card-dashboard {
+    transition: 0.3s;
+}
+
+.card-dashboard:hover {
+    transform: translateY(-6px);
+}
+
+
+    
+
+</style>
 
 </head>
 

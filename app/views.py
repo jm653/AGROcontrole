@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import (Propriedade,Lavoura,LoteDeCafe)
 from .forms import LavouraForm
+from .forms import PropriedadeForm
 
 
 def login_view(request):
@@ -141,3 +142,24 @@ def cadastrar_lavoura(request):
         'cadastrar_lavoura.html',
         {'form': form}
     )
+@login_required
+def cadastrar_propriedade(request):
+
+    if request.user.tipo != 'produtor':
+        return HttpResponse("Acesso negado")
+
+    if request.method == 'POST':
+
+        form = PropriedadeForm(request.POST)
+
+        if form.is_valid():
+
+            propriedade = form.save(commit=False)
+
+            propriedade.produtor = request.user
+
+            propriedade.save()
+
+            return redirect('produtor_dashboard')
+
+    return redirect('produtor_dashboard')

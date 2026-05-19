@@ -1,16 +1,245 @@
-<div class="sidebar">
+<!-- app/templates/base_produtor.html -->
 
-    <a href="#">Dashboard</a>
-    <a href="#">Lavouras</a>
-    <a href="#">Lotes</a>
-    <a href="#">Financeiro</a>
+<!DOCTYPE html>
+<html lang="pt-br">
 
-</div>
+<head>
 
-{% block content %}
-{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<a href="{% url 'cadastrar_lavoura' %}">
-    <i class="bi bi-plus-circle"></i>
-    Nova Lavoura
-</a>
+    <title>
+        {% block title %}
+        AgroControle
+        {% endblock %}
+    </title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body{
+            background: #F5F5DC;
+            overflow-x: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar{
+            width: 260px;
+            height: 100vh;
+            background: #3E2723;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 25px;
+        }
+
+        .logo{
+            text-align: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .sidebar a{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #F5F5DC;
+            text-decoration: none;
+
+            padding: 15px 25px;
+
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover{
+            background: #4E342E;
+            padding-left: 30px;
+        }
+
+        /* CONTEÚDO */
+
+        .content{
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        /* NAVBAR */
+
+        .topbar{
+            background: white;
+            padding: 18px 25px;
+            border-radius: 18px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 30px;
+
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .topbar h3{
+            margin: 0;
+            color: #3E2723;
+            font-weight: bold;
+        }
+
+        /* CARDS */
+
+        .card-dashboard{
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+            transition: 0.3s;
+        }
+
+        .card-dashboard:hover{
+            transform: translateY(-5px);
+        }
+
+        .bg-coffee{
+            background: #4E342E;
+            color: white;
+        }
+
+        /* BOTÃO FLUTUANTE */
+
+        .floating-button{
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+
+            width: 70px;
+            height: 70px;
+
+            border-radius: 50%;
+
+            border: none;
+
+            background: #4E342E;
+            color: white;
+
+            font-size: 30px;
+
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+
+            transition: 0.3s;
+        }
+
+        .floating-button:hover{
+            transform: scale(1.08);
+            background: #5D4037;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            <i class="bi bi-cup-hot-fill"></i>
+            AgroControle
+        </div>
+
+        <a href="#">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <a href="#">
+            <i class="bi bi-tree-fill"></i>
+            Lavouras
+        </a>
+
+        <a href="#">
+            <i class="bi bi-box-seam"></i>
+            Lotes
+        </a>
+
+        <a href="#">
+            <i class="bi bi-arrow-repeat"></i>
+            Rastreabilidade
+        </a>
+
+        <a href="#">
+            <i class="bi bi-bar-chart-fill"></i>
+            Relatórios
+        </a>
+
+        <a href="#">
+            <i class="bi bi-cash-stack"></i>
+            Financeiro
+        </a>
+
+        <a href="{% url 'logout' %}">
+            <i class="bi bi-box-arrow-right"></i>
+            Sair
+        </a>
+
+    </div>
+
+    <!-- CONTEÚDO -->
+
+    <div class="content">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <h3>
+                Painel do Produtor
+            </h3>
+
+            <strong>
+                {{ request.user.username }}
+            </strong>
+
+        </div>
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+    <!-- BOTÃO FLUTUANTE -->
+
+    <button
+        class="floating-button"
+        data-bs-toggle="modal"
+        data-bs-target="#modalLavoura"
+    >
+        <i class="bi bi-plus"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

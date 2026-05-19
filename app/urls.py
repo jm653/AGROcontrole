@@ -44,5 +44,10 @@ urlpatterns = [
     views.cadastrar_lavoura,
     name='cadastrar_lavoura'
 ),
+path(
+    'cadastrar-propriedade/',
+    views.cadastrar_propriedade,
+    name='cadastrar_propriedade'
+),
 
 ]
