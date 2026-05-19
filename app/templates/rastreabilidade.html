@@ -1,0 +1,627 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Rastreabilidade | AgroControle
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- TOPO -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold text-coffee">
+                Rastreabilidade
+            </h2>
+
+            <p class="text-muted">
+                Acompanhe todas as etapas da produção cafeeira
+            </p>
+
+        </div>
+
+        <button class="btn btn-coffee">
+
+            <i class="bi bi-upc-scan"></i>
+            Rastrear Lote
+
+        </button>
+
+    </div>
+
+    <!-- CARDS -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- LOTES -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard bg-coffee">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title">
+                                Lotes Ativos
+                            </div>
+
+                            <div class="card-number">
+                                28
+                            </div>
+
+                            <small>
+                                Em rastreamento
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card">
+
+                            <i class="bi bi-box-seam"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- COLHEITA -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Em Colheita
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                9
+                            </div>
+
+                            <small class="text-warning">
+                                Processo ativo
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-scissors"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- SECAGEM -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Em Secagem
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                11
+                            </div>
+
+                            <small class="text-primary">
+                                Monitoramento
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-sun"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FINALIZADOS -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Finalizados
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                42
+                            </div>
+
+                            <small class="text-success">
+                                Prontos para venda
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-check-circle"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TIMELINE -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-8">
+
+            <div class="chart-container">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <h5 class="chart-title m-0">
+                        Fluxo de Produção
+                    </h5>
+
+                    <span class="badge bg-success">
+                        Atualizado em tempo real
+                    </span>
+
+                </div>
+
+                <div class="timeline">
+
+                    <!-- ITEM -->
+
+                    <div class="timeline-item mb-4">
+
+                        <div class="d-flex">
+
+                            <div class="me-4">
+
+                                <div class="timeline-icon bg-success">
+
+                                    <i class="bi bi-seedling text-white"></i>
+
+                                </div>
+
+                            </div>
+
+                            <div class="w-100">
+
+                                <div class="card border-0 shadow-sm">
+
+                                    <div class="card-body">
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <div>
+
+                                                <h6 class="fw-bold">
+                                                    Plantio realizado
+                                                </h6>
+
+                                                <small class="text-muted">
+                                                    Lote CAF-2026-001
+                                                </small>
+
+                                            </div>
+
+                                            <small class="text-muted">
+                                                08:42
+                                            </small>
+
+                                        </div>
+
+                                        <p class="mt-3 mb-0 text-muted">
+
+                                            Plantio concluído na Fazenda Boa Esperança.
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ITEM -->
+
+                    <div class="timeline-item mb-4">
+
+                        <div class="d-flex">
+
+                            <div class="me-4">
+
+                                <div class="timeline-icon bg-warning">
+
+                                    <i class="bi bi-scissors text-white"></i>
+
+                                </div>
+
+                            </div>
+
+                            <div class="w-100">
+
+                                <div class="card border-0 shadow-sm">
+
+                                    <div class="card-body">
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <div>
+
+                                                <h6 class="fw-bold">
+                                                    Colheita iniciada
+                                                </h6>
+
+                                                <small class="text-muted">
+                                                    Lote CAF-2026-002
+                                                </small>
+
+                                            </div>
+
+                                            <small class="text-muted">
+                                                10:15
+                                            </small>
+
+                                        </div>
+
+                                        <p class="mt-3 mb-0 text-muted">
+
+                                            Funcionários iniciaram a colheita manual do lote.
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ITEM -->
+
+                    <div class="timeline-item">
+
+                        <div class="d-flex">
+
+                            <div class="me-4">
+
+                                <div class="timeline-icon bg-primary">
+
+                                    <i class="bi bi-box-seam text-white"></i>
+
+                                </div>
+
+                            </div>
+
+                            <div class="w-100">
+
+                                <div class="card border-0 shadow-sm">
+
+                                    <div class="card-body">
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <div>
+
+                                                <h6 class="fw-bold">
+                                                    Armazenamento concluído
+                                                </h6>
+
+                                                <small class="text-muted">
+                                                    Lote CAF-2026-003
+                                                </small>
+
+                                            </div>
+
+                                            <small class="text-muted">
+                                                14:20
+                                            </small>
+
+                                        </div>
+
+                                        <p class="mt-3 mb-0 text-muted">
+
+                                            Lote armazenado no depósito principal.
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- STATUS -->
+
+        <div class="col-lg-4">
+
+            <div class="chart-container">
+
+                <h5 class="chart-title">
+                    Status dos Lotes
+                </h5>
+
+                <canvas id="graficoRastreio"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABELA -->
+
+    <div class="table-container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h5 class="fw-bold text-coffee m-0">
+
+                Histórico de Lotes
+
+            </h5>
+
+            <input
+                type="text"
+                class="form-control w-25"
+                placeholder="Pesquisar lote...">
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Código</th>
+                        <th>Fazenda</th>
+                        <th>Etapa</th>
+                        <th>Responsável</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                CAF-2026-001
+                            </strong>
+
+                        </td>
+
+                        <td>
+                            Boa Esperança
+                        </td>
+
+                        <td>
+                            Plantio
+                        </td>
+
+                        <td>
+                            João Silva
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-success">
+                                Concluído
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-sm btn-outline-dark">
+
+                                <i class="bi bi-eye"></i>
+
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-success">
+
+                                <i class="bi bi-geo-alt"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                CAF-2026-002
+                            </strong>
+
+                        </td>
+
+                        <td>
+                            Santa Helena
+                        </td>
+
+                        <td>
+                            Colheita
+                        </td>
+
+                        <td>
+                            Maria Costa
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-warning text-dark">
+                                Em andamento
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-sm btn-outline-dark">
+
+                                <i class="bi bi-eye"></i>
+
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-success">
+
+                                <i class="bi bi-geo-alt"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.timeline-icon{
+
+    width: 55px;
+    height: 55px;
+
+    border-radius: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+</style>
+
+<script>
+
+const ctx = document.getElementById('graficoRastreio');
+
+new Chart(ctx, {
+
+    type: 'doughnut',
+
+    data: {
+
+        labels: [
+            'Plantio',
+            'Colheita',
+            'Secagem',
+            'Armazenamento'
+        ],
+
+        datasets: [{
+
+            data: [
+                20,
+                30,
+                25,
+                25
+            ],
+
+            backgroundColor: [
+                '#4E342E',
+                '#6D4C41',
+                '#8D6E63',
+                '#D7CCC8'
+            ]
+
+        }]
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

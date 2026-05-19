@@ -163,3 +163,235 @@ def cadastrar_propriedade(request):
             return redirect('produtor_dashboard')
 
     return redirect('produtor_dashboard')
+# =========================
+# PÁGINAS PRODUTOR
+# =========================
+
+@login_required
+def propriedades_view(request):
+    return render(request, 'propriedades.html')
+
+
+@login_required
+def lavouras_view(request):
+    return render(request, 'lavouras.html')
+
+
+@login_required
+def lotes_view(request):
+    return render(request, 'lotes.html')
+
+
+@login_required
+def financeiro_view(request):
+    return render(request, 'financeiro.html')
+
+
+@login_required
+def relatorios_view(request):
+    return render(request, 'relatorios.html')
+
+
+@login_required
+def perfil_view(request):
+    return render(request, 'perfil.html')
+
+
+# =========================
+# FUNCIONÁRIO
+# =========================
+
+@login_required
+def tarefas_view(request):
+    return render(request, 'tarefas.html')
+
+
+@login_required
+def registros_view(request):
+    return render(request, 'registros.html')
+
+
+# =========================
+# ADMIN
+# =========================
+
+@login_required
+def usuarios_view(request):
+    return render(request, 'usuarios.html')
+
+
+@login_required
+def estatisticas_view(request):
+    return render(request, 'estatisticas.html')
+
+
+@login_required
+def auditoria_view(request):
+    return render(request, 'auditoria.html')
+
+@login_required
+def rastreabilidade_view(request):
+
+    return render(
+        request,
+        'rastreabilidade.html'
+    )
+
+
+@login_required
+def propriedades_view(request):
+
+    propriedades = Propriedade.objects.filter(
+        produtor=request.user
+    )
+
+    return render(
+        request,
+        'propriedades.html',
+        {
+            'propriedades': propriedades
+        }
+    )
+
+
+@login_required
+def lavouras_view(request):
+
+    lavouras = Lavoura.objects.filter(
+        propriedade__produtor=request.user
+    )
+
+    return render(
+        request,
+        'lavouras.html',
+        {
+            'lavouras': lavouras
+        }
+    )
+
+
+@login_required
+def lotes_view(request):
+
+    lotes = LoteDeCafe.objects.filter(
+        lavoura__propriedade__produtor=request.user
+    )
+
+    return render(
+        request,
+        'lotes.html',
+        {
+            'lotes': lotes
+        }
+    )
+
+
+@login_required
+def financeiro_view(request):
+
+    return render(
+        request,
+        'financeiro.html'
+    )
+
+
+@login_required
+def relatorios_view(request):
+
+    return render(
+        request,
+        'relatorios.html'
+    )
+
+
+@login_required
+def perfil_view(request):
+
+    return render(
+        request,
+        'perfil.html'
+    )
+
+@login_required
+def propriedades_view(request):
+
+    propriedades = Propriedade.objects.filter(
+        produtor=request.user
+    )
+
+    return render(
+        request,
+        'propriedades.html',
+        {'propriedades': propriedades}
+    )
+
+
+@login_required
+def lavouras_view(request):
+
+    lavouras = Lavoura.objects.filter(
+        propriedade__produtor=request.user
+    )
+
+    return render(
+        request,
+        'lavouras.html',
+        {'lavouras': lavouras}
+    )
+
+
+@login_required
+def lotes_view(request):
+
+    lotes = LoteDeCafe.objects.filter(
+        lavoura__propriedade__produtor=request.user
+    )
+
+    total_sacas = sum(
+        lote.quantidade_sacas for lote in lotes
+    )
+
+    return render(
+        request,
+        'lotes.html',
+        {
+            'lotes': lotes,
+            'total_sacas': total_sacas
+        }
+    )
+
+
+@login_required
+def rastreabilidade_view(request):
+
+    return render(
+        request,
+        'rastreabilidade.html'
+    )
+
+
+@login_required
+def financeiro_view(request):
+
+    return render(
+        request,
+        'financeiro.html'
+    )
+
+
+@login_required
+def relatorios_view(request):
+
+    return render(
+        request,
+        'relatorios.html'
+    )
+
+
+@login_required
+def perfil_view(request):
+
+    return render(
+        request,
+        'perfil.html'
+    )

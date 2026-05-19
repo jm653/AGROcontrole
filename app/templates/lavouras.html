@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Lavouras
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- TOPO -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold text-coffee">
+                Lavouras
+            </h2>
+
+            <p class="text-muted">
+                Gerencie todas as lavouras cadastradas
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-coffee"
+            data-bs-toggle="modal"
+            data-bs-target="#modalLavoura">
+
+            <i class="bi bi-plus-circle"></i>
+            Nova Lavoura
+
+        </button>
+
+    </div>
+
+    <!-- TABELA -->
+
+    <div class="table-container">
+
+        <table class="table align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>Nome</th>
+                    <th>Variedade</th>
+                    <th>Área</th>
+                    <th>Plantio</th>
+                    <th>Propriedade</th>
+                    <th>Ações</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for lavoura in lavouras %}
+
+                <tr>
+
+                    <td>
+                        {{ lavoura.nome }}
+                    </td>
+
+                    <td>
+                        {{ lavoura.variedade }}
+                    </td>
+
+                    <td>
+                        {{ lavoura.area }} ha
+                    </td>
+
+                    <td>
+                        {{ lavoura.data_plantio }}
+                    </td>
+
+                    <td>
+                        {{ lavoura.propriedade.nome }}
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <button class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6">
+
+                        <div class="text-center p-4">
+
+                            <i class="bi bi-tree-fill fs-1 text-muted"></i>
+
+                            <p class="mt-3 text-muted">
+                                Nenhuma lavoura cadastrada.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade" id="modalLavoura">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="fw-bold">
+                    Nova Lavoura
+                </h5>
+
+                <button
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="POST"
+                  action="{% url 'cadastrar_lavoura' %}">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    {{ form.as_p }}
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button class="btn btn-coffee">
+
+                        Salvar Lavoura
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,456 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Propriedades
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+```
+<!-- TOPO -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold text-coffee">
+            Propriedades
+        </h2>
+
+        <p class="text-muted">
+            Gerencie todas as propriedades agrícolas cadastradas
+        </p>
+
+    </div>
+
+    <button
+        class="btn btn-coffee"
+        data-bs-toggle="modal"
+        data-bs-target="#modalPropriedade">
+
+        <i class="bi bi-plus-circle"></i>
+        Nova Propriedade
+
+    </button>
+
+</div>
+
+<!-- CARDS -->
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+
+        <div class="card card-dashboard bg-coffee">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title">
+                            Total de Propriedades
+                        </div>
+
+                        <div class="card-number">
+                            {{ propriedades.count }}
+                        </div>
+
+                    </div>
+
+                    <div class="icon-card">
+
+                        <i class="bi bi-house-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card card-dashboard">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title text-muted">
+                            Área Total
+                        </div>
+
+                        <div class="card-number text-coffee">
+                            {{ total_hectares }}
+                        </div>
+
+                    </div>
+
+                    <div class="icon-card-coffee">
+
+                        <i class="bi bi-map-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card card-dashboard">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title text-muted">
+                            Cidades Registradas
+                        </div>
+
+                        <div class="card-number text-coffee">
+                            {{ cidades_count }}
+                        </div>
+
+                    </div>
+
+                    <div class="icon-card-coffee">
+
+                        <i class="bi bi-geo-alt-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TABELA -->
+
+<div class="table-container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h5 class="fw-bold text-coffee m-0">
+            Lista de Propriedades
+        </h5>
+
+        <div class="d-flex gap-2">
+
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Pesquisar propriedade..."
+                style="width: 250px;">
+
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Propriedade</th>
+                    <th>Cidade</th>
+                    <th>Hectares</th>
+                    <th>Produtor</th>
+                    <th>Status</th>
+                    <th class="text-center">
+                        Ações
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for propriedade in propriedades %}
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+                            #{{ propriedade.id }}
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="icon-card-coffee"
+                                 style="width:50px;height:50px;">
+
+                                <i class="bi bi-house-fill"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ propriedade.nome }}
+                                </strong>
+
+                                <div class="text-muted small">
+
+                                    Fazenda Cafeeira
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        {{ propriedade.cidade }}
+
+                    </td>
+
+                    <td>
+
+                        {{ propriedade.hectares }} ha
+
+                    </td>
+
+                    <td>
+
+                        {{ propriedade.produtor.username }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-success">
+
+                            Ativa
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex justify-content-center gap-2">
+
+                            <button
+                                class="btn btn-warning btn-sm">
+
+                                <i class="bi bi-pencil-fill"></i>
+
+                            </button>
+
+                            <button
+                                class="btn btn-danger btn-sm">
+
+                                <i class="bi bi-trash-fill"></i>
+
+                            </button>
+
+                            <button
+                                class="btn btn-dark btn-sm">
+
+                                <i class="bi bi-eye-fill"></i>
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7">
+
+                        <div class="text-center p-5">
+
+                            <i class="bi bi-house-fill fs-1 text-muted"></i>
+
+                            <h5 class="mt-4 text-muted">
+
+                                Nenhuma propriedade cadastrada
+
+                            </h5>
+
+                            <p class="text-muted">
+
+                                Comece adicionando uma nova propriedade.
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade"
+     id="modalPropriedade"
+     tabindex="-1">
+
+```
+<div class="modal-dialog modal-lg">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h4 class="fw-bold text-coffee mb-0">
+
+                    Nova Propriedade
+
+                </h4>
+
+                <small class="text-muted">
+
+                    Cadastre uma nova fazenda no sistema
+
+                </small>
+
+            </div>
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal">
+            </button>
+
+        </div>
+
+        <form method="POST"
+              action="{% url 'cadastrar_propriedade' %}">
+
+            {% csrf_token %}
+
+            <div class="modal-body">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Nome da Propriedade
+
+                        </label>
+
+                        {{ form.nome }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Cidade
+
+                        </label>
+
+                        {{ form.cidade }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Hectares
+
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="hectares"
+                            class="form-control">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-coffee">
+
+                    <i class="bi bi-check-circle"></i>
+                    Salvar Propriedade
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

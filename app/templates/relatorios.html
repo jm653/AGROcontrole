@@ -1,0 +1,478 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Relatórios | AgroControle
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- TOPO -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold text-coffee">
+                Relatórios
+            </h2>
+
+            <p class="text-muted">
+                Visualize análises completas da produção agrícola
+            </p>
+
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <button class="btn btn-outline-dark">
+
+                <i class="bi bi-file-earmark-pdf"></i>
+                Exportar PDF
+
+            </button>
+
+            <button class="btn btn-coffee">
+
+                <i class="bi bi-file-earmark-excel"></i>
+                Exportar Excel
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CARDS -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- PRODUÇÃO TOTAL -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard bg-coffee">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title">
+                                Produção Total
+                            </div>
+
+                            <div class="card-number">
+                                1.280
+                            </div>
+
+                            <small>
+                                sacas produzidas
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card">
+
+                            <i class="bi bi-cup-hot-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FATURAMENTO -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Faturamento
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                R$ 85K
+                            </div>
+
+                            <small class="text-success">
+                                +12% este mês
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-cash-coin"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- LOTES -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Lotes Finalizados
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                42
+                            </div>
+
+                            <small class="text-primary">
+                                Qualidade Premium
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-box-seam"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- EFICIÊNCIA -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Eficiência
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                94%
+                            </div>
+
+                            <small class="text-success">
+                                Excelente desempenho
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-graph-up-arrow"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GRÁFICOS -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- PRODUÇÃO -->
+
+        <div class="col-lg-8">
+
+            <div class="chart-container">
+
+                <h5 class="chart-title">
+                    Produção por Mês
+                </h5>
+
+                <canvas id="graficoProducao"></canvas>
+
+            </div>
+
+        </div>
+
+        <!-- QUALIDADE -->
+
+        <div class="col-lg-4">
+
+            <div class="chart-container">
+
+                <h5 class="chart-title">
+                    Qualidade dos Lotes
+                </h5>
+
+                <canvas id="graficoQualidade"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABELA -->
+
+    <div class="table-container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h5 class="fw-bold text-coffee m-0">
+
+                Histórico de Relatórios
+
+            </h5>
+
+            <button class="btn btn-coffee">
+
+                <i class="bi bi-plus-circle"></i>
+                Novo Relatório
+
+            </button>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Relatório</th>
+                        <th>Período</th>
+                        <th>Categoria</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                Produção Janeiro
+                            </strong>
+
+                        </td>
+
+                        <td>
+                            Jan/2026
+                        </td>
+
+                        <td>
+                            Produção
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-success">
+                                Finalizado
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-sm btn-outline-dark">
+
+                                <i class="bi bi-eye"></i>
+
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-success">
+
+                                <i class="bi bi-download"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                Relatório Financeiro
+                            </strong>
+
+                        </td>
+
+                        <td>
+                            Fev/2026
+                        </td>
+
+                        <td>
+                            Financeiro
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-warning text-dark">
+                                Em análise
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-sm btn-outline-dark">
+
+                                <i class="bi bi-eye"></i>
+
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-success">
+
+                                <i class="bi bi-download"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CHART JS -->
+
+<script>
+
+    // PRODUÇÃO
+
+    const ctx1 = document.getElementById('graficoProducao');
+
+    new Chart(ctx1, {
+
+        type: 'line',
+
+        data: {
+
+            labels: [
+                'Jan',
+                'Fev',
+                'Mar',
+                'Abr',
+                'Mai',
+                'Jun'
+            ],
+
+            datasets: [{
+
+                label: 'Sacas Produzidas',
+
+                data: [
+                    120,
+                    190,
+                    300,
+                    250,
+                    420,
+                    500
+                ],
+
+                borderColor: '#4E342E',
+
+                backgroundColor: 'rgba(78,52,46,0.15)',
+
+                fill: true,
+
+                tension: 0.4
+
+            }]
+
+        }
+
+    });
+
+    // QUALIDADE
+
+    const ctx2 = document.getElementById('graficoQualidade');
+
+    new Chart(ctx2, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: [
+                'Premium',
+                'Especial',
+                'Tradicional'
+            ],
+
+            datasets: [{
+
+                data: [
+                    45,
+                    35,
+                    20
+                ],
+
+                backgroundColor: [
+                    '#4E342E',
+                    '#8D6E63',
+                    '#D7CCC8'
+                ]
+
+            }]
+
+        }
+
+    });
+
+</script>
+
+{% endblock %}

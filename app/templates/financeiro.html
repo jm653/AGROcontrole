@@ -1,0 +1,594 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Financeiro
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+```
+<!-- TOPO -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold text-coffee">
+            Financeiro
+        </h2>
+
+        <p class="text-muted">
+            Controle financeiro da produção cafeeira
+        </p>
+
+    </div>
+
+    <button
+        class="btn btn-coffee"
+        data-bs-toggle="modal"
+        data-bs-target="#modalMovimentacao">
+
+        <i class="bi bi-plus-circle"></i>
+        Nova Movimentação
+
+    </button>
+
+</div>
+
+<!-- CARDS -->
+
+<div class="row g-4 mb-4">
+
+    <!-- RECEITA -->
+
+    <div class="col-md-4">
+
+        <div class="card card-dashboard bg-coffee">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title">
+                            Receita Total
+                        </div>
+
+                        <div class="card-number">
+                            R$ 48.500
+                        </div>
+
+                        <small>
+                            +12% este mês
+                        </small>
+
+                    </div>
+
+                    <div class="icon-card">
+
+                        <i class="bi bi-currency-dollar"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DESPESAS -->
+
+    <div class="col-md-4">
+
+        <div class="card card-dashboard">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title text-muted">
+                            Despesas
+                        </div>
+
+                        <div class="card-number text-danger">
+                            R$ 18.200
+                        </div>
+
+                        <small class="text-muted">
+                            Custos operacionais
+                        </small>
+
+                    </div>
+
+                    <div class="icon-card-coffee">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LUCRO -->
+
+    <div class="col-md-4">
+
+        <div class="card card-dashboard">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title text-muted">
+                            Lucro Líquido
+                        </div>
+
+                        <div class="card-number text-success">
+                            R$ 30.300
+                        </div>
+
+                        <small class="text-success">
+                            Resultado positivo
+                        </small>
+
+                    </div>
+
+                    <div class="icon-card-coffee">
+
+                        <i class="bi bi-graph-up-arrow"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- GRÁFICOS -->
+
+<div class="row g-4 mb-4">
+
+    <!-- GRÁFICO FINANCEIRO -->
+
+    <div class="col-md-8">
+
+        <div class="chart-container">
+
+            <h5 class="chart-title">
+                Fluxo Financeiro
+            </h5>
+
+            <canvas id="graficoFinanceiro"></canvas>
+
+        </div>
+
+    </div>
+
+    <!-- DISTRIBUIÇÃO -->
+
+    <div class="col-md-4">
+
+        <div class="chart-container">
+
+            <h5 class="chart-title">
+                Distribuição de Gastos
+            </h5>
+
+            <canvas id="graficoGastos"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TABELA -->
+
+<div class="table-container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h5 class="fw-bold text-coffee m-0">
+            Movimentações Financeiras
+        </h5>
+
+        <input
+            type="text"
+            class="form-control"
+            placeholder="Pesquisar movimentação..."
+            style="width: 260px;">
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th class="text-center">
+                        Ações
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        #001
+                    </td>
+
+                    <td>
+                        Venda de café premium
+                    </td>
+
+                    <td>
+                        Receita
+                    </td>
+
+                    <td class="text-success fw-bold">
+                        + R$ 12.500
+                    </td>
+
+                    <td>
+                        19/05/2026
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-success">
+                            Confirmado
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex justify-content-center gap-2">
+
+                            <button class="btn btn-warning btn-sm">
+
+                                <i class="bi bi-pencil-fill"></i>
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm">
+
+                                <i class="bi bi-trash-fill"></i>
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        #002
+                    </td>
+
+                    <td>
+                        Compra de fertilizantes
+                    </td>
+
+                    <td>
+                        Despesa
+                    </td>
+
+                    <td class="text-danger fw-bold">
+                        - R$ 3.200
+                    </td>
+
+                    <td>
+                        18/05/2026
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-warning text-dark">
+                            Pendente
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex justify-content-center gap-2">
+
+                            <button class="btn btn-warning btn-sm">
+
+                                <i class="bi bi-pencil-fill"></i>
+
+                            </button>
+
+                            <button class="btn btn-danger btn-sm">
+
+                                <i class="bi bi-trash-fill"></i>
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade"
+     id="modalMovimentacao"
+     tabindex="-1">
+
+```
+<div class="modal-dialog modal-lg">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h4 class="fw-bold text-coffee mb-0">
+
+                    Nova Movimentação
+
+                </h4>
+
+                <small class="text-muted">
+
+                    Adicione uma nova movimentação financeira
+
+                </small>
+
+            </div>
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal">
+            </button>
+
+        </div>
+
+        <form>
+
+            <div class="modal-body">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Descrição
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Categoria
+
+                        </label>
+
+                        <select class="form-select">
+
+                            <option>
+                                Receita
+                            </option>
+
+                            <option>
+                                Despesa
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Valor
+
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Data
+
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-coffee">
+
+                    <i class="bi bi-check-circle"></i>
+                    Salvar Movimentação
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- CHART JS -->
+
+<script>
+
+const ctxFinanceiro = document.getElementById('graficoFinanceiro');
+
+new Chart(ctxFinanceiro, {
+
+    type: 'line',
+
+    data: {
+
+        labels: [
+            'Jan',
+            'Fev',
+            'Mar',
+            'Abr',
+            'Mai',
+            'Jun'
+        ],
+
+        datasets: [
+
+            {
+                label: 'Receita',
+
+                data: [12000, 15000, 18000, 14000, 22000, 25000],
+
+                borderColor: '#4E342E',
+
+                backgroundColor: 'rgba(78,52,46,0.1)',
+
+                tension: 0.4,
+
+                fill: true
+            },
+
+            {
+                label: 'Despesas',
+
+                data: [7000, 6000, 9000, 8500, 10000, 11000],
+
+                borderColor: '#A1887F',
+
+                backgroundColor: 'rgba(161,136,127,0.1)',
+
+                tension: 0.4,
+
+                fill: true
+            }
+
+        ]
+
+    }
+
+});
+
+const ctxGastos = document.getElementById('graficoGastos');
+
+new Chart(ctxGastos, {
+
+    type: 'doughnut',
+
+    data: {
+
+        labels: [
+            'Fertilizantes',
+            'Funcionários',
+            'Máquinas',
+            'Outros'
+        ],
+
+        datasets: [{
+
+            data: [35, 30, 20, 15],
+
+            backgroundColor: [
+                '#4E342E',
+                '#6D4C41',
+                '#8D6E63',
+                '#BCAAA4'
+            ]
+
+        }]
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

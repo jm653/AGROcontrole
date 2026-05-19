@@ -3,15 +3,37 @@ from . import views
 
 urlpatterns = [
 
+    # =========================
     # LOGIN
-    path('', views.login_view, name='login'),
+    # =========================
 
+    path(
+        '',
+        views.login_view,
+        name='login'
+    ),
+
+    path(
+        'logout/',
+        views.logout_view,
+        name='logout'
+    ),
+
+    # =========================
     # DASHBOARDS
+    # =========================
+
     path(
         'admin-dashboard/',
         views.admin_dashboard,
         name='admin_dashboard'
     ),
+
+    path(
+    'rastreabilidade/',
+    views.rastreabilidade_view,
+    name='rastreabilidade'
+),
 
     path(
         'produtor-dashboard/',
@@ -25,29 +47,104 @@ urlpatterns = [
         name='funcionario_dashboard'
     ),
 
-    # NOVA DASHBOARD MODERNA
-    path(
-        'dashboard/',
-        views.dashboard,
-        name='dashboard'
-    ),
+    # =========================
+    # PRODUTOR
+    # =========================
 
-    # LOGOUT
     path(
-        'logout/',
-        views.logout_view,
-        name='logout'
+        'propriedades/',
+        views.propriedades_view,
+        name='propriedades'
     ),
 
     path(
-    'cadastrar-lavoura/',
-    views.cadastrar_lavoura,
-    name='cadastrar_lavoura'
-),
-path(
-    'cadastrar-propriedade/',
-    views.cadastrar_propriedade,
-    name='cadastrar_propriedade'
-),
+        'lavouras/',
+        views.lavouras_view,
+        name='lavouras'
+    ),
+
+    path(
+        'lotes/',
+        views.lotes_view,
+        name='lotes'
+    ),
+
+    path(
+        'rastreabilidade/',
+        views.rastreabilidade_view,
+        name='rastreabilidade'
+    ),
+
+    path(
+        'financeiro/',
+        views.financeiro_view,
+        name='financeiro'
+    ),
+
+    path(
+        'relatorios/',
+        views.relatorios_view,
+        name='relatorios'
+    ),
+
+    path(
+        'perfil/',
+        views.perfil_view,
+        name='perfil'
+    ),
+
+    # =========================
+    # FUNCIONÁRIO
+    # =========================
+
+    path(
+        'tarefas/',
+        views.tarefas_view,
+        name='tarefas'
+    ),
+
+    path(
+        'registros/',
+        views.registros_view,
+        name='registros'
+    ),
+
+    # =========================
+    # ADMIN
+    # =========================
+
+    path(
+        'usuarios/',
+        views.usuarios_view,
+        name='usuarios'
+    ),
+
+    path(
+        'estatisticas/',
+        views.estatisticas_view,
+        name='estatisticas'
+    ),
+
+    path(
+        'auditoria/',
+        views.auditoria_view,
+        name='auditoria'
+    ),
+
+    # =========================
+    # CADASTROS
+    # =========================
+
+    path(
+        'cadastrar-lavoura/',
+        views.cadastrar_lavoura,
+        name='cadastrar_lavoura'
+    ),
+
+    path(
+        'cadastrar-propriedade/',
+        views.cadastrar_propriedade,
+        name='cadastrar_propriedade'
+    ),
 
 ]

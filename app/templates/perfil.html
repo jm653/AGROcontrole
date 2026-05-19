@@ -1,0 +1,323 @@
+```html
+{% extends 'base.html' %}
+
+{% block title %}
+Perfil | AgroControle
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- TOPO -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold text-coffee">
+                Meu Perfil
+            </h2>
+
+            <p class="text-muted">
+                Gerencie suas informações pessoais
+            </p>
+
+        </div>
+
+        <button class="btn btn-coffee">
+
+            <i class="bi bi-pencil-square"></i>
+            Editar Perfil
+
+        </button>
+
+    </div>
+
+    <!-- PERFIL -->
+
+    <div class="row g-4">
+
+        <!-- CARD ESQUERDA -->
+
+        <div class="col-lg-4">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body text-center p-5">
+
+                    <div
+                        class="mx-auto mb-4 d-flex align-items-center justify-content-center"
+                        style="
+                            width:120px;
+                            height:120px;
+                            border-radius:50%;
+                            background:#4E342E;
+                            color:white;
+                            font-size:50px;
+                        ">
+
+                        <i class="bi bi-person-fill"></i>
+
+                    </div>
+
+                    <h3 class="fw-bold text-coffee">
+
+                        {{ request.user.username }}
+
+                    </h3>
+
+                    <p class="text-muted">
+
+                        Produtor Rural
+
+                    </p>
+
+                    <div class="mt-4">
+
+                        <span class="badge bg-success p-2 px-3">
+
+                            Conta Ativa
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="card card-dashboard mt-4">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold text-coffee mb-4">
+
+                        Informações da Conta
+
+                    </h5>
+
+                    <div class="mb-3">
+
+                        <small class="text-muted">
+                            Tipo de Usuário
+                        </small>
+
+                        <div class="fw-semibold">
+
+                            {{ request.user.tipo }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <small class="text-muted">
+                            Último Login
+                        </small>
+
+                        <div class="fw-semibold">
+
+                            {{ request.user.last_login }}
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <small class="text-muted">
+                            Conta criada em
+                        </small>
+
+                        <div class="fw-semibold">
+
+                            {{ request.user.date_joined }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DIREITA -->
+
+        <div class="col-lg-8">
+
+            <!-- DADOS -->
+
+            <div class="card card-dashboard mb-4">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold text-coffee mb-4">
+
+                        Dados Pessoais
+
+                    </h4>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Nome de Usuário
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="{{ request.user.username }}"
+                                disabled>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                value="{{ request.user.email }}"
+                                disabled>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tipo de Conta
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="{{ request.user.tipo }}"
+                                disabled>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Status
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="Ativa"
+                                disabled>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ESTATÍSTICAS -->
+
+            <div class="card card-dashboard">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold text-coffee mb-4">
+
+                        Estatísticas do Produtor
+
+                    </h4>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-4">
+
+                            <div class="bg-light rounded-4 p-4 text-center">
+
+                                <i class="bi bi-tree-fill fs-1 text-coffee"></i>
+
+                                <h2 class="fw-bold mt-3">
+
+                                    {{ lavouras.count }}
+
+                                </h2>
+
+                                <p class="text-muted m-0">
+
+                                    Lavouras
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="bg-light rounded-4 p-4 text-center">
+
+                                <i class="bi bi-house-fill fs-1 text-coffee"></i>
+
+                                <h2 class="fw-bold mt-3">
+
+                                    {{ propriedades.count }}
+
+                                </h2>
+
+                                <p class="text-muted m-0">
+
+                                    Propriedades
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="bg-light rounded-4 p-4 text-center">
+
+                                <i class="bi bi-box-seam fs-1 text-coffee"></i>
+
+                                <h2 class="fw-bold mt-3">
+
+                                    {{ lotes.count }}
+
+                                </h2>
+
+                                <p class="text-muted m-0">
+
+                                    Lotes
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```

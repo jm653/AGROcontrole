@@ -1,0 +1,724 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Lotes | AgroControle
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- TOPO -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold text-coffee">
+                Gestão de Lotes
+            </h2>
+
+            <p class="text-muted">
+                Controle completo dos lotes de café
+            </p>
+
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <button class="btn btn-outline-dark">
+
+                <i class="bi bi-download"></i>
+                Exportar
+
+            </button>
+
+            <button
+                class="btn btn-coffee"
+                data-bs-toggle="modal"
+                data-bs-target="#modalLote">
+
+                <i class="bi bi-plus-circle"></i>
+                Novo Lote
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CARDS -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- TOTAL -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard bg-coffee">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title">
+                                Total de Lotes
+                            </div>
+
+                            <div class="card-number">
+                                {{ lotes.count }}
+                            </div>
+
+                            <small>
+                                Lotes cadastrados
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card">
+
+                            <i class="bi bi-box-seam"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ESTOQUE -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Sacas em Estoque
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                {{ total_sacas }}
+                            </div>
+
+                            <small class="text-success">
+                                Disponível
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-cup-hot"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- QUALIDADE -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Qualidade Premium
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                82%
+                            </div>
+
+                            <small class="text-primary">
+                                Excelente padrão
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-award"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- PRODUÇÃO -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Produção Mensal
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                +12%
+                            </div>
+
+                            <small class="text-success">
+                                Crescimento
+                            </small>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-graph-up-arrow"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GRÁFICOS -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- PRODUÇÃO -->
+
+        <div class="col-lg-8">
+
+            <div class="chart-container">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <h5 class="chart-title m-0">
+                        Produção de Lotes
+                    </h5>
+
+                    <select class="form-select w-auto">
+
+                        <option>
+                            Últimos 6 meses
+                        </option>
+
+                        <option>
+                            Último ano
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <canvas id="graficoLotes"></canvas>
+
+            </div>
+
+        </div>
+
+        <!-- ETAPAS -->
+
+        <div class="col-lg-4">
+
+            <div class="chart-container">
+
+                <h5 class="chart-title">
+                    Etapas dos Lotes
+                </h5>
+
+                <canvas id="graficoEtapas"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+
+    <div class="table-container mb-4">
+
+        <div class="row g-3 align-items-center">
+
+            <div class="col-md-4">
+
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Pesquisar lote...">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select">
+
+                    <option>
+                        Todas as Etapas
+                    </option>
+
+                    <option>
+                        Plantio
+                    </option>
+
+                    <option>
+                        Colheita
+                    </option>
+
+                    <option>
+                        Secagem
+                    </option>
+
+                    <option>
+                        Armazenamento
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select class="form-select">
+
+                    <option>
+                        Todas as Fazendas
+                    </option>
+
+                    <option>
+                        Boa Esperança
+                    </option>
+
+                    <option>
+                        Santa Helena
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-coffee w-100">
+
+                    <i class="bi bi-funnel"></i>
+                    Filtrar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABELA -->
+
+    <div class="table-container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h5 class="fw-bold text-coffee m-0">
+
+                Lista de Lotes
+
+            </h5>
+
+            <span class="badge bg-dark">
+                {{ lotes.count }} registros
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Código</th>
+                        <th>Lavoura</th>
+                        <th>Sacas</th>
+                        <th>Etapa</th>
+                        <th>Atualização</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for lote in lotes %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ lote.codigo }}
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {{ lote.lavoura.nome }}
+
+                        </td>
+
+                        <td>
+
+                            {{ lote.quantidade_sacas }}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-secondary">
+
+                                {{ lote.etapa }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{ lote.data_atualizacao }}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-success">
+
+                                Ativo
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="d-flex gap-2">
+
+                                <button class="btn btn-sm btn-outline-dark">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </button>
+
+                                <button class="btn btn-sm btn-outline-primary">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </button>
+
+                                <button class="btn btn-sm btn-outline-danger">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7" class="text-center py-5">
+
+                            <i class="bi bi-box-seam fs-1 text-muted"></i>
+
+                            <h5 class="mt-3">
+                                Nenhum lote cadastrado
+                            </h5>
+
+                            <p class="text-muted">
+                                Cadastre seu primeiro lote para iniciar o controle.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade" id="modalLote">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="fw-bold">
+
+                    Novo Lote
+
+                </h5>
+
+                <button
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Código do Lote
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Quantidade de Sacas
+                            </label>
+
+                            <input
+                                type="number"
+                                class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Etapa
+                            </label>
+
+                            <select class="form-select">
+
+                                <option>
+                                    Plantio
+                                </option>
+
+                                <option>
+                                    Colheita
+                                </option>
+
+                                <option>
+                                    Secagem
+                                </option>
+
+                                <option>
+                                    Armazenamento
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Lavoura
+                            </label>
+
+                            <select class="form-select">
+
+                                <option>
+                                    Selecione
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button class="btn btn-coffee">
+
+                        Salvar Lote
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CHARTS -->
+
+<script>
+
+const ctxLotes = document.getElementById('graficoLotes');
+
+new Chart(ctxLotes, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: [
+            'Jan',
+            'Fev',
+            'Mar',
+            'Abr',
+            'Mai',
+            'Jun'
+        ],
+
+        datasets: [{
+
+            label: 'Sacas Produzidas',
+
+            data: [
+                120,
+                190,
+                160,
+                220,
+                260,
+                300
+            ],
+
+            backgroundColor: '#4E342E',
+
+            borderRadius: 12
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+                display: false
+            }
+
+        }
+
+    }
+
+});
+
+const ctxEtapas = document.getElementById('graficoEtapas');
+
+new Chart(ctxEtapas, {
+
+    type: 'doughnut',
+
+    data: {
+
+        labels: [
+            'Plantio',
+            'Colheita',
+            'Secagem',
+            'Armazenamento'
+        ],
+
+        datasets: [{
+
+            data: [
+                20,
+                35,
+                25,
+                20
+            ],
+
+            backgroundColor: [
+                '#4E342E',
+                '#6D4C41',
+                '#8D6E63',
+                '#D7CCC8'
+            ]
+
+        }]
+
+    }
+
+});
+
+</script>
+
+{% endblock %}
