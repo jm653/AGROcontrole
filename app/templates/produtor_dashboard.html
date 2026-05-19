@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard do Produtor
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card card-dashboard bg-coffee">
+                <div class="card-body">
+                    <h5>Total de Lavouras</h5>
+                    <h1>{{ lavouras.count }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-dashboard">
+                <div class="card-body">
+                    <h5>Sacas em Estoque</h5>
+                    <h1>{{ total_sacas }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-dashboard">
+                <div class="card-body">
+                    <h5>Lotes</h5>
+                    <h1>{{ lotes.count }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-dashboard">
+                <div class="card-body">
+                    <h5>Propriedades</h5>
+                    <h1>{{ propriedades.count }}</h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
