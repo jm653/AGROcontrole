@@ -241,6 +241,77 @@ def cadastrar_propriedade(request):
 
     return redirect('propriedades')
 
+@login_required
+def editar_propriedade(request, id):
+
+    propriedade = Propriedade.objects.get(id=id)
+
+    if propriedade.produtor != request.user:
+        return HttpResponse("Acesso negado")
+
+    if request.method == 'POST':
+
+        form = PropriedadeForm(
+            request.POST,
+            instance=propriedade
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('propriedades')
+
+    else:
+
+        form = PropriedadeForm(
+            instance=propriedade
+        )
+
+    return render(
+        request,
+        'editar_propriedade.html',
+        {
+            'form': form,
+            'propriedade': propriedade
+        }
+    )
+
+
+@login_required
+def excluir_propriedade(request, id):
+
+    propriedade = Propriedade.objects.get(id=id)
+
+    if propriedade.produtor != request.user:
+        return HttpResponse("Acesso negado")
+
+    propriedade.delete()
+
+    return redirect('propriedades')
+
+
+@login_required
+def visualizar_propriedade(request, id):
+
+    propriedade = Propriedade.objects.get(id=id)
+
+    if propriedade.produtor != request.user:
+        return HttpResponse("Acesso negado")
+
+    lavouras = Lavoura.objects.filter(
+        propriedade=propriedade
+    )
+
+    return render(
+        request,
+        'visualizar_propriedade.html',
+        {
+            'propriedade': propriedade,
+            'lavouras': lavouras
+        }
+    )
+
 
 # =========================================================
 # CADASTRAR LAVOURA
@@ -379,34 +450,22 @@ def lavouras_view(request):
         propriedade__produtor=request.user
     )
 
-    if request.method == 'POST':
+    total_area = sum(
+        lavoura.area for lavoura in lavouras
+    )
 
-        form = LavouraForm(request.POST)
+    form = LavouraForm()
 
-        if form.is_valid():
-
-            lavoura = form.save(commit=False)
-
-            if lavoura.propriedade.produtor != request.user:
-                return HttpResponse("Acesso negado")
-
-            lavoura.save()
-
-            return redirect('lavouras')
-
-    else:
-
-        form = LavouraForm()
-
-        form.fields['propriedade'].queryset = Propriedade.objects.filter(
-            produtor=request.user
-        )
+    form.fields['propriedade'].queryset = Propriedade.objects.filter(
+        produtor=request.user
+    )
 
     return render(
         request,
         'lavouras.html',
         {
             'lavouras': lavouras,
+            'total_area': total_area,
             'form': form
         }
     )
@@ -440,6 +499,76 @@ def lotes_view(request):
             'lotes': lotes,
             'form': form,
             'total_sacas': total_sacas,
+        }
+    )
+
+@login_required
+def editar_lote(request, id):
+
+    lote = LoteDeCafe.objects.get(id=id)
+
+    if lote.lavoura.propriedade.produtor != request.user:
+        return HttpResponse("Acesso negado")
+
+    if request.method == 'POST':
+
+        form = LoteForm(
+            request.POST,
+            instance=lote
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('lotes')
+
+    else:
+
+        form = LoteForm(
+            instance=lote
+        )
+
+        form.fields['lavoura'].queryset = Lavoura.objects.filter(
+            propriedade__produtor=request.user
+        )
+
+    return render(
+        request,
+        'editar_lote.html',
+        {
+            'form': form,
+            'lote': lote
+        }
+    )
+
+
+@login_required
+def excluir_lote(request, id):
+
+    lote = LoteDeCafe.objects.get(id=id)
+
+    if lote.lavoura.propriedade.produtor != request.user:
+        return HttpResponse("Acesso negado")
+
+    lote.delete()
+
+    return redirect('lotes')
+
+
+@login_required
+def visualizar_lote(request, id):
+
+    lote = LoteDeCafe.objects.get(id=id)
+
+    if lote.lavoura.propriedade.produtor != request.user:
+        return HttpResponse("Acesso negado")
+
+    return render(
+        request,
+        'visualizar_lote.html',
+        {
+            'lote': lote
         }
     )
 

@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Editar Lote
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-body p-5">
+
+                    <!-- TOPO -->
+
+                    <div class="mb-4">
+
+                        <h2 class="fw-bold text-coffee">
+
+                            Editar Lote
+
+                        </h2>
+
+                        <p class="text-muted mb-0">
+
+                            Atualize as informações do lote
+
+                        </p>
+
+                    </div>
+
+                    <!-- FORM -->
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+
+                            <!-- LAVOURA -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Lavoura
+
+                                </label>
+
+                                {{ form.lavoura }}
+
+                            </div>
+
+                            <!-- CÓDIGO -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Código
+
+                                </label>
+
+                                {{ form.codigo }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <!-- SACAS -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Quantidade de Sacas
+
+                                </label>
+
+                                {{ form.quantidade_sacas }}
+
+                            </div>
+
+                            <!-- QUALIDADE -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Qualidade
+
+                                </label>
+
+                                {{ form.qualidade }}
+
+                            </div>
+
+                            <!-- PREÇO -->
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Preço por Saca
+
+                                </label>
+
+                                {{ form.preco_saca }}
+
+                            </div>
+
+                        </div>
+
+                        <!-- ETAPA -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Etapa
+
+                            </label>
+
+                            {{ form.etapa }}
+
+                        </div>
+
+                        <!-- OBSERVAÇÕES -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Observações
+
+                            </label>
+
+                            {{ form.observacoes }}
+
+                        </div>
+
+                        <!-- BOTÕES -->
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a
+                                href="{% url 'lotes' %}"
+                                class="btn btn-light"
+                            >
+
+                                Cancelar
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-coffee"
+                            >
+
+                                <i class="bi bi-check-circle"></i>
+                                Salvar Alterações
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

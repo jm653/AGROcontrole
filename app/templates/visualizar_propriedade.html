@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Visualizar Propriedade
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+        <div class="card-body p-4">
+
+            <h2 class="fw-bold text-coffee mb-4">
+
+                {{ propriedade.nome }}
+
+            </h2>
+
+            <p>
+
+                <strong>Cidade:</strong>
+                {{ propriedade.cidade }}
+
+            </p>
+
+            <p>
+
+                <strong>Hectares:</strong>
+                {{ propriedade.hectares }}
+
+            </p>
+
+            <hr>
+
+            <h5 class="fw-bold mb-3">
+
+                Lavouras da Propriedade
+
+            </h5>
+
+            {% for lavoura in lavouras %}
+
+                <div class="mb-2">
+
+                    🌱 {{ lavoura.nome }}
+
+                </div>
+
+            {% empty %}
+
+                <p class="text-muted">
+
+                    Nenhuma lavoura cadastrada.
+
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

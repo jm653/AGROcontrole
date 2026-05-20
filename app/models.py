@@ -147,3 +147,8 @@ class RegistroOperacional(models.Model):
 
     def __str__(self):
         return f"{self.funcionario.username} - {self.data}"
+    
+    @property
+    def valor_total(self):
+
+        return self.quantidade_sacas * self.preco_saca  

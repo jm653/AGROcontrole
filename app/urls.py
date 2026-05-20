@@ -177,4 +177,65 @@ urlpatterns = [
         name='cadastrar_propriedade'
     ),
 
+    path(
+    'editar-propriedade/<int:id>/',
+    views.editar_propriedade,
+    name='editar_propriedade'
+    ),
+
+    path(
+    'excluir-propriedade/<int:id>/',
+    views.excluir_propriedade,
+    name='excluir_propriedade'
+    ),
+
+    path(
+    'visualizar-propriedade/<int:id>/',
+    views.visualizar_propriedade,
+    name='visualizar_propriedade'
+    ),
+
+    # PROPRIEDADES
+
+path(
+    'editar-propriedade/<int:id>/',
+    views.editar_propriedade,
+    name='editar_propriedade'
+),
+
+path(
+    'excluir-propriedade/<int:id>/',
+    views.excluir_propriedade,
+    name='excluir_propriedade'
+),
+
+path(
+    'visualizar-propriedade/<int:id>/',
+    views.visualizar_propriedade,
+    name='visualizar_propriedade'
+),
+
+path(
+    'editar-lote/<int:id>/',
+    views.editar_lote,
+    name='editar_lote'
+),
+
+path(
+    'excluir-lote/<int:id>/',
+    views.excluir_lote,
+    name='excluir_lote'
+),
+
+path(
+    'visualizar-lote/<int:id>/',
+    views.visualizar_lote,
+    name='visualizar_lote'
+),
+
+
 ]
+    
+
+
+#mandar criar uma vuzualizacao completa no propriedaades depois

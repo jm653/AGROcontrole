@@ -249,38 +249,46 @@ Propriedades
 
                             <div class="d-flex justify-content-center gap-2">
 
-                                <!-- EDITAR -->
+                               <td>
 
-                                <button
-                                    class="btn btn-warning btn-sm">
+    <div class="d-flex justify-content-center gap-2">
 
-                                    <i class="bi bi-pencil-fill"></i>
+        <!-- EDITAR -->
 
-                                </button>
+        <a
+            href="{% url 'editar_propriedade' propriedade.id %}"
+            class="btn btn-sm btn-editar"
+        >
 
-                                <!-- EXCLUIR -->
+            <i class="bi bi-pencil-fill"></i>
 
-                                <button
-                                    class="btn btn-danger btn-sm">
+        </a>
 
-                                    <i class="bi bi-trash-fill"></i>
+        <!-- EXCLUIR -->
 
-                                </button>
+        <a
+            href="{% url 'excluir_propriedade' propriedade.id %}"
+            class="btn btn-sm btn-excluir"
+        >
 
-                                <!-- VISUALIZAR -->
+            <i class="bi bi-trash-fill"></i>
 
-                                <button
-                                    class="btn btn-dark btn-sm">
+        </a>
 
-                                    <i class="bi bi-eye-fill"></i>
+        <!-- VISUALIZAR -->
 
-                                </button>
+        <a
+            href="{% url 'visualizar_propriedade' propriedade.id %}"
+            class="btn btn-sm btn-visualizar"
+        >
 
-                            </div>
+            <i class="bi bi-eye-fill"></i>
 
-                        </td>
+        </a>
 
-                    </tr>
+    </div>
+
+</td>
 
                     {% empty %}
 

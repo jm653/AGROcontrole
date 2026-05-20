@@ -369,123 +369,162 @@ Lotes | AgroControle
 
                 <thead>
 
-                    <tr>
+    <tr>
 
-                        <th>Código</th>
-                        <th>Lavoura</th>
-                        <th>Sacas</th>
-                        <th>Etapa</th>
-                        <th>Atualização</th>
-                        <th>Status</th>
-                        <th>Ações</th>
+        <th>Código</th>
+        <th>Lavoura</th>
+        <th>Sacas</th>
+        <th>Qualidade</th>
+        <th>Preço/Saca</th>
+        <th>Etapa</th>
+        <th>Valor Total</th>
 
-                    </tr>
+        <th class="text-center">
+            Ações
+        </th>
 
-                </thead>
+    </tr>
 
-                <tbody>
+</thead>
 
-                    {% for lote in lotes %}
+<tbody>
 
-                    <tr>
+    {% for lote in lotes %}
 
-                        <td>
+    <tr>
 
-                            <strong>
-                                {{ lote.codigo }}
-                            </strong>
+        <!-- CÓDIGO -->
 
-                        </td>
+        <td>
 
-                        <td>
+            <strong>
+                {{ lote.codigo }}
+            </strong>
 
-                            {{ lote.lavoura.nome }}
+        </td>
 
-                        </td>
+        <!-- LAVOURA -->
 
-                        <td>
+        <td>
 
-                            {{ lote.quantidade_sacas }}
+            {{ lote.lavoura.nome }}
 
-                        </td>
+        </td>
 
-                        <td>
+        <!-- SACAS -->
 
-                            <span class="badge bg-secondary">
+        <td>
 
-                                {{ lote.etapa }}
+            {{ lote.quantidade_sacas }}
 
-                            </span>
+        </td>
 
-                        </td>
+        <!-- QUALIDADE -->
 
-                        <td>
+        <td>
 
-                            {{ lote.data_atualizacao }}
+            {{ lote.qualidade }}
 
-                        </td>
+        </td>
 
-                        <td>
+        <!-- PREÇO -->
 
-                            <span class="badge bg-success">
+        <td>
 
-                                Ativo
+            R$ {{ lote.preco_saca }}
 
-                            </span>
+        </td>
 
-                        </td>
+        <!-- ETAPA -->
 
-                        <td>
+        <td>
 
-                            <div class="d-flex gap-2">
+            <span class="badge bg-dark">
 
-                                <button class="btn btn-sm btn-outline-dark">
+                {{ lote.get_etapa_display }}
 
-                                    <i class="bi bi-eye"></i>
+            </span>
 
-                                </button>
+        </td>
 
-                                <button class="btn btn-sm btn-outline-primary">
+        <!-- VALOR TOTAL -->
 
-                                    <i class="bi bi-pencil"></i>
+        <td>
 
-                                </button>
+            <strong class="text-success">
 
-                                <button class="btn btn-sm btn-outline-danger">
+               R$ {{ lote.valor_total }} 
 
-                                    <i class="bi bi-trash"></i>
+            </strong>
 
-                                </button>
+        </td>
 
-                            </div>
+        <!-- AÇÕES -->
 
-                        </td>
+        <a
+    href="{% url 'editar_lote' lote.id %}"
+    class="btn btn-warning btn-sm"
+>
 
-                    </tr>
+    <i class="bi bi-pencil-fill"></i>
 
-                    {% empty %}
+</a>
 
-                    <tr>
+<a
+    href="{% url 'excluir_lote' lote.id %}"
+    class="btn btn-danger btn-sm"
+>
 
-                        <td colspan="7" class="text-center py-5">
+    <i class="bi bi-trash-fill"></i>
 
-                            <i class="bi bi-box-seam fs-1 text-muted"></i>
+</a>
 
-                            <h5 class="mt-3">
-                                Nenhum lote cadastrado
-                            </h5>
+<a
+    href="{% url 'visualizar_lote' lote.id %}"
+    class="btn btn-dark btn-sm"
+>
 
-                            <p class="text-muted">
-                                Cadastre seu primeiro lote para iniciar o controle.
-                            </p>
+    <i class="bi bi-eye-fill"></i>
 
-                        </td>
+</a>
 
-                    </tr>
+    </div>
 
-                    {% endfor %}
+</td>
 
-                </tbody>
+    </tr>
+
+    {% empty %}
+
+    <tr>
+
+        <td colspan="8">
+
+            <div class="text-center py-5">
+
+                <i class="bi bi-cup-hot fs-1 text-muted"></i>
+
+                <h5 class="mt-3">
+
+                    Nenhum lote cadastrado
+
+                </h5>
+
+                <p class="text-muted">
+
+                    Cadastre um novo lote
+
+                </p>
+
+            </div>
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</tbody>
 
             </table>
 

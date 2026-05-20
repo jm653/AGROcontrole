@@ -79,10 +79,13 @@ class LoteForm(forms.ModelForm):
         model = LoteDeCafe
 
         fields = [
-            'lavoura',
-            'codigo',
-            'quantidade_sacas',
-            'etapa'
+        'lavoura',
+        'codigo',
+        'quantidade_sacas',
+        'qualidade',
+        'preco_saca',
+        'etapa',
+        'observacoes'
         ]
 
         widgets = {
@@ -102,4 +105,18 @@ class LoteForm(forms.ModelForm):
             'etapa': forms.Select(attrs={
                 'class': 'form-select'
             }),
+            'qualidade': forms.NumberInput(attrs={
+            'class': 'form-control'
+            }),
+
+            'preco_saca': forms.NumberInput(attrs={
+            'class': 'form-control'
+            }),
+
+            'observacoes': forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3
+            }),
+
+    
         }

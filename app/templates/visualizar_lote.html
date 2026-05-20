@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Visualizar Lote
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-body p-5">
+
+                    <!-- TOPO -->
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <div>
+
+                            <h2 class="fw-bold text-coffee">
+
+                                Detalhes do Lote
+
+                            </h2>
+
+                            <p class="text-muted mb-0">
+
+                                Informações completas do lote
+
+                            </p>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-cup-hot-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                    <!-- INFORMAÇÕES -->
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+
+                            <div class="border rounded-4 p-3 h-100">
+
+                                <small class="text-muted">
+
+                                    Código
+
+                                </small>
+
+                                <h5 class="fw-bold">
+
+                                    {{ lote.codigo }}
+
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="border rounded-4 p-3 h-100">
+
+                                <small class="text-muted">
+
+                                    Lavoura
+
+                                </small>
+
+                                <h5 class="fw-bold">
+
+                                    {{ lote.lavoura.nome }}
+
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="border rounded-4 p-3 h-100">
+
+                                <small class="text-muted">
+
+                                    Sacas
+
+                                </small>
+
+                                <h5 class="fw-bold">
+
+                                    {{ lote.quantidade_sacas }}
+
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="border rounded-4 p-3 h-100">
+
+                                <small class="text-muted">
+
+                                    Qualidade
+
+                                </small>
+
+                                <h5 class="fw-bold">
+
+                                    {{ lote.qualidade }}
+
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="border rounded-4 p-3 h-100">
+
+                                <small class="text-muted">
+
+                                    Etapa
+
+                                </small>
+
+                                <h5 class="fw-bold">
+
+                                    {{ lote.get_etapa_display }}
+
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="border rounded-4 p-3 h-100">
+
+                                <small class="text-muted">
+
+                                    Preço por Saca
+
+                                </small>
+
+                                <h5 class="fw-bold text-success">
+
+                                    R$ {{ lote.preco_saca }}
+
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="border rounded-4 p-3 h-100">
+
+                                <small class="text-muted">
+
+                                    Valor Total
+
+                                </small>
+
+                                <h5 class="fw-bold text-success">
+
+                                    R$ {{ lote.valor_total }}
+
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <div class="border rounded-4 p-4">
+
+                                <small class="text-muted">
+
+                                    Observações
+
+                                </small>
+
+                                <p class="mt-2 mb-0">
+
+                                    {{ lote.observacoes }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- BOTÕES -->
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+
+                        <a
+                            href="{% url 'lotes' %}"
+                            class="btn btn-light"
+                        >
+
+                            Voltar
+
+                        </a>
+
+                        <a
+                            href="{% url 'editar_lote' lote.id %}"
+                            class="btn btn-coffee"
+                        >
+
+                            <i class="bi bi-pencil-fill"></i>
+                            Editar Lote
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
