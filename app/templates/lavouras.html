@@ -18,8 +18,8 @@ Lavouras
                 Lavouras
             </h2>
 
-            <p class="text-muted">
-                Gerencie todas as lavouras cadastradas
+            <p class="text-muted mb-0">
+                Gerencie suas áreas de produção cafeeira
             </p>
 
         </div>
@@ -27,7 +27,8 @@ Lavouras
         <button
             class="btn btn-coffee"
             data-bs-toggle="modal"
-            data-bs-target="#modalLavoura">
+            data-bs-target="#modalLavoura"
+        >
 
             <i class="bi bi-plus-circle"></i>
             Nova Lavoura
@@ -36,92 +37,291 @@ Lavouras
 
     </div>
 
+    <!-- CARDS -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card card-dashboard bg-coffee">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title">
+                                Total de Lavouras
+                            </div>
+
+                            <div class="card-number">
+                                {{ lavouras.count }}
+                            </div>
+
+                        </div>
+
+                        <div class="icon-card">
+
+                            <i class="bi bi-tree-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Área Total
+                            </div>
+
+                            <div class="card-number text-coffee">
+
+                                {% for lavoura in lavouras %}
+                                    {{ lavoura.area }}
+                                {% empty %}
+                                    0
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-map-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card card-dashboard">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <div class="card-title text-muted">
+                                Variedades
+                            </div>
+
+                            <div class="card-number text-coffee">
+                                {{ lavouras.count }}
+                            </div>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-cup-hot-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <!-- TABELA -->
 
     <div class="table-container">
 
-        <table class="table align-middle">
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-            <thead>
+            <h5 class="fw-bold text-coffee m-0">
+                Lista de Lavouras
+            </h5>
 
-                <tr>
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Pesquisar lavoura..."
+                style="width: 250px;"
+            >
 
-                    <th>Nome</th>
-                    <th>Variedade</th>
-                    <th>Área</th>
-                    <th>Plantio</th>
-                    <th>Propriedade</th>
-                    <th>Ações</th>
+        </div>
 
-                </tr>
+        <div class="table-responsive">
 
-            </thead>
+            <table class="table align-middle table-hover">
 
-            <tbody>
+                <thead>
 
-                {% for lavoura in lavouras %}
+                    <tr>
 
-                <tr>
+                        <th>Nome</th>
+                        <th>Propriedade</th>
+                        <th>Variedade</th>
+                        <th>Área</th>
+                        <th>Plantio</th>
+                        <th class="text-center">
+                            Ações
+                        </th>
 
-                    <td>
-                        {{ lavoura.nome }}
-                    </td>
+                    </tr>
 
-                    <td>
-                        {{ lavoura.variedade }}
-                    </td>
+                </thead>
 
-                    <td>
-                        {{ lavoura.area }} ha
-                    </td>
+                <tbody>
 
-                    <td>
-                        {{ lavoura.data_plantio }}
-                    </td>
+                    {% for lavoura in lavouras %}
 
-                    <td>
-                        {{ lavoura.propriedade.nome }}
-                    </td>
+                    <tr>
 
-                    <td>
+                        <td>
 
-                        <button class="btn btn-sm btn-warning">
-                            <i class="bi bi-pencil"></i>
-                        </button>
+                            <div class="d-flex align-items-center gap-3">
 
-                        <button class="btn btn-sm btn-danger">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                                <div
+                                    class="icon-card-coffee"
+                                    style="width:50px;height:50px;"
+                                >
 
-                    </td>
+                                    <i class="bi bi-tree-fill"></i>
 
-                </tr>
+                                </div>
 
-                {% empty %}
+                                <div>
 
-                <tr>
+                                    <strong>
+                                        {{ lavoura.nome }}
+                                    </strong>
 
-                    <td colspan="6">
+                                    <div class="text-muted small">
 
-                        <div class="text-center p-4">
+                                        Produção Cafeeira
 
-                            <i class="bi bi-tree-fill fs-1 text-muted"></i>
+                                    </div>
 
-                            <p class="mt-3 text-muted">
-                                Nenhuma lavoura cadastrada.
-                            </p>
+                                </div>
 
-                        </div>
+                            </div>
 
-                    </td>
+                        </td>
 
-                </tr>
+                        <td>
+                            {{ lavoura.propriedade.nome }}
+                        </td>
 
-                {% endfor %}
+                        <td>
+                            {{ lavoura.variedade }}
+                        </td>
 
-            </tbody>
+                        <td>
+                            {{ lavoura.area }} ha
+                        </td>
 
-        </table>
+                        <td>
+                            {{ lavoura.data_plantio }}
+                        </td>
+
+                        <td>
+
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <!-- EDITAR -->
+
+                                <a
+                                    href="{% url 'editar_lavoura' lavoura.id %}"
+                                    class="btn btn-sm btn-editar"
+                                >
+
+                                    <i class="bi bi-pencil-fill"></i>
+
+                                </a>
+
+                                <!-- EXCLUIR -->
+
+                                <a
+                                    href="{% url 'excluir_lavoura' lavoura.id %}"
+                                    class="btn btn-sm btn-excluir"
+                                >
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </a>
+
+                                <!-- VISUALIZAR -->
+
+                                <a
+                                    href="{% url 'visualizar_lavoura' lavoura.id %}"
+                                    class="btn btn-sm btn-visualizar"
+                                >
+
+                                    <i class="bi bi-eye-fill"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            <div class="text-center py-5">
+
+                                <i class="bi bi-tree fs-1 text-muted"></i>
+
+                                <h5 class="mt-3">
+
+                                    Nenhuma lavoura cadastrada
+
+                                </h5>
+
+                                <p class="text-muted">
+
+                                    Clique em “Nova Lavoura”
+
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
@@ -129,48 +329,127 @@ Lavouras
 
 <!-- MODAL -->
 
-<div class="modal fade" id="modalLavoura">
+<div
+    class="modal fade"
+    id="modalLavoura"
+    tabindex="-1"
+>
 
     <div class="modal-dialog modal-lg">
 
-        <div class="modal-content">
+        <div class="modal-content border-0 rounded-4">
 
             <div class="modal-header">
 
-                <h5 class="fw-bold">
-                    Nova Lavoura
-                </h5>
+                <div>
+
+                    <h4 class="fw-bold text-coffee mb-0">
+
+                        Nova Lavoura
+
+                    </h4>
+
+                    <small class="text-muted">
+
+                        Cadastre uma nova área produtiva
+
+                    </small>
+
+                </div>
 
                 <button
+                    type="button"
                     class="btn-close"
-                    data-bs-dismiss="modal">
-                </button>
+                    data-bs-dismiss="modal"
+                ></button>
 
             </div>
 
-            <form method="POST"
-                  action="{% url 'cadastrar_lavoura' %}">
+            <form
+                method="POST"
+                action="{% url 'cadastrar_lavoura' %}"
+            >
 
                 {% csrf_token %}
 
                 <div class="modal-body">
 
-                    {{ form.as_p }}
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Nome
+                            </label>
+
+                            {{ form.nome }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Propriedade
+                            </label>
+
+                            {{ form.propriedade }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Variedade
+                            </label>
+
+                            {{ form.variedade }}
+
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Área (ha)
+                            </label>
+
+                            {{ form.area }}
+
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Plantio
+                            </label>
+
+                            {{ form.data_plantio }}
+
+                        </div>
+
+                    </div>
 
                 </div>
 
                 <div class="modal-footer">
 
                     <button
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-
+                        type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal"
+                    >
                         Cancelar
-
                     </button>
 
-                    <button class="btn btn-coffee">
+                    <button
+                        type="submit"
+                        class="btn btn-coffee"
+                    >
 
+                        <i class="bi bi-check-circle"></i>
                         Salvar Lavoura
 
                     </button>

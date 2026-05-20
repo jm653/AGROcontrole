@@ -69,6 +69,7 @@ class LoteDeCafe(models.Model):
         ('colheita', 'Colheita'),
         ('secagem', 'Secagem'),
         ('armazenamento', 'Armazenamento'),
+        ('torra', 'Torra'),
         ('qualidade', 'Qualidade'),
         ('venda', 'Venda'),
     )
@@ -78,9 +79,24 @@ class LoteDeCafe(models.Model):
         on_delete=models.CASCADE
     )
 
-    codigo = models.CharField(max_length=50)
+    codigo = models.CharField(
+        max_length=50,
+        unique=True
+    )
 
     quantidade_sacas = models.IntegerField()
+
+    qualidade = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0
+    )
+
+    preco_saca = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
 
     etapa = models.CharField(
         max_length=30,
@@ -88,11 +104,25 @@ class LoteDeCafe(models.Model):
         default='plantio'
     )
 
+    observacoes = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    criado_em = models.DateTimeField(
+        auto_now_add=True
+    )
+
     data_atualizacao = models.DateTimeField(
         auto_now=True
     )
 
+    def valor_total(self):
+
+        return self.quantidade_sacas * self.preco_saca
+
     def __str__(self):
+
         return self.codigo
 
 

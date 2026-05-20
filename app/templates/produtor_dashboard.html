@@ -8,324 +8,368 @@ Dashboard do Produtor
 
 <div class="container-fluid">
 
-```
-<!-- TOPO -->
+    <!-- TOPO -->
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <div>
+        <div>
 
-        <h2 class="fw-bold text-dark">
-            Dashboard Agrícola
-        </h2>
+            <h2 class="fw-bold text-dark">
+                Dashboard Agrícola
+            </h2>
 
-        <p class="text-muted mb-0">
-            Controle completo da produção cafeeira
-        </p>
+            <p class="text-muted mb-0">
+                Controle completo da produção cafeeira
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-coffee"
+            data-bs-toggle="modal"
+            data-bs-target="#modalPropriedade"
+        >
+            <i class="bi bi-plus-circle"></i>
+            Nova Propriedade
+        </button>
 
     </div>
 
-    <button
-        class="btn btn-dark px-4 py-2 rounded-4 shadow-sm"
-        data-bs-toggle="modal"
-        data-bs-target="#modalPropriedade">
+    <!-- CARDS -->
 
-        <i class="bi bi-plus-circle me-2"></i>
-        Nova Propriedade
+    <div class="row g-4 mb-5">
 
-    </button>
+        <!-- CARD 1 -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard border-0 shadow-sm rounded-4 bg-coffee text-white">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="opacity-75">
+                                Total de Lavouras
+                            </h6>
+
+                            <h1 class="fw-bold">
+                                {{ lavouras.count }}
+                            </h1>
+
+                        </div>
+
+                        <div class="icon-card">
+
+                            <i class="bi bi-tree-fill fs-1"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CARD 2 -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard border-0 shadow-sm rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Sacas em Estoque
+                            </h6>
+
+                            <h1 class="fw-bold text-dark">
+                                {{ total_sacas }}
+                            </h1>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-box-seam fs-1"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CARD 3 -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard border-0 shadow-sm rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Lotes
+                            </h6>
+
+                            <h1 class="fw-bold text-dark">
+                                {{ lotes.count }}
+                            </h1>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-cup-hot fs-1"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CARD 4 -->
+
+        <div class="col-md-3">
+
+            <div class="card card-dashboard border-0 shadow-sm rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted">
+                                Propriedades
+                            </h6>
+
+                            <h1 class="fw-bold text-dark">
+                                {{ propriedades.count }}
+                            </h1>
+
+                        </div>
+
+                        <div class="icon-card-coffee">
+
+                            <i class="bi bi-house-fill fs-1"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GRÁFICOS -->
+
+    <div class="row g-4">
+
+        <!-- GRÁFICO 1 -->
+
+        <div class="col-md-8">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <div>
+
+                            <h5 class="fw-bold">
+                                Produção Mensal
+                            </h5>
+
+                            <p class="text-muted mb-0">
+                                Evolução da produção
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-bar-chart-line-fill fs-3 text-coffee"></i>
+
+                    </div>
+
+                    <canvas id="graficoProducao"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- GRÁFICO 2 -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <div>
+
+                            <h5 class="fw-bold">
+                                Etapas dos Lotes
+                            </h5>
+
+                            <p class="text-muted mb-0">
+                                Situação atual
+                            </p>
+
+                        </div>
+
+                        <i class="bi bi-pie-chart-fill fs-3 text-coffee"></i>
+
+                    </div>
+
+                    <canvas id="graficoLotes"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-<!-- CARDS -->
+<!-- MODAL -->
 
-<div class="row g-4 mb-5">
+<div
+    class="modal fade"
+    id="modalPropriedade"
+    tabindex="-1"
+>
 
-    <!-- CARD 1 -->
+    <div class="modal-dialog">
 
-    <div class="col-md-3">
+        <div class="modal-content border-0 rounded-4">
 
-        <div class="card card-dashboard border-0 shadow-sm rounded-4 bg-coffee text-white">
+            <div class="modal-header">
 
-            <div class="card-body">
+                <h5 class="modal-title fw-bold">
+                    Nova Propriedade
+                </h5>
 
-                <div class="d-flex justify-content-between align-items-center">
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                ></button>
 
-                    <div>
+            </div>
 
-                        <h6 class="opacity-75">
-                            Total de Lavouras
-                        </h6>
+            <form
+                method="POST"
+                action="{% url 'cadastrar_propriedade' %}"
+            >
 
-                        <h1 class="fw-bold">
-                            {{ lavouras.count }}
-                        </h1>
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Nome
+                        </label>
+
+                        <input
+                            type="text"
+                            name="nome"
+                            class="form-control"
+                            required
+                        >
 
                     </div>
 
-                    <div class="icon-card">
+                    <div class="mb-3">
 
-                        <i class="bi bi-tree-fill fs-1"></i>
+                        <label class="form-label">
+                            Cidade
+                        </label>
+
+                        <input
+                            type="text"
+                            name="cidade"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Hectares
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="hectares"
+                            class="form-control"
+                            required
+                        >
 
                     </div>
 
                 </div>
 
-            </div>
+                <div class="modal-footer">
 
-        </div>
+                    <button
+                        type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancelar
+                    </button>
 
-    </div>
-
-    <!-- CARD 2 -->
-
-    <div class="col-md-3">
-
-        <div class="card card-dashboard border-0 shadow-sm rounded-4">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <h6 class="text-muted">
-                            Sacas em Estoque
-                        </h6>
-
-                        <h1 class="fw-bold text-dark">
-                            {{ total_sacas }}
-                        </h1>
-
-                    </div>
-
-                    <div class="icon-card-coffee">
-
-                        <i class="bi bi-box-seam fs-1"></i>
-
-                    </div>
+                    <button
+                        type="submit"
+                        class="btn btn-coffee"
+                    >
+                        Salvar
+                    </button>
 
                 </div>
 
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- CARD 3 -->
-
-    <div class="col-md-3">
-
-        <div class="card card-dashboard border-0 shadow-sm rounded-4">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <h6 class="text-muted">
-                            Lotes
-                        </h6>
-
-                        <h1 class="fw-bold text-dark">
-                            {{ lotes.count }}
-                        </h1>
-
-                    </div>
-
-                    <div class="icon-card-coffee">
-
-                        <i class="bi bi-cup-hot fs-1"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- CARD 4 -->
-
-    <div class="col-md-3">
-
-        <div class="card card-dashboard border-0 shadow-sm rounded-4">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <h6 class="text-muted">
-                            Propriedades
-                        </h6>
-
-                        <h1 class="fw-bold text-dark">
-                            {{ propriedades.count }}
-                        </h1>
-
-                    </div>
-
-                    <div class="icon-card-coffee">
-
-                        <i class="bi bi-house-fill fs-1"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
+            </form>
 
         </div>
 
     </div>
 
 </div>
-
-<!-- GRÁFICOS -->
-
-<div class="row g-4">
-
-    <!-- GRÁFICO 1 -->
-
-    <div class="col-md-8">
-
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-
-            <div class="card-body p-4">
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-
-                    <div>
-
-                        <h5 class="fw-bold">
-                            Produção Mensal
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Evolução da produção
-                        </p>
-
-                    </div>
-
-                    <i class="bi bi-bar-chart-line-fill fs-3 text-coffee"></i>
-
-                </div>
-
-                <canvas id="graficoProducao"></canvas>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- GRÁFICO 2 -->
-
-    <div class="col-md-4">
-
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-
-            <div class="card-body p-4">
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-
-                    <div>
-
-                        <h5 class="fw-bold">
-                            Etapas dos Lotes
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Situação atual
-                        </p>
-
-                    </div>
-
-                    <i class="bi bi-pie-chart-fill fs-3 text-coffee"></i>
-
-                </div>
-
-                <canvas id="graficoLotes"></canvas>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-```
-
-</div>
-
-
-<script>
-
-new Chart(
-    document.getElementById('graficoProducao'),
-    {
-        type: 'line',
-
-        data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-
-            datasets: [{
-                label: 'Sacas',
-                data: [120, 190, 300, 250, 420, 500],
-                borderColor: '#4E342E',
-                backgroundColor: 'rgba(78,52,46,0.1)',
-                fill: true,
-                tension: 0.4
-            }]
-        },
-
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#4E342E'
-                    }
-                }
-            }
-        }
-    }
-);
-
-new Chart(
-    document.getElementById('graficoLotes'),
-    {
-        type: 'doughnut',
-
-        data: {
-            labels: [
-                'Plantio',
-                'Colheita',
-                'Secagem',
-                'Venda'
-            ],
-
-            datasets: [{
-                data: [10, 20, 15, 5],
-
-                backgroundColor: [
-                    '#4E342E',
-                    '#6D4C41',
-                    '#8D6E63',
-                    '#A1887F'
-                ]
-            }]
-        }
-    }
-);
-
-</script>
 
 <!-- CHART JS -->
 
@@ -360,7 +404,9 @@ new Chart(
                     500
                 ],
 
-                borderWidth: 3,
+                borderColor: '#4E342E',
+                backgroundColor: 'rgba(78,52,46,0.1)',
+                fill: true,
                 tension: 0.4
 
             }]
@@ -391,7 +437,12 @@ new Chart(
                     5
                 ],
 
-                borderWidth: 1
+                backgroundColor: [
+                    '#4E342E',
+                    '#6D4C41',
+                    '#8D6E63',
+                    '#A1887F'
+                ]
 
             }]
         }

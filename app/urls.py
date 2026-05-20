@@ -62,6 +62,23 @@ urlpatterns = [
         views.lavouras_view,
         name='lavouras'
     ),
+    path(
+    'editar-lavoura/<int:id>/',
+    views.editar_lavoura,
+    name='editar_lavoura'
+    ),
+
+    path(
+    'excluir-lavoura/<int:id>/',
+    views.excluir_lavoura,
+    name='excluir_lavoura'
+    ),
+
+    path(
+    'visualizar-lavoura/<int:id>/',
+    views.visualizar_lavoura,
+    name='visualizar_lavoura'
+    ),
 
     path(
         'lotes/',
@@ -140,6 +157,19 @@ urlpatterns = [
         views.cadastrar_lavoura,
         name='cadastrar_lavoura'
     ),
+    path(
+    'editar-lavoura/<int:id>/',
+    views.editar_lavoura,
+    name='editar_lavoura'
+    ),
+
+    path(
+    'excluir-lavoura/<int:id>/',
+    views.excluir_lavoura,
+    name='excluir_lavoura'
+    ),
+
+        
 
     path(
         'cadastrar-propriedade/',
