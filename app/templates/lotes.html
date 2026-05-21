@@ -467,33 +467,36 @@ Lotes | AgroControle
 
     <div class="d-flex justify-content-center gap-2">
 
-        <!-- EDITAR -->
+<div class="d-flex gap-2">
 
-        <a
-            href="{% url 'editar_lote' lote.id %}"
-            class="btn btn-warning btn-sm"
-        >
+    <!-- VISUALIZAR -->
 
-            <i class="bi bi-pencil-fill"></i>
+    <a
+        href="{% url 'visualizar_lote' lote.id %}"
+        class="btn btn-sm btn-visualizar"
+    >
+        <i class="bi bi-eye-fill"></i>
+    </a>
 
-        </a>
+    <!-- EDITAR -->
 
-        <!-- EXCLUIR -->
+    <a
+        href="{% url 'editar_lote' lote.id %}"
+        class="btn btn-sm btn-editar"
+    >
+        <i class="bi bi-pencil-fill"></i>
+    </a>
 
-        <a
-            href="{% url 'excluir_lote' lote.id %}"
-            class="btn btn-danger btn-sm"
-        >
+    <!-- EXCLUIR -->
 
-            <i class="bi bi-trash-fill"></i>
+    <a
+        href="{% url 'excluir_lote' lote.id %}"
+        class="btn btn-sm btn-excluir"
+    >
+        <i class="bi bi-trash-fill"></i>
+    </a>
 
-        </a>
-
-        <!-- VISUALIZAR -->
-
-        <a
-            href="{% url 'visualizar_lote' lote.id %}"
-            class="btn btn-dark btn-sm"
+</div>
         >
 
             <i class="bi bi-eye-fill"></i>

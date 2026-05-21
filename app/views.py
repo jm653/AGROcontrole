@@ -6,7 +6,7 @@ from .models import LoteDeCafe
 from django.db.models import Sum
 from django.db.models import Count
 from django.db.models import Sum, Count
-from .models import Propriedade, Lavoura, Lote
+from .models import Propriedade, Lavoura, LoteDeCafe
 
 from .models import (
     Propriedade,
@@ -125,7 +125,7 @@ def produtor_dashboard(request):
         propriedade__produtor=request.user
     )
 
-    lotes = Lote.objects.filter(
+    lotes = LoteDeCafe.objects.filter(
         lavoura__propriedade__produtor=request.user
     )
 
@@ -142,6 +142,14 @@ def produtor_dashboard(request):
             lote.preco_saca
         )
 
+    etapas = lotes.values(
+        'etapa'
+    ).annotate(
+        total=Count('id')
+    )
+
+    ultimos_lotes = lotes.order_by('-criado_em')[:5]
+
     context = {
 
         'propriedades': propriedades,
@@ -149,6 +157,9 @@ def produtor_dashboard(request):
         'lotes': lotes,
         'total_sacas': total_sacas,
         'valor_total': valor_total,
+        'etapas': etapas,
+        'ultimos_lotes': ultimos_lotes,
+        'etapas': etapas,
 
     }
 
@@ -157,6 +168,12 @@ def produtor_dashboard(request):
         'produtor_dashboard.html',
         context
     )
+
+    etapas = lotes.values('etapa').annotate(
+    total=Count('id')
+    )
+
+
 @login_required
 def editar_lavoura(request, id):
 
@@ -505,20 +522,23 @@ def lotes_view(request):
             propriedade__produtor=request.user
         )
 
-        if form.is_valid():
+    if form.is_valid():
 
-            lote = form.save(commit=False)
+        lote = form.save(commit=False)
 
-            lote.save()
+        lote.save()
 
-            return redirect('lotes')
+        return redirect('lotes')
 
     else:
 
-        form = LoteForm()
+        print(form.errors)
+    else:
 
-        form.fields['lavoura'].queryset = Lavoura.objects.filter(
-            propriedade__produtor=request.user
+    form = LoteForm()
+
+    form.fields['lavoura'].queryset = Lavoura.objects.filter(
+        propriedade__produtor=request.user
         )
 
     return render(

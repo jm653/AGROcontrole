@@ -127,9 +127,9 @@ Dashboard do Produtor
                                 Valor em Estoque
                             </h6>
 
-                            <h1 class="fw-bold text-success">
-                                R$ {{ valor_total }}
-                            </h1>
+                            <h6 class="fw-bold text-success text-break">
+                                 R$ {{ valor_total }}
+                            </h6>
 
                         </div>
 
@@ -357,6 +357,124 @@ Dashboard do Produtor
 
 </div>
 
+<!-- LOTES RECENTES -->
+
+<div class="row mt-4">
+
+    <div class="col-12">
+
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+
+                        <h5 class="fw-bold">
+                            Últimos Lotes
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Movimentações recentes
+                        </p>
+
+                    </div>
+
+                    <i class="bi bi-clock-history fs-3 text-coffee"></i>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Código</th>
+                                <th>Lavoura</th>
+                                <th>Sacas</th>
+                                <th>Etapa</th>
+                                <th>Valor</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for lote in ultimos_lotes %}
+
+                            <tr>
+
+                                <td class="fw-bold">
+                                    {{ lote.codigo }}
+                                </td>
+
+                                <td>
+                                    {{ lote.lavoura.nome }}
+                                </td>
+
+                                <td>
+                                    {{ lote.quantidade_sacas }}
+                                </td>
+
+                                <td>
+
+                                    {% if lote.etapa == 'Plantio' %}
+
+    <span class="badge bg-success">
+        {{ lote.etapa }}
+    </span>
+
+{% elif lote.etapa == 'Colheita' %}
+
+    <span class="badge bg-warning text-dark">
+        {{ lote.etapa }}
+    </span>
+
+{% elif lote.etapa == 'Secagem' %}
+
+    <span class="badge bg-primary">
+        {{ lote.etapa }}
+    </span>
+
+{% else %}
+
+    <span class="badge bg-secondary">
+        {{ lote.etapa }}
+    </span>
+
+{% endif %}
+
+                                </td>
+
+                                <td class="text-success fw-bold">
+
+                                    R$ {{ lote.valor_total }}
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 <!-- MODAL -->
 
 <div
@@ -460,6 +578,88 @@ Dashboard do Produtor
                 </div>
 
             </form>
+
+        </div>
+
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- RESUMO DOS LOTES -->
+
+<!-- RESUMO FINANCEIRO -->
+
+<div class="row mt-4">
+
+    <div class="col-12">
+
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <div>
+
+                        <h4 class="fw-bold">
+                            Resumo Financeiro
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Informações gerais do estoque
+                        </p>
+
+                    </div>
+
+                    <i class="bi bi-cash-stack fs-2 text-success"></i>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Total de Lotes</th>
+                                <th>Total de Sacas</th>
+                                <th>Valor em Estoque</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    {{ lotes.count }}
+                                </td>
+
+                                <td>
+                                    {{ total_sacas }}
+                                </td>
+
+                                <td class="fw-bold text-success">
+                                    R$ {{ valor_total }}
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
 
         </div>
 

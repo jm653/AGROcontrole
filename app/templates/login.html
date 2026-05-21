@@ -2,59 +2,446 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sistema Café</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg, #1b5e20, #000000);
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --espresso: #140800;
+            --roast:    #2e1200;
+            --dark:     #1c0d03;
+            --caramel:  #c8813a;
+            --gold:     #e8a84e;
+            --cream:    #f5ede0;
+            --ivory:    #fdf8f2;
+            --muted:    #9a8878;
+            --border:   rgba(200,129,58,0.22);
         }
 
-        .login-card {
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        body {
+            min-height: 100vh;
+            display: flex;
+            background: var(--espresso);
+            font-family: 'DM Sans', sans-serif;
+            overflow: hidden;
+        }
+
+        /* ══ LEFT PANEL ══ */
+        .panel-left {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 3rem 3.5rem;
+            overflow: hidden;
+            background: var(--dark);
+        }
+
+        .panel-left::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 70% at 50% 45%, rgba(59,26,7,0.55) 0%, transparent 75%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .illustration-wrap {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 0;
+        }
+
+        .panel-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .panel-text .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.9rem;
+        }
+
+        .panel-text .eyebrow-line {
+            width: 32px;
+            height: 1px;
+            background: var(--caramel);
+        }
+
+        .panel-text .eyebrow-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--caramel);
+            font-weight: 500;
+        }
+
+        .panel-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.7rem;
+            font-weight: 500;
+            color: var(--cream);
+            line-height: 1.18;
+            margin-bottom: 1rem;
+        }
+
+        .panel-text h2 em {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .panel-text p {
+            font-size: 0.85rem;
+            color: rgba(245,237,224,0.45);
+            font-weight: 300;
+            letter-spacing: 0.025em;
+            line-height: 1.6;
+        }
+
+        /* ══ RIGHT PANEL ══ */
+        .panel-right {
+            width: 460px;
+            min-height: 100vh;
+            background: var(--ivory);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 3.5rem;
+            position: relative;
+            box-shadow: -40px 0 80px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+
+        .panel-right::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 12%; bottom: 12%;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(200,129,58,0.5), transparent);
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 3rem;
+        }
+
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: var(--espresso);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--espresso);
+            line-height: 1.2;
+        }
+
+        .logo-text small {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.67rem;
+            font-weight: 400;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .form-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.85rem;
+            font-weight: 500;
+            color: var(--espresso);
+            margin-bottom: 0.35rem;
+        }
+
+        .form-sub {
+            font-size: 0.84rem;
+            color: var(--muted);
+            margin-bottom: 2.4rem;
+            font-weight: 300;
+        }
+
+        .alert-error {
+            background: #fff0ee;
+            border-left: 3px solid #d85a30;
+            color: #993c1d;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 0.84rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .field-group { margin-bottom: 1.2rem; }
+
+        .field-group label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.45rem;
+        }
+
+        .field-group input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1.5px solid #e5d9cc;
+            border-radius: 8px;
+            background: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            color: var(--espresso);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field-group input::placeholder { color: #c9b9a8; }
+
+        .field-group input:focus {
+            border-color: var(--caramel);
+            box-shadow: 0 0 0 3px rgba(200,129,58,0.13);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.95rem;
+            background: var(--espresso);
+            color: var(--cream);
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: background 0.2s, transform 0.12s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(105deg, transparent 30%, rgba(232,168,78,0.18) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.45s;
+        }
+
+        .btn-login:hover { background: var(--roast); }
+        .btn-login:hover::after { transform: translateX(100%); }
+        .btn-login:active { transform: scale(0.985); }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.74rem;
+            color: #c9b9a8;
+            font-weight: 300;
+            letter-spacing: 0.04em;
+        }
+
+        @media (max-width: 820px) {
+            .panel-left { display: none; }
+            .panel-right { width: 100%; padding: 2.5rem 2rem; box-shadow: none; }
+            .panel-right::before { display: none; }
         }
     </style>
 </head>
+<body>
 
-<body class="d-flex justify-content-center align-items-center vh-100">
+<!-- ══ LEFT PANEL ══ -->
+<div class="panel-left">
+    <div class="illustration-wrap">
+        <svg viewBox="0 0 520 560" width="520" height="560" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 
-<div class="card login-card p-4" style="width: 350px;">
-    
-    <h3 class="text-center mb-3">☕ Café System</h3>
+            <!-- subtle radial glow behind cup -->
+            <ellipse cx="260" cy="310" rx="170" ry="130" fill="rgba(200,129,58,0.07)"/>
+
+            <!-- bean 1 top-left -->
+            <g transform="translate(72,110) rotate(-30)">
+                <ellipse cx="0" cy="0" rx="22" ry="13" fill="#3b1a07" stroke="#5a2d0e" stroke-width="1"/>
+                <line x1="0" y1="-10" x2="0" y2="10" stroke="#5a2d0e" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M-8,-5 Q0,-12 8,-5" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+                <path d="M-8,5 Q0,12 8,5" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+            </g>
+            <!-- bean 2 top-right -->
+            <g transform="translate(428,88) rotate(20)">
+                <ellipse cx="0" cy="0" rx="20" ry="12" fill="#3b1a07" stroke="#5a2d0e" stroke-width="1"/>
+                <line x1="0" y1="-9" x2="0" y2="9" stroke="#5a2d0e" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M-7,-4 Q0,-11 7,-4" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+                <path d="M-7,4 Q0,11 7,4" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+            </g>
+            <!-- bean 3 far left -->
+            <g transform="translate(48,280) rotate(60)">
+                <ellipse cx="0" cy="0" rx="18" ry="11" fill="#3b1a07" stroke="#5a2d0e" stroke-width="1"/>
+                <line x1="0" y1="-8" x2="0" y2="8" stroke="#5a2d0e" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M-6,-3.5 Q0,-10 6,-3.5" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+                <path d="M-6,3.5 Q0,10 6,3.5" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+            </g>
+            <!-- bean 4 far right -->
+            <g transform="translate(465,260) rotate(-50)">
+                <ellipse cx="0" cy="0" rx="19" ry="11" fill="#3b1a07" stroke="#5a2d0e" stroke-width="1"/>
+                <line x1="0" y1="-8.5" x2="0" y2="8.5" stroke="#5a2d0e" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M-7,-4 Q0,-11 7,-4" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+                <path d="M-7,4 Q0,11 7,4" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+            </g>
+            <!-- bean 5 bottom-left -->
+            <g transform="translate(100,460) rotate(15)">
+                <ellipse cx="0" cy="0" rx="23" ry="13" fill="#3b1a07" stroke="#5a2d0e" stroke-width="1"/>
+                <line x1="0" y1="-10" x2="0" y2="10" stroke="#5a2d0e" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M-8,-5 Q0,-12 8,-5" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+                <path d="M-8,5 Q0,12 8,5" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+            </g>
+            <!-- bean 6 bottom-right -->
+            <g transform="translate(420,450) rotate(-25)">
+                <ellipse cx="0" cy="0" rx="21" ry="12" fill="#3b1a07" stroke="#5a2d0e" stroke-width="1"/>
+                <line x1="0" y1="-9" x2="0" y2="9" stroke="#5a2d0e" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M-7,-4 Q0,-11 7,-4" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+                <path d="M-7,4 Q0,11 7,4" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+            </g>
+            <!-- bean 7 top-center -->
+            <g transform="translate(270,68) rotate(5)">
+                <ellipse cx="0" cy="0" rx="17" ry="10" fill="#3b1a07" stroke="#5a2d0e" stroke-width="1"/>
+                <line x1="0" y1="-8" x2="0" y2="8" stroke="#5a2d0e" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M-6,-3 Q0,-9 6,-3" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+                <path d="M-6,3 Q0,9 6,3" fill="none" stroke="#5a2d0e" stroke-width="0.8"/>
+            </g>
+
+            <!-- SAUCER -->
+            <ellipse cx="260" cy="400" rx="115" ry="18" fill="#2a1106" stroke="#5a2d0e" stroke-width="1.5"/>
+            <ellipse cx="260" cy="398" rx="98" ry="13" fill="#1c0a03" stroke="#4a2408" stroke-width="1"/>
+            <path d="M165,396 Q260,386 355,396" fill="none" stroke="rgba(200,129,58,0.2)" stroke-width="1"/>
+
+            <!-- CUP BODY -->
+            <path d="M185,310 Q182,385 200,395 Q260,406 320,395 Q338,385 335,310 Z"
+                  fill="#2e1208" stroke="#5a2d0e" stroke-width="1.5"/>
+            <path d="M193,316 Q191,378 206,390 Q260,399 314,390 Q329,378 327,316 Z"
+                  fill="#240f06"/>
+            <ellipse cx="260" cy="315" rx="75" ry="12" fill="#1a0800"/>
+            <ellipse cx="260" cy="315" rx="75" ry="12" fill="none" stroke="#c8813a" stroke-width="2" opacity="0.55"/>
+            <!-- latte art -->
+            <ellipse cx="260" cy="315" rx="40" ry="7" fill="none" stroke="rgba(200,129,58,0.35)" stroke-width="1.5"/>
+            <path d="M225,315 Q260,308 295,315" fill="none" stroke="rgba(200,129,58,0.25)" stroke-width="1"/>
+            <path d="M230,315 Q260,321 290,315" fill="none" stroke="rgba(200,129,58,0.25)" stroke-width="1"/>
+            <line x1="260" y1="308" x2="260" y2="322" stroke="rgba(200,129,58,0.3)" stroke-width="1" stroke-linecap="round"/>
+            <!-- cup rim -->
+            <ellipse cx="260" cy="310" rx="75" ry="12" fill="#3b1a07" stroke="#6b3510" stroke-width="1.5"/>
+            <ellipse cx="260" cy="310" rx="75" ry="12" fill="none" stroke="rgba(232,168,78,0.2)" stroke-width="1"/>
+            <path d="M196,330 Q193,365 200,385" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4" stroke-linecap="round"/>
+
+            <!-- HANDLE -->
+            <path d="M330,335 Q368,335 370,360 Q372,385 335,382"
+                  fill="none" stroke="#4a2008" stroke-width="12" stroke-linecap="round"/>
+            <path d="M330,335 Q368,335 370,360 Q372,385 335,382"
+                  fill="none" stroke="#2e1208" stroke-width="7" stroke-linecap="round"/>
+            <path d="M332,340 Q362,340 364,362 Q365,380 337,378"
+                  fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- STEAM -->
+            <path d="M238,305 Q230,285 238,265 Q246,245 238,225"
+                  fill="none" stroke="rgba(245,237,224,0.22)" stroke-width="3" stroke-linecap="round">
+                <animate attributeName="d"
+                    values="M238,305 Q230,285 238,265 Q246,245 238,225;
+                            M238,305 Q246,285 238,265 Q230,245 238,225;
+                            M238,305 Q230,285 238,265 Q246,245 238,225"
+                    dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.22;0.35;0.22" dur="3s" repeatCount="indefinite"/>
+            </path>
+            <path d="M260,303 Q252,280 260,258 Q268,236 260,214"
+                  fill="none" stroke="rgba(245,237,224,0.28)" stroke-width="3.5" stroke-linecap="round">
+                <animate attributeName="d"
+                    values="M260,303 Q252,280 260,258 Q268,236 260,214;
+                            M260,303 Q268,280 260,258 Q252,236 260,214;
+                            M260,303 Q252,280 260,258 Q268,236 260,214"
+                    dur="3.6s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.28;0.42;0.28" dur="3.6s" repeatCount="indefinite"/>
+            </path>
+            <path d="M282,305 Q290,283 282,261 Q274,239 282,217"
+                  fill="none" stroke="rgba(245,237,224,0.2)" stroke-width="3" stroke-linecap="round">
+                <animate attributeName="d"
+                    values="M282,305 Q290,283 282,261 Q274,239 282,217;
+                            M282,305 Q274,283 282,261 Q290,239 282,217;
+                            M282,305 Q290,283 282,261 Q274,239 282,217"
+                    dur="2.8s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.2;0.32;0.2" dur="2.8s" repeatCount="indefinite"/>
+            </path>
+
+            <!-- DECORATIVE RINGS -->
+            <circle cx="260" cy="340" r="140" fill="none" stroke="rgba(200,129,58,0.09)" stroke-width="1"/>
+            <circle cx="260" cy="340" r="175" fill="none" stroke="rgba(200,129,58,0.05)" stroke-width="1" stroke-dasharray="6 8"/>
+
+            <!-- SPOON -->
+            <line x1="215" y1="402" x2="180" y2="435" stroke="#4a2408" stroke-width="3.5" stroke-linecap="round"/>
+            <ellipse cx="174" cy="440" rx="10" ry="7" fill="#4a2408" stroke="#5a2d0e" stroke-width="1"/>
+            <ellipse cx="174" cy="440" rx="6" ry="4" fill="#2e1208"/>
+
+        </svg>
+    </div>
+
+    <div class="panel-text">
+        <div class="eyebrow">
+            <div class="eyebrow-line"></div>
+            <span class="eyebrow-label">Gestão de produção</span>
+        </div>
+        <h2>Do grão à<br><em>xícara perfeita</em></h2>
+        <p>Controle total do seu processo,<br>do campo à entrega.</p>
+    </div>
+</div>
+
+<!-- ══ RIGHT PANEL ══ -->
+<div class="panel-right">
+
+    <div class="logo-wrap">
+        <div class="logo-icon">☕</div>
+        <div class="logo-text">
+            Café System
+            <small>Gestão de Produção</small>
+        </div>
+    </div>
+
+    <h1 class="form-heading">Bem-vindo</h1>
+    <p class="form-sub">Acesse sua conta para continuar</p>
 
     {% if erro %}
-        <div class="alert alert-danger text-center">{{ erro }}</div>
+        <div class="alert-error">{{ erro }}</div>
     {% endif %}
 
     <form method="POST">
         {% csrf_token %}
 
-        <input 
-            type="text" 
-            name="username" 
-            class="form-control mb-3" 
-            placeholder="Usuário" 
-            required
-        >
+        <div class="field-group">
+            <label for="username">Usuário</label>
+            <input type="text" id="username" name="username"
+                   placeholder="Digite seu usuário" required autocomplete="username">
+        </div>
 
-        <input 
-            type="password" 
-            name="password" 
-            class="form-control mb-3" 
-            placeholder="Senha" 
-            required
-        >
+        <div class="field-group">
+            <label for="password">Senha</label>
+            <input type="password" id="password" name="password"
+                   placeholder="••••••••" required autocomplete="current-password">
+        </div>
 
-        <button class="btn btn-success w-100 mb-2">
-            Entrar
-        </button>
+        <button type="submit" class="btn-login">Entrar</button>
     </form>
 
-    <small class="text-center d-block text-muted">
-        Sistema de Produção de Café
-    </small>
+    <div class="form-footer">Sistema de Produção de Café &nbsp;·&nbsp; v1.0</div>
 
 </div>
 
