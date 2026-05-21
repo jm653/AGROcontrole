@@ -147,8 +147,47 @@ class RegistroOperacional(models.Model):
 
     def __str__(self):
         return f"{self.funcionario.username} - {self.data}"
-    
-    @property
+class Lote(models.Model):
+
+    ETAPAS = [
+        ('Plantio', 'Plantio'),
+        ('Colheita', 'Colheita'),
+        ('Secagem', 'Secagem'),
+        ('Armazenamento', 'Armazenamento'),
+    ]
+
+    codigo = models.CharField(
+        max_length=100
+    )
+
+    lavoura = models.ForeignKey(
+        'Lavoura',
+        on_delete=models.CASCADE
+    )
+
+    quantidade_sacas = models.IntegerField()
+
+    qualidade = models.CharField(
+        max_length=100
+    )
+
+    preco_saca = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    etapa = models.CharField(
+        max_length=50,
+        choices=ETAPAS
+    )
+
     def valor_total(self):
 
-        return self.quantidade_sacas * self.preco_saca  
+        return (
+            self.quantidade_sacas *
+            self.preco_saca
+        )
+
+    def __str__(self):
+
+        return self.codigo

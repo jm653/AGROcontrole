@@ -124,18 +124,18 @@ Dashboard do Produtor
                         <div>
 
                             <h6 class="text-muted">
-                                Lotes
+                                Valor em Estoque
                             </h6>
 
-                            <h1 class="fw-bold text-dark">
-                                {{ lotes.count }}
+                            <h1 class="fw-bold text-success">
+                                R$ {{ valor_total }}
                             </h1>
 
                         </div>
 
                         <div class="icon-card-coffee">
 
-                            <i class="bi bi-cup-hot fs-1"></i>
+                            <i class="bi bi-cash-stack fs-1"></i>
 
                         </div>
 
@@ -185,11 +185,11 @@ Dashboard do Produtor
 
     </div>
 
-    <!-- GRÁFICOS -->
+    <!-- ÁREA DE INFORMAÇÕES -->
 
     <div class="row g-4">
 
-        <!-- GRÁFICO 1 -->
+        <!-- RESUMO -->
 
         <div class="col-md-8">
 
@@ -202,11 +202,11 @@ Dashboard do Produtor
                         <div>
 
                             <h5 class="fw-bold">
-                                Produção Mensal
+                                Resumo da Produção
                             </h5>
 
                             <p class="text-muted mb-0">
-                                Evolução da produção
+                                Informações gerais do sistema
                             </p>
 
                         </div>
@@ -215,7 +215,73 @@ Dashboard do Produtor
 
                     </div>
 
-                    <canvas id="graficoProducao"></canvas>
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+
+                            <div class="p-4 rounded-4 bg-light">
+
+                                <h6 class="text-muted">
+                                    Total de Lotes
+                                </h6>
+
+                                <h2 class="fw-bold text-dark">
+                                    {{ lotes.count }}
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="p-4 rounded-4 bg-light">
+
+                                <h6 class="text-muted">
+                                    Total de Sacas
+                                </h6>
+
+                                <h2 class="fw-bold text-dark">
+                                    {{ total_sacas }}
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="p-4 rounded-4 bg-light">
+
+                                <h6 class="text-muted">
+                                    Lavouras Ativas
+                                </h6>
+
+                                <h2 class="fw-bold text-dark">
+                                    {{ lavouras.count }}
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="p-4 rounded-4 bg-light">
+
+                                <h6 class="text-muted">
+                                    Propriedades
+                                </h6>
+
+                                <h2 class="fw-bold text-dark">
+                                    {{ propriedades.count }}
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -223,7 +289,7 @@ Dashboard do Produtor
 
         </div>
 
-        <!-- GRÁFICO 2 -->
+        <!-- ETAPAS -->
 
         <div class="col-md-4">
 
@@ -249,7 +315,37 @@ Dashboard do Produtor
 
                     </div>
 
-                    <canvas id="graficoLotes"></canvas>
+                    <div class="d-flex flex-column gap-3">
+
+                        {% for etapa in etapas %}
+
+                        <div class="d-flex justify-content-between align-items-center p-3 rounded-4 bg-light">
+
+                            <div>
+
+                                <strong>
+                                    {{ etapa.etapa }}
+                                </strong>
+
+                            </div>
+
+                            <span class="badge bg-dark">
+
+                                {{ etapa.total }}
+
+                            </span>
+
+                        </div>
+
+                        {% empty %}
+
+                        <p class="text-muted">
+                            Nenhum lote encontrado.
+                        </p>
+
+                        {% endfor %}
+
+                    </div>
 
                 </div>
 
@@ -370,85 +466,5 @@ Dashboard do Produtor
     </div>
 
 </div>
-
-<!-- CHART JS -->
-
-<script>
-
-new Chart(
-    document.getElementById('graficoProducao'),
-    {
-        type: 'line',
-
-        data: {
-
-            labels: [
-                'Jan',
-                'Fev',
-                'Mar',
-                'Abr',
-                'Mai',
-                'Jun'
-            ],
-
-            datasets: [{
-
-                label: 'Produção',
-
-                data: [
-                    120,
-                    190,
-                    300,
-                    250,
-                    420,
-                    500
-                ],
-
-                borderColor: '#4E342E',
-                backgroundColor: 'rgba(78,52,46,0.1)',
-                fill: true,
-                tension: 0.4
-
-            }]
-        }
-    }
-);
-
-new Chart(
-    document.getElementById('graficoLotes'),
-    {
-        type: 'doughnut',
-
-        data: {
-
-            labels: [
-                'Plantio',
-                'Colheita',
-                'Secagem',
-                'Venda'
-            ],
-
-            datasets: [{
-
-                data: [
-                    12,
-                    19,
-                    8,
-                    5
-                ],
-
-                backgroundColor: [
-                    '#4E342E',
-                    '#6D4C41',
-                    '#8D6E63',
-                    '#A1887F'
-                ]
-
-            }]
-        }
-    }
-);
-
-</script>
 
 {% endblock %}

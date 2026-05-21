@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .models import LoteDeCafe
+from django.db.models import Sum
+from django.db.models import Count
+from django.db.models import Sum, Count
+from .models import Propriedade, Lavoura, Lote
 
 from .models import (
     Propriedade,
@@ -112,9 +117,6 @@ def funcionario_dashboard(request):
 @login_required
 def produtor_dashboard(request):
 
-    if request.user.tipo != 'produtor':
-        return HttpResponse("Acesso negado")
-
     propriedades = Propriedade.objects.filter(
         produtor=request.user
     )
@@ -123,13 +125,22 @@ def produtor_dashboard(request):
         propriedade__produtor=request.user
     )
 
-    lotes = LoteDeCafe.objects.filter(
+    lotes = Lote.objects.filter(
         lavoura__propriedade__produtor=request.user
     )
 
-    total_sacas = sum(
-        lote.quantidade_sacas for lote in lotes
-    )
+    total_sacas = lotes.aggregate(
+        total=Sum('quantidade_sacas')
+    )['total'] or 0
+
+    valor_total = 0
+
+    for lote in lotes:
+
+        valor_total += (
+            lote.quantidade_sacas *
+            lote.preco_saca
+        )
 
     context = {
 
@@ -137,6 +148,7 @@ def produtor_dashboard(request):
         'lavouras': lavouras,
         'lotes': lotes,
         'total_sacas': total_sacas,
+        'valor_total': valor_total,
 
     }
 
@@ -145,7 +157,6 @@ def produtor_dashboard(request):
         'produtor_dashboard.html',
         context
     )
-
 @login_required
 def editar_lavoura(request, id):
 
@@ -486,11 +497,29 @@ def lotes_view(request):
         lote.quantidade_sacas for lote in lotes
     )
 
-    form = LoteForm()
+    if request.method == 'POST':
 
-    form.fields['lavoura'].queryset = Lavoura.objects.filter(
-        propriedade__produtor=request.user
-    )
+        form = LoteForm(request.POST)
+
+        form.fields['lavoura'].queryset = Lavoura.objects.filter(
+            propriedade__produtor=request.user
+        )
+
+        if form.is_valid():
+
+            lote = form.save(commit=False)
+
+            lote.save()
+
+            return redirect('lotes')
+
+    else:
+
+        form = LoteForm()
+
+        form.fields['lavoura'].queryset = Lavoura.objects.filter(
+            propriedade__produtor=request.user
+        )
 
     return render(
         request,
@@ -501,7 +530,6 @@ def lotes_view(request):
             'total_sacas': total_sacas,
         }
     )
-
 @login_required
 def editar_lote(request, id):
 
@@ -515,6 +543,10 @@ def editar_lote(request, id):
         form = LoteForm(
             request.POST,
             instance=lote
+        )
+
+        form.fields['lavoura'].queryset = Lavoura.objects.filter(
+            propriedade__produtor=request.user
         )
 
         if form.is_valid():
@@ -538,6 +570,36 @@ def editar_lote(request, id):
         'editar_lote.html',
         {
             'form': form,
+            'lote': lote
+        }
+    )
+
+
+@login_required
+def excluir_lote(request, id):
+
+    lote = LoteDeCafe.objects.get(id=id)
+
+    if lote.lavoura.propriedade.produtor != request.user:
+        return HttpResponse("Acesso negado")
+
+    lote.delete()
+
+    return redirect('lotes')
+
+
+@login_required
+def visualizar_lote(request, id):
+
+    lote = LoteDeCafe.objects.get(id=id)
+
+    if lote.lavoura.propriedade.produtor != request.user:
+        return HttpResponse("Acesso negado")
+
+    return render(
+        request,
+        'visualizar_lote.html',
+        {
             'lote': lote
         }
     )
