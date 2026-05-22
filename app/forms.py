@@ -82,6 +82,8 @@ class LoteForm(forms.ModelForm):
             'lavoura',
             'codigo',
             'quantidade_sacas',
+            'qualidade',
+            'preco_saca',
             'etapa'
         ]
 
@@ -99,10 +101,18 @@ class LoteForm(forms.ModelForm):
                 'class': 'form-control'
             }),
 
+            'qualidade': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.01'
+            }),
+
+            'preco_saca': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.01'
+            }),
+
             'etapa': forms.Select(attrs={
                 'class': 'form-select'
             }),
-        
 
-    
         }

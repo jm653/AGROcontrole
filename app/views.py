@@ -150,6 +150,15 @@ def produtor_dashboard(request):
 
     ultimos_lotes = lotes.order_by('-criado_em')[:5]
 
+
+    producao_mensal = (
+    lotes
+    .annotate(mes=TruncMonth('criado_em'))
+    .values('mes')
+    .annotate(total=Sum('quantidade_sacas'))
+    .order_by('mes')
+    )
+
     context = {
 
         'propriedades': propriedades,
@@ -160,6 +169,7 @@ def produtor_dashboard(request):
         'etapas': etapas,
         'ultimos_lotes': ultimos_lotes,
         'etapas': etapas,
+        'producao_mensal': producao_mensal,
 
     }
 
@@ -172,6 +182,9 @@ def produtor_dashboard(request):
     etapas = lotes.values('etapa').annotate(
     total=Count('id')
     )
+
+from django.db.models import Sum    
+from django.db.models.functions import TruncMonth
 
 
 @login_required
@@ -522,23 +535,24 @@ def lotes_view(request):
             propriedade__produtor=request.user
         )
 
-    if form.is_valid():
+        if form.is_valid():
 
-        lote = form.save(commit=False)
+            lote = form.save(commit=False)
 
-        lote.save()
+            lote.save()
 
-        return redirect('lotes')
+            return redirect('lotes')
+
+        else:
+
+            print(form.errors)
 
     else:
 
-        print(form.errors)
-    else:
+        form = LoteForm()
 
-    form = LoteForm()
-
-    form.fields['lavoura'].queryset = Lavoura.objects.filter(
-        propriedade__produtor=request.user
+        form.fields['lavoura'].queryset = Lavoura.objects.filter(
+            propriedade__produtor=request.user
         )
 
     return render(

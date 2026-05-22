@@ -284,29 +284,28 @@ Lotes | AgroControle
 
             <div class="col-md-3">
 
-                <select class="form-select">
+            <select
+                name="etapa"
+                class="form-select"
+                required>
 
-                    <option>
-                        Todas as Etapas
-                    </option>
+                <option value="plantio">
+                    Plantio
+                </option>
 
-                    <option>
-                        Plantio
-                    </option>
+                <option value="colheita">
+                    Colheita
+                </option>
 
-                    <option>
-                        Colheita
-                    </option>
+                <option value="secagem">
+                    Secagem
+                </option>
 
-                    <option>
-                        Secagem
-                    </option>
+                <option value="armazenamento">
+                    Armazenamento
+                </option>
 
-                    <option>
-                        Armazenamento
-                    </option>
-
-                </select>
+            </select>
 
             </div>
 
@@ -588,7 +587,9 @@ Lotes | AgroControle
 
                             <input
                                 type="text"
-                                class="form-control">
+                                name="codigo"
+                                class="form-control"
+                                required>
 
                         </div>
 
@@ -600,7 +601,9 @@ Lotes | AgroControle
 
                             <input
                                 type="number"
-                                class="form-control">
+                                name="quantidade_sacas"
+                                class="form-control"
+                                required>
 
                         </div>
 
@@ -610,25 +613,49 @@ Lotes | AgroControle
                                 Etapa
                             </label>
 
-                            <select class="form-select">
+                        <div class="col-md-6">
 
-                                <option>
-                                    Plantio
-                                </option>
+                        <label class="form-label">
+                            Qualidade
+                        </label>
 
-                                <option>
-                                    Colheita
-                                </option>
+                        {{ form.qualidade }}
 
-                                <option>
-                                    Secagem
-                                </option>
+                    </div>
 
-                                <option>
-                                    Armazenamento
-                                </option>
+                    <div class="col-md-6">
 
-                            </select>
+                        <label class="form-label">
+                            Preço da Saca
+                        </label>
+
+                        {{ form.preco_saca }}
+
+                    </div>
+
+                                            <select
+                        name="etapa"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="plantio">
+                            Plantio
+                        </option>
+
+                        <option value="colheita">
+                            Colheita
+                        </option>
+
+                        <option value="secagem">
+                            Secagem
+                        </option>
+
+                        <option value="armazenamento">
+                            Armazenamento
+                        </option>
+
+                    </select>
 
                         </div>
 

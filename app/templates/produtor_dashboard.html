@@ -667,4 +667,52 @@ Dashboard do Produtor
 
 </div>
 
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('graficoProducao');
+
+if (ctx) {
+
+    new Chart(ctx, {
+
+        type: 'line',
+
+        data: {
+
+            labels: ['Jan', 'Fev', 'Mar', 'Abr'],
+
+            datasets: [{
+
+                label: 'Produção',
+
+                data: [10, 20, 15, 30],
+
+                borderColor: '#4E342E',
+
+                backgroundColor: 'rgba(78,52,46,0.1)',
+
+                fill: true,
+
+                tension: 0.4
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true
+
+        }
+
+    });
+
+}
+
+</script>
+
 {% endblock %}
