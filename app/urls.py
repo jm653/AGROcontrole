@@ -110,6 +110,17 @@ urlpatterns = [
         name='perfil'
     ),
 
+    path(
+    'editar-movimentacao/<int:id>/',
+    views.editar_movimentacao,
+    name='editar_movimentacao'
+    ),
+    path(
+    'excluir-movimentacao/<int:id>/',
+    views.excluir_movimentacao,
+    name='excluir_movimentacao'
+    ),
+
     # =========================
     # FUNCIONÁRIO
     # =========================

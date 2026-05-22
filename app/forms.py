@@ -1,8 +1,8 @@
 from django import forms
-
 from .models import Lavoura
 from .models import Propriedade
 from .models import LoteDeCafe
+from .models import (LoteDeCafe,MovimentacaoFinanceira)
 
 
 class LavouraForm(forms.ModelForm):
@@ -113,6 +113,36 @@ class LoteForm(forms.ModelForm):
 
             'etapa': forms.Select(attrs={
                 'class': 'form-select'
+            }),
+
+        }
+
+class MovimentacaoFinanceiraForm(forms.ModelForm):
+
+    class Meta:
+
+        model = MovimentacaoFinanceira
+
+        fields = [
+
+            'descricao',
+            'tipo',
+            'valor',
+
+        ]
+
+        widgets = {
+
+            'descricao': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+
+            'tipo': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+
+            'valor': forms.NumberInput(attrs={
+                'class': 'form-control'
             }),
 
         }

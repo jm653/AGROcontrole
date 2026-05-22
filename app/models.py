@@ -147,3 +147,43 @@ class RegistroOperacional(models.Model):
 
     def __str__(self):
         return f"{self.funcionario.username} - {self.data}"
+    
+
+class MovimentacaoFinanceira(models.Model):
+
+    TIPOS = (
+        ('lucro', 'Lucro'),
+        ('despesa', 'Despesa'),
+    )
+
+    produtor = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE
+    )
+
+    titulo = models.CharField(
+        max_length=200
+    )
+
+    valor = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPOS
+    )
+
+    descricao = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    criado_em = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+
+        return self.titulo

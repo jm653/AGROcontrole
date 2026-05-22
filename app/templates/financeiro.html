@@ -6,587 +6,453 @@ Financeiro
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid px-4">
 
-<!-- TOPO -->
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-
-    <div>
-
-        <h2 class="fw-bold text-coffee">
-            Financeiro
-        </h2>
-
-        <p class="text-muted">
-            Controle financeiro da produção cafeeira
-        </p>
-
-    </div>
-
-    <button
-        class="btn btn-coffee"
-        data-bs-toggle="modal"
-        data-bs-target="#modalMovimentacao">
-
-        <i class="bi bi-plus-circle"></i>
-        Nova Movimentação
-
-    </button>
-
-</div>
-
-<!-- CARDS -->
-
-<div class="row g-4 mb-4">
-
-    <!-- RECEITA -->
-
-    <div class="col-md-4">
-
-        <div class="card card-dashboard bg-coffee">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <div class="card-title">
-                            Receita Total
-                        </div>
-
-                        <div class="card-number">
-                            R$ 48.500
-                        </div>
-
-                        <small>
-                            +12% este mês
-                        </small>
-
-                    </div>
-
-                    <div class="icon-card">
-
-                        <i class="bi bi-currency-dollar"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- DESPESAS -->
-
-    <div class="col-md-4">
-
-        <div class="card card-dashboard">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <div class="card-title text-muted">
-                            Despesas
-                        </div>
-
-                        <div class="card-number text-danger">
-                            R$ 18.200
-                        </div>
-
-                        <small class="text-muted">
-                            Custos operacionais
-                        </small>
-
-                    </div>
-
-                    <div class="icon-card-coffee">
-
-                        <i class="bi bi-cash-stack"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- LUCRO -->
-
-    <div class="col-md-4">
-
-        <div class="card card-dashboard">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <div class="card-title text-muted">
-                            Lucro Líquido
-                        </div>
-
-                        <div class="card-number text-success">
-                            R$ 30.300
-                        </div>
-
-                        <small class="text-success">
-                            Resultado positivo
-                        </small>
-
-                    </div>
-
-                    <div class="icon-card-coffee">
-
-                        <i class="bi bi-graph-up-arrow"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- GRÁFICOS -->
-
-<div class="row g-4 mb-4">
-
-    <!-- GRÁFICO FINANCEIRO -->
-
-    <div class="col-md-8">
-
-        <div class="chart-container">
-
-            <h5 class="chart-title">
-                Fluxo Financeiro
-            </h5>
-
-            <canvas id="graficoFinanceiro"></canvas>
-
-        </div>
-
-    </div>
-
-    <!-- DISTRIBUIÇÃO -->
-
-    <div class="col-md-4">
-
-        <div class="chart-container">
-
-            <h5 class="chart-title">
-                Distribuição de Gastos
-            </h5>
-
-            <canvas id="graficoGastos"></canvas>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- TABELA -->
-
-<div class="table-container">
+    <!-- TOPO -->
 
     <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h5 class="fw-bold text-coffee m-0">
-            Movimentações Financeiras
-        </h5>
+        <div>
 
-        <input
-            type="text"
-            class="form-control"
-            placeholder="Pesquisar movimentação..."
-            style="width: 260px;">
+            <h2 class="fw-bold">
+                Financeiro
+            </h2>
 
-    </div>
+            <p class="text-muted mb-0">
+                Controle financeiro da produção
+            </p>
 
-    <div class="table-responsive">
+        </div>
 
-        <table class="table align-middle table-hover">
+        <button
+            class="btn btn-coffee"
+            data-bs-toggle="modal"
+            data-bs-target="#modalMovimentacao"
+        >
 
-            <thead>
+            <i class="bi bi-plus-circle"></i>
+            Nova Movimentação
 
-                <tr>
-
-                    <th>ID</th>
-                    <th>Descrição</th>
-                    <th>Categoria</th>
-                    <th>Valor</th>
-                    <th>Data</th>
-                    <th>Status</th>
-                    <th class="text-center">
-                        Ações
-                    </th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <tr>
-
-                    <td>
-                        #001
-                    </td>
-
-                    <td>
-                        Venda de café premium
-                    </td>
-
-                    <td>
-                        Receita
-                    </td>
-
-                    <td class="text-success fw-bold">
-                        + R$ 12.500
-                    </td>
-
-                    <td>
-                        19/05/2026
-                    </td>
-
-                    <td>
-
-                        <span class="badge bg-success">
-                            Confirmado
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        <div class="d-flex justify-content-center gap-2">
-
-                            <button class="btn btn-warning btn-sm">
-
-                                <i class="bi bi-pencil-fill"></i>
-
-                            </button>
-
-                            <button class="btn btn-danger btn-sm">
-
-                                <i class="bi bi-trash-fill"></i>
-
-                            </button>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>
-                        #002
-                    </td>
-
-                    <td>
-                        Compra de fertilizantes
-                    </td>
-
-                    <td>
-                        Despesa
-                    </td>
-
-                    <td class="text-danger fw-bold">
-                        - R$ 3.200
-                    </td>
-
-                    <td>
-                        18/05/2026
-                    </td>
-
-                    <td>
-
-                        <span class="badge bg-warning text-dark">
-                            Pendente
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        <div class="d-flex justify-content-center gap-2">
-
-                            <button class="btn btn-warning btn-sm">
-
-                                <i class="bi bi-pencil-fill"></i>
-
-                            </button>
-
-                            <button class="btn btn-danger btn-sm">
-
-                                <i class="bi bi-trash-fill"></i>
-
-                            </button>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
+        </button>
 
     </div>
 
-</div>
-```
+    <!-- CARDS -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- FATURAMENTO -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Faturamento Bruto
+                    </h6>
+
+                    <h2
+                        class="fw-bold"
+                        style="color: #6F4E37;"
+                    >
+                        R$ {{ faturamento_total }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- LUCRO -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Lucro
+                    </h6>
+
+                    <h2 class="fw-bold text-success">
+
+                        R$ {{ lucro_total }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DESPESAS -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Despesas
+                    </h6>
+
+                    <h2 class="fw-bold text-danger">
+
+                        R$ {{ despesas_total }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LOTES MAIS VALIOSOS -->
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h4 class="fw-bold">
+                        Lotes Mais Valiosos
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Top 3 lotes com maior valor
+                    </p>
+
+                </div>
+
+                <i class="bi bi-bar-chart-fill fs-3 text-coffee"></i>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Lavoura</th>
+                            <th>Sacas</th>
+                            <th>Preço/Saca</th>
+                            <th>Valor Total</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for lote in lotes_valiosos %}
+
+                        <tr>
+
+                            <td class="fw-semibold">
+                                {{ lote.lavoura.nome }}
+                            </td>
+
+                            <td>
+                                {{ lote.quantidade_sacas }}
+                            </td>
+
+                            <td>
+                                R$ {{ lote.preco_saca }}
+                            </td>
+
+                            <td
+                                class="fw-bold"
+                                style="color: #6F4E37;"
+                            >
+                                R$ {{ lote.valor_total }}
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="4"
+                                class="text-center text-muted py-4"
+                            >
+
+                                Nenhum lote encontrado.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MOVIMENTAÇÕES -->
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h4 class="fw-bold">
+                        Movimentações Financeiras
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Controle de ganhos e despesas
+                    </p>
+
+                </div>
+
+                <i class="bi bi-wallet2 fs-3 text-coffee"></i>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Descrição</th>
+                            <th>Tipo</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th>Ações</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for mov in movimentacoes %}
+
+                        <tr>
+
+                            <td>
+                                {{ mov.descricao }}
+                            </td>
+
+                            <td>
+
+                                {% if mov.tipo == 'Lucro' %}
+
+                                    <span class="badge bg-success">
+                                        Lucro
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+                                        Despesa
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if mov.tipo == 'Lucro' %}
+
+                                    <span class="fw-bold text-success">
+                                        + R$ {{ mov.valor }}
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="fw-bold text-danger">
+                                        - R$ {{ mov.valor }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ mov.data }}
+                            </td>
+
+                            <td class="d-flex gap-2">
+
+                                <!-- EDITAR -->
+
+                                <a
+                                    href="{% url 'editar_movimentacao' mov.id %}"
+                                    class="btn btn-coffee btn-sm"
+                                >
+
+                                    <i class="bi bi-pencil-fill"></i>
+
+                                </a>
+
+                                <!-- EXCLUIR -->
+
+                                <a
+                                    href="{% url 'excluir_movimentacao' mov.id %}"
+                                    class="btn btn-dark btn-sm"
+                                >
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="text-center text-muted py-4"
+                            >
+
+                                Nenhuma movimentação encontrada.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
 <!-- MODAL -->
 
-<div class="modal fade"
-     id="modalMovimentacao"
-     tabindex="-1">
+<div
+    class="modal fade"
+    id="modalMovimentacao"
+    tabindex="-1"
+>
 
-```
-<div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
 
-    <div class="modal-content">
+        <div class="modal-content rounded-4 border-0">
 
-        <div class="modal-header">
+            <div class="modal-header">
 
-            <div>
-
-                <h4 class="fw-bold text-coffee mb-0">
-
+                <h5 class="modal-title fw-bold">
                     Nova Movimentação
+                </h5>
 
-                </h4>
-
-                <small class="text-muted">
-
-                    Adicione uma nova movimentação financeira
-
-                </small>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                ></button>
 
             </div>
 
-            <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal">
-            </button>
+            <form method="POST">
 
-        </div>
+                {% csrf_token %}
 
-        <form>
+                <div class="modal-body">
 
-            <div class="modal-body">
+                    <div class="mb-3">
 
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label fw-semibold">
-
+                        <label class="form-label">
                             Descrição
-
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control">
+                        {{ form.descricao }}
 
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="mb-3">
 
-                        <label class="form-label fw-semibold">
-
-                            Categoria
-
+                        <label class="form-label">
+                            Tipo
                         </label>
 
-                        <select class="form-select">
-
-                            <option>
-                                Receita
-                            </option>
-
-                            <option>
-                                Despesa
-                            </option>
-
-                        </select>
+                        {{ form.tipo }}
 
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="mb-3">
 
-                        <label class="form-label fw-semibold">
-
+                        <label class="form-label">
                             Valor
-
                         </label>
 
-                        <input
-                            type="number"
-                            class="form-control">
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label fw-semibold">
-
-                            Data
-
-                        </label>
-
-                        <input
-                            type="date"
-                            class="form-control">
+                        {{ form.valor }}
 
                     </div>
 
                 </div>
 
-            </div>
+                <div class="modal-footer">
 
-            <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal"
+                    >
 
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
+                        Cancelar
 
-                    Cancelar
+                    </button>
 
-                </button>
+                    <button
+                        type="submit"
+                        class="btn btn-coffee"
+                    >
 
-                <button
-                    type="submit"
-                    class="btn btn-coffee">
+                        Salvar
 
-                    <i class="bi bi-check-circle"></i>
-                    Salvar Movimentação
+                    </button>
 
-                </button>
+                </div>
 
-            </div>
+            </form>
 
-        </form>
+        </div>
 
     </div>
 
 </div>
-
-</div>
-
-<!-- CHART JS -->
-
-<script>
-
-const ctxFinanceiro = document.getElementById('graficoFinanceiro');
-
-new Chart(ctxFinanceiro, {
-
-    type: 'line',
-
-    data: {
-
-        labels: [
-            'Jan',
-            'Fev',
-            'Mar',
-            'Abr',
-            'Mai',
-            'Jun'
-        ],
-
-        datasets: [
-
-            {
-                label: 'Receita',
-
-                data: [12000, 15000, 18000, 14000, 22000, 25000],
-
-                borderColor: '#4E342E',
-
-                backgroundColor: 'rgba(78,52,46,0.1)',
-
-                tension: 0.4,
-
-                fill: true
-            },
-
-            {
-                label: 'Despesas',
-
-                data: [7000, 6000, 9000, 8500, 10000, 11000],
-
-                borderColor: '#A1887F',
-
-                backgroundColor: 'rgba(161,136,127,0.1)',
-
-                tension: 0.4,
-
-                fill: true
-            }
-
-        ]
-
-    }
-
-});
-
-const ctxGastos = document.getElementById('graficoGastos');
-
-new Chart(ctxGastos, {
-
-    type: 'doughnut',
-
-    data: {
-
-        labels: [
-            'Fertilizantes',
-            'Funcionários',
-            'Máquinas',
-            'Outros'
-        ],
-
-        datasets: [{
-
-            data: [35, 30, 20, 15],
-
-            backgroundColor: [
-                '#4E342E',
-                '#6D4C41',
-                '#8D6E63',
-                '#BCAAA4'
-            ]
-
-        }]
-
-    }
-
-});
-
-</script>
 
 {% endblock %}

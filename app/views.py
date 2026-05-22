@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -6,7 +6,12 @@ from .models import LoteDeCafe
 from django.db.models import Sum
 from django.db.models import Count
 from django.db.models import Sum, Count
-from .models import Propriedade, Lavoura, LoteDeCafe
+from .models import Propriedade, Lavoura, LoteDeCafe,MovimentacaoFinanceira
+
+from .forms import (
+    LoteForm,
+    MovimentacaoFinanceiraForm
+)
 
 from .models import (
     Propriedade,
@@ -129,9 +134,34 @@ def produtor_dashboard(request):
         lavoura__propriedade__produtor=request.user
     )
 
+    # ETAPAS DOS LOTES
+
+    etapas = lotes.values(
+        'etapa'
+    ).annotate(
+        total=Count('id')
+    )
+
+    etapas_labels = []
+    etapas_valores = []
+
+    for etapa in etapas:
+
+        etapas_labels.append(
+            etapa['etapa']
+        )
+
+        etapas_valores.append(
+            etapa['total']
+        )
+
+    # TOTAL DE SACAS
+
     total_sacas = lotes.aggregate(
         total=Sum('quantidade_sacas')
     )['total'] or 0
+
+    # VALOR TOTAL
 
     valor_total = 0
 
@@ -142,35 +172,33 @@ def produtor_dashboard(request):
             lote.preco_saca
         )
 
-    etapas = lotes.values(
-        'etapa'
-    ).annotate(
-        total=Count('id')
-    )
-
-    ultimos_lotes = lotes.order_by('-criado_em')[:5]
-
-
-    producao_mensal = (
-    lotes
-    .annotate(mes=TruncMonth('criado_em'))
-    .values('mes')
-    .annotate(total=Sum('quantidade_sacas'))
-    .order_by('mes')
-    )
+    # CONTEXT
 
     context = {
 
         'propriedades': propriedades,
-        'lavouras': lavouras,
-        'lotes': lotes,
-        'total_sacas': total_sacas,
-        'valor_total': valor_total,
-        'etapas': etapas,
-        'ultimos_lotes': ultimos_lotes,
-        'etapas': etapas,
-        'producao_mensal': producao_mensal,
 
+        'lavouras': lavouras,
+
+        'lotes': lotes,
+
+        'total_sacas': total_sacas,
+
+        'valor_total': valor_total,
+
+        # ETAPAS
+
+        'etapas': etapas,
+
+        # ÚLTIMOS LOTES
+
+        'ultimos_lotes': lotes.order_by('-id')[:5],
+
+        # GRÁFICO
+
+        'etapas_labels': etapas_labels,
+
+        'etapas_valores': etapas_valores,
     }
 
     return render(
@@ -178,11 +206,6 @@ def produtor_dashboard(request):
         'produtor_dashboard.html',
         context
     )
-
-    etapas = lotes.values('etapa').annotate(
-    total=Count('id')
-    )
-
 from django.db.models import Sum    
 from django.db.models.functions import TruncMonth
 
@@ -689,10 +712,151 @@ def rastreabilidade_view(request):
 @login_required
 def financeiro_view(request):
 
+    lotes = LoteDeCafe.objects.filter(
+        lavoura__propriedade__produtor=request.user
+    )
+
+    movimentacoes = MovimentacaoFinanceira.objects.filter(
+        produtor=request.user
+    ).order_by('-id')
+
+    # FORMULÁRIO
+
+    if request.method == 'POST':
+
+        form = MovimentacaoFinanceiraForm(
+            request.POST
+        )
+
+        if form.is_valid():
+
+            movimentacao = form.save(
+                commit=False
+            )
+
+            movimentacao.produtor = request.user
+
+            movimentacao.save()
+
+            return redirect('financeiro')
+
+    else:
+
+        form = MovimentacaoFinanceiraForm()
+
+    # FATURAMENTO DOS LOTES
+
+    faturamento_total = 0
+
+    for lote in lotes:
+
+        faturamento_total += (
+            lote.quantidade_sacas *
+            lote.preco_saca
+        )
+
+    # LUCROS
+
+    total_lucros = movimentacoes.filter(
+        tipo='Lucro'
+    ).aggregate(
+        total=Sum('valor')
+    )['total'] or 0
+
+    # DESPESAS
+
+    total_despesas = movimentacoes.filter(
+        tipo='Despesa'
+    ).aggregate(
+        total=Sum('valor')
+    )['total'] or 0
+
+    # LUCRO FINAL
+
+    lucro_total = (
+        faturamento_total +
+        total_lucros -
+        total_despesas
+    )
+
+    # LOTES MAIS VALIOSOS
+
+    lotes_valiosos = lotes.order_by(
+        '-preco_saca'
+    )[:3]
+
+    # CONTEXTO
+
+    context = {
+
+        'faturamento_total': faturamento_total,
+
+        'lucro_total': lucro_total,
+
+        'despesas_total': total_despesas,
+
+        'lotes_valiosos': lotes_valiosos,
+
+        'movimentacoes': movimentacoes,
+
+        'form': form,
+
+    }
+
     return render(
         request,
-        'financeiro.html'
+        'financeiro.html',
+        context
     )
+
+@login_required
+def editar_movimentacao(request, id):
+
+    movimentacao = get_object_or_404(
+        MovimentacaoFinanceira,
+        id=id,
+        produtor=request.user
+    )
+
+    if request.method == 'POST':
+
+        form = MovimentacaoFinanceiraForm(
+            request.POST,
+            instance=movimentacao
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('financeiro')
+
+    else:
+
+        form = MovimentacaoFinanceiraForm(
+            instance=movimentacao
+        )
+
+    return render(
+        request,
+        'editar_movimentacao.html',
+        {
+            'form': form
+        }
+    )
+
+@login_required
+def excluir_movimentacao(request, id):
+
+    movimentacao = get_object_or_404(
+        MovimentacaoFinanceira,
+        id=id,
+        produtor=request.user
+    )
+
+    movimentacao.delete()
+
+    return redirect('financeiro')
 
 
 # =========================================================
