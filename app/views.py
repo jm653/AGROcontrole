@@ -744,7 +744,7 @@ def financeiro_view(request):
 
         form = MovimentacaoFinanceiraForm()
 
-    # FATURAMENTO DOS LOTES
+    # FATURAMENTO BRUTO
 
     faturamento_total = 0
 
@@ -758,7 +758,7 @@ def financeiro_view(request):
     # LUCROS
 
     total_lucros = movimentacoes.filter(
-        tipo='Lucro'
+        tipo='LUCRO'
     ).aggregate(
         total=Sum('valor')
     )['total'] or 0
@@ -766,7 +766,7 @@ def financeiro_view(request):
     # DESPESAS
 
     total_despesas = movimentacoes.filter(
-        tipo='Despesa'
+        tipo='DESPESA'
     ).aggregate(
         total=Sum('valor')
     )['total'] or 0
@@ -784,8 +784,6 @@ def financeiro_view(request):
     lotes_valiosos = lotes.order_by(
         '-preco_saca'
     )[:3]
-
-    # CONTEXTO
 
     context = {
 
@@ -831,6 +829,10 @@ def editar_movimentacao(request, id):
 
             return redirect('financeiro')
 
+        else:
+
+            print(form.errors)
+
     else:
 
         form = MovimentacaoFinanceiraForm(
@@ -841,9 +843,11 @@ def editar_movimentacao(request, id):
         request,
         'editar_movimentacao.html',
         {
-            'form': form
+            'form': form,
+            'movimentacao': movimentacao
         }
     )
+
 
 @login_required
 def excluir_movimentacao(request, id):
@@ -857,7 +861,6 @@ def excluir_movimentacao(request, id):
     movimentacao.delete()
 
     return redirect('financeiro')
-
 
 # =========================================================
 # RELATÓRIOS

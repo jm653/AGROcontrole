@@ -152,8 +152,9 @@ class RegistroOperacional(models.Model):
 class MovimentacaoFinanceira(models.Model):
 
     TIPOS = (
-        ('lucro', 'Lucro'),
-        ('despesa', 'Despesa'),
+        ('LUCRO', 'Lucro'),
+
+        ('DESPESA', 'Despesa'),
     )
 
     produtor = models.ForeignKey(
