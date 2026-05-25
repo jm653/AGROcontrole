@@ -1,489 +1,672 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Financeiro
-{% endblock %}
+{% block title %}Financeiro{% endblock %}
 
 {% block content %}
 
-<div class="container-fluid px-4">
+<style>
+  /* ── RESET & TOKENS ── */
+  :root {
+    --espresso:  #1c0a03;
+    --roast:     #3b1a07;
+    --coffee:    #4E342E;
+    --caramel:   #c8813a;
+    --gold:      #e8a84e;
+    --cream:     #F5F5DC;
+    --ivory:     #fdfaf4;
+    --muted:     #9a8878;
+    --success:   #2d7a4f;
+    --danger:    #b83232;
+    --success-bg:#edf7f1;
+    --danger-bg: #fdf0f0;
+    --white:     #ffffff;
+    --shadow-sm: 0 2px 12px rgba(62,39,35,0.08);
+    --shadow-md: 0 8px 32px rgba(62,39,35,0.12);
+    --shadow-lg: 0 20px 60px rgba(62,39,35,0.16);
+    --radius:    20px;
+    --radius-sm: 12px;
+  }
 
-    <!-- TOPO -->
+  /* ── PAGE HEADER ── */
+  .fin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.5s ease both;
+  }
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+  .fin-header-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--espresso);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
 
-        <div>
+  .fin-header-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+    font-weight: 400;
+  }
 
-            <h2 class="fw-bold">
-                Financeiro
-            </h2>
+  .btn-nova {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--espresso);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(28,10,3,0.25);
+    position: relative;
+    overflow: hidden;
+  }
 
-            <p class="text-muted mb-0">
-                Controle financeiro da produção
-            </p>
+  .btn-nova::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent 30%, rgba(232,168,78,0.2) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.4s;
+  }
 
-        </div>
+  .btn-nova:hover { background: var(--roast); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(28,10,3,0.3); color: #fff; }
+  .btn-nova:hover::after { transform: translateX(100%); }
+  .btn-nova:active { transform: scale(0.97); }
 
-        <button
-            class="btn btn-coffee"
-            data-bs-toggle="modal"
-            data-bs-target="#modalMovimentacao"
-        >
+  /* ── METRIC CARDS ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
 
-            <i class="bi bi-plus-circle"></i>
-            Nova Movimentação
+  .metric-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.6rem 1.8rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(62,39,35,0.06);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    animation: fadeUp 0.5s ease both;
+  }
 
-        </button>
+  .metric-card:nth-child(1) { animation-delay: 0.05s; }
+  .metric-card:nth-child(2) { animation-delay: 0.1s; }
+  .metric-card:nth-child(3) { animation-delay: 0.15s; }
 
+  .metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .metric-card.faturamento::before { background: linear-gradient(90deg, var(--caramel), var(--gold)); }
+  .metric-card.lucro::before       { background: linear-gradient(90deg, #2d7a4f, #52b37a); }
+  .metric-card.despesas::before    { background: linear-gradient(90deg, #b83232, #e05555); }
+
+  .metric-card::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; right: -20px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    opacity: 0.04;
+  }
+
+  .metric-card.faturamento::after { background: var(--caramel); }
+  .metric-card.lucro::after       { background: #2d7a4f; }
+  .metric-card.despesas::after    { background: #b83232; }
+
+  .metric-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .metric-label i { font-size: 0.9rem; }
+
+  .metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .metric-card.faturamento .metric-value { color: var(--coffee); }
+  .metric-card.lucro .metric-value       { color: var(--success); }
+  .metric-card.despesas .metric-value    { color: var(--danger); }
+
+  .metric-prefix {
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.6;
+    margin-right: 2px;
+  }
+
+  /* ── SECTION CARDS ── */
+  .section-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(62,39,35,0.06);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section-card:nth-of-type(1) { animation-delay: 0.2s; }
+  .section-card:nth-of-type(2) { animation-delay: 0.28s; }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.8rem 0;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-head-left h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--espresso);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.15rem;
+  }
+
+  .section-head-left p {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .section-icon {
+    width: 42px; height: 42px;
+    background: rgba(78,52,46,0.08);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--coffee);
+    font-size: 1.2rem;
+  }
+
+  /* ── TABLES ── */
+  .fin-table-wrap { padding: 0 0.5rem 1.5rem; overflow-x: auto; }
+
+  .fin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.85rem;
+  }
+
+  .fin-table thead tr {
+    background: transparent;
+  }
+
+  .fin-table thead th {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid rgba(62,39,35,0.08);
+    white-space: nowrap;
+  }
+
+  .fin-table tbody tr {
+    transition: background 0.15s;
+  }
+
+  .fin-table tbody tr:hover {
+    background: rgba(245,245,220,0.5);
+  }
+
+  .fin-table tbody td {
+    padding: 1rem 1.2rem;
+    color: #2a1810;
+    border-bottom: 1px solid rgba(62,39,35,0.05);
+    vertical-align: middle;
+  }
+
+  .fin-table tbody tr:last-child td { border-bottom: none; }
+
+  .td-bold  { font-weight: 700; color: var(--espresso) !important; }
+  .td-coffee { color: var(--coffee) !important; font-weight: 700; }
+
+  /* value badges */
+  .val-positive {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--success);
+    font-weight: 700;
+    background: var(--success-bg);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+  }
+
+  .val-negative {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--danger);
+    font-weight: 700;
+    background: var(--danger-bg);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+  }
+
+  /* tipo badges */
+  .badge-lucro {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--success-bg);
+    color: var(--success);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(45,122,79,0.2);
+  }
+
+  .badge-despesa {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(184,50,50,0.2);
+  }
+
+  /* rank medal */
+  .rank-medal {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .rank-medal.gold   { background: #fef9e7; color: #b7860d; border: 1.5px solid #f0c040; }
+  .rank-medal.silver { background: #f4f4f4; color: #888; border: 1.5px solid #ccc; }
+  .rank-medal.bronze { background: #fdf0e8; color: #a0522d; border: 1.5px solid #d4845a; }
+
+  /* action btns */
+  .btn-action {
+    width: 32px; height: 32px;
+    border: none; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+  }
+  .btn-action:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .btn-action.edit  { background: rgba(78,52,46,0.1); color: var(--coffee); }
+  .btn-action.del   { background: rgba(184,50,50,0.1); color: var(--danger); }
+
+  /* empty state */
+  .empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .empty-state i { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 0.75rem; }
+  .empty-state p { font-size: 0.85rem; margin: 0; }
+
+  /* ── MODAL ── */
+  .modal-content {
+    border: none !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-lg) !important;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    background: var(--espresso);
+    border: none !important;
+    padding: 1.4rem 1.8rem;
+  }
+
+  .modal-header .modal-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .modal-header .btn-close {
+    filter: invert(1);
+    opacity: 0.7;
+  }
+
+  .modal-body { padding: 1.8rem; }
+  .modal-footer { border: none !important; padding: 0 1.8rem 1.8rem; }
+
+  .form-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .form-control, .form-select {
+    border: 1.5px solid #e5d9cc !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9rem !important;
+    color: var(--espresso) !important;
+    background: #fff !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+    font-family: 'Poppins', sans-serif !important;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: var(--caramel) !important;
+    box-shadow: 0 0 0 3px rgba(200,129,58,0.13) !important;
+    outline: none !important;
+  }
+
+  .btn-cancel {
+    background: #f3ede6;
+    color: var(--coffee);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 1.4rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-cancel:hover { background: #ece3d8; }
+
+  .btn-save {
+    background: var(--espresso);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 1.6rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-save:hover { background: var(--roast); transform: translateY(-1px); color: #fff; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .metrics-grid { grid-template-columns: 1fr; }
+    .fin-header   { flex-direction: column; gap: 1rem; }
+  }
+</style>
+
+<div class="container-fluid px-2">
+
+  <!-- HEADER -->
+  <div class="fin-header">
+    <div>
+      <div class="fin-header-title">Financeiro</div>
+      <div class="fin-header-sub">Controle financeiro da produção cafeeira</div>
+    </div>
+    <button
+      class="btn-nova"
+      data-bs-toggle="modal"
+      data-bs-target="#modalMovimentacao"
+    >
+      <i class="bi bi-plus-lg"></i>
+      Nova Movimentação
+    </button>
+  </div>
+
+  <!-- METRIC CARDS -->
+  <div class="metrics-grid">
+
+    <div class="metric-card faturamento">
+      <div class="metric-label">
+        <i class="bi bi-graph-up-arrow"></i>
+        Faturamento Bruto
+      </div>
+      <div class="metric-value">
+        <span class="metric-prefix">R$</span>{{ faturamento_total }}
+      </div>
     </div>
 
-    <!-- CARDS -->
-
-    <div class="row g-4 mb-4">
-
-        <!-- FATURAMENTO -->
-
-        <div class="col-md-4">
-
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                <div class="card-body">
-
-                    <h6 class="text-muted">
-                        Faturamento Bruto
-                    </h6>
-
-                    <h2
-                        class="fw-bold"
-                        style="color: #6F4E37;"
-                    >
-                        R$ {{ faturamento_total }}
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- LUCRO -->
-
-        <div class="col-md-4">
-
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                <div class="card-body">
-
-                    <h6 class="text-muted">
-                        Lucro
-                    </h6>
-
-                    <h2 class="fw-bold text-success">
-
-                        R$ {{ lucro_total }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- DESPESAS -->
-
-        <div class="col-md-4">
-
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                <div class="card-body">
-
-                    <h6 class="text-muted">
-                        Despesas
-                    </h6>
-
-                    <h2 class="fw-bold text-danger">
-
-                        R$ {{ despesas_total }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
+    <div class="metric-card lucro">
+      <div class="metric-label">
+        <i class="bi bi-arrow-up-circle"></i>
+        Lucro
+      </div>
+      <div class="metric-value">
+        <span class="metric-prefix">R$</span>{{ lucro_total }}
+      </div>
     </div>
 
-    <!-- LOTES MAIS VALIOSOS -->
-
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-        <div class="card-body p-4">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <div>
-
-                    <h4 class="fw-bold">
-                        Lotes Mais Valiosos
-                    </h4>
-
-                    <p class="text-muted mb-0">
-                        Top 3 lotes com maior valor
-                    </p>
-
-                </div>
-
-                <i class="bi bi-bar-chart-fill fs-3 text-coffee"></i>
-
-            </div>
-
-            <div class="table-responsive">
-
-                <table class="table align-middle">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Lavoura</th>
-                            <th>Sacas</th>
-                            <th>Preço/Saca</th>
-                            <th>Valor Total</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {% for lote in lotes_valiosos %}
-
-                        <tr>
-
-                            <td class="fw-semibold">
-                                {{ lote.lavoura.nome }}
-                            </td>
-
-                            <td>
-                                {{ lote.quantidade_sacas }}
-                            </td>
-
-                            <td>
-                                R$ {{ lote.preco_saca }}
-                            </td>
-
-                            <td
-                                class="fw-bold"
-                                style="color: #6F4E37;"
-                            >
-                                R$ {{ lote.valor_total }}
-                            </td>
-
-                        </tr>
-
-                        {% empty %}
-
-                        <tr>
-
-                            <td
-                                colspan="4"
-                                class="text-center text-muted py-4"
-                            >
-
-                                Nenhum lote encontrado.
-
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
+    <div class="metric-card despesas">
+      <div class="metric-label">
+        <i class="bi bi-arrow-down-circle"></i>
+        Despesas
+      </div>
+      <div class="metric-value">
+        <span class="metric-prefix">R$</span>{{ despesas_total }}
+      </div>
     </div>
 
-    <!-- MOVIMENTAÇÕES -->
+  </div>
 
-    <div class="card border-0 shadow-sm rounded-4">
-
-        <div class="card-body p-4">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <div>
-
-                    <h4 class="fw-bold">
-                        Movimentações Financeiras
-                    </h4>
-
-                    <p class="text-muted mb-0">
-                        Controle de ganhos e despesas
-                    </p>
-
-                </div>
-
-                <i class="bi bi-wallet2 fs-3 text-coffee"></i>
-
-            </div>
-
-            <div class="table-responsive">
-
-                <table class="table align-middle">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Descrição</th>
-                            <th>Tipo</th>
-                            <th>Valor</th>
-                            <th>Data</th>
-                            <th>Ações</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {% for mov in movimentacoes %}
-
-                        <tr>
-
-                            <td>
-                                {{ mov.descricao }}
-                            </td>
-
-                            <td>
-
-                                {% if mov.tipo == 'Lucro' %}
-
-                                    <span class="badge bg-success">
-                                        Lucro
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="badge bg-danger">
-                                        Despesa
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
-
-                            <td>
-
-                                {% if mov.tipo == 'Lucro' %}
-
-                                    <span class="fw-bold text-success">
-                                        + R$ {{ mov.valor }}
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="fw-bold text-danger">
-                                        - R$ {{ mov.valor }}
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
-
-                            <td>
-                                {{ mov.data }}
-                            </td>
-
-                            <td class="d-flex gap-2">
-
-                                <!-- EDITAR -->
-
-                                <a
-                                    href="{% url 'editar_movimentacao' mov.id %}"
-                                    class="btn btn-coffee btn-sm"
-                                >
-
-                                    <i class="bi bi-pencil-fill"></i>
-
-                                </a>
-
-                                <!-- EXCLUIR -->
-
-                                <a
-                                    href="{% url 'excluir_movimentacao' mov.id %}"
-                                    class="btn btn-dark btn-sm"
-                                >
-
-                                    <i class="bi bi-trash-fill"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-                        {% empty %}
-
-                        <tr>
-
-                            <td
-                                colspan="5"
-                                class="text-center text-muted py-4"
-                            >
-
-                                Nenhuma movimentação encontrada.
-
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
+  <!-- LOTES MAIS VALIOSOS -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-head-left">
+        <h4>Lotes Mais Valiosos</h4>
+        <p>Top 3 lotes com maior valor de produção</p>
+      </div>
+      <div class="section-icon">
+        <i class="bi bi-bar-chart-fill"></i>
+      </div>
     </div>
+
+    <div class="fin-table-wrap">
+      <table class="fin-table">
+        <thead>
+          <tr>
+            <th style="width:48px;">#</th>
+            <th>Lavoura</th>
+            <th>Sacas</th>
+            <th>Preço / Saca</th>
+            <th>Valor Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lote in lotes_valiosos %}
+          <tr>
+            <td>
+              {% if forloop.counter == 1 %}
+                <span class="rank-medal gold">1</span>
+              {% elif forloop.counter == 2 %}
+                <span class="rank-medal silver">2</span>
+              {% else %}
+                <span class="rank-medal bronze">3</span>
+              {% endif %}
+            </td>
+            <td class="td-bold">{{ lote.lavoura.nome }}</td>
+            <td>{{ lote.quantidade_sacas }}</td>
+            <td>R$ {{ lote.preco_saca }}</td>
+            <td class="td-coffee">R$ {{ lote.valor_total }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>Nenhum lote encontrado.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MOVIMENTAÇÕES -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-head-left">
+        <h4>Movimentações Financeiras</h4>
+        <p>Histórico de ganhos e despesas</p>
+      </div>
+      <div class="section-icon">
+        <i class="bi bi-wallet2"></i>
+      </div>
+    </div>
+
+    <div class="fin-table-wrap">
+      <table class="fin-table">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th>Data</th>
+            <th style="text-align:center;">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mov in movimentacoes %}
+          <tr>
+            <td class="td-bold">{{ mov.descricao }}</td>
+            <td>
+              {% if mov.tipo == 'LUCRO' %}
+                <span class="badge-lucro">
+                  <i class="bi bi-arrow-up"></i> Lucro
+                </span>
+              {% else %}
+                <span class="badge-despesa">
+                  <i class="bi bi-arrow-down"></i> Despesa
+                </span>
+              {% endif %}
+            </td>
+            <td>
+              {% if mov.tipo == 'LUCRO' %}
+                <span class="val-positive">
+                  <i class="bi bi-plus"></i> R$ {{ mov.valor }}
+                </span>
+              {% else %}
+                <span class="val-negative">
+                  <i class="bi bi-dash"></i> R$ {{ mov.valor }}
+                </span>
+              {% endif %}
+            </td>
+            <td style="color: var(--muted); font-size:0.82rem;">{{ mov.data }}</td>
+            <td>
+              <div style="display:flex; gap:6px; justify-content:center;">
+                <a href="{% url 'editar_movimentacao' mov.id %}" class="btn-action edit" title="Editar">
+                  <i class="bi bi-pencil-fill"></i>
+                </a>
+                <a href="{% url 'excluir_movimentacao' mov.id %}" class="btn-action del" title="Excluir">
+                  <i class="bi bi-trash-fill"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <i class="bi bi-wallet2"></i>
+                <p>Nenhuma movimentação encontrada.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 </div>
 
-<!-- MODAL -->
+<!-- MODAL NOVA MOVIMENTAÇÃO -->
+<div class="modal fade" id="modalMovimentacao" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
 
-<div
-    class="modal fade"
-    id="modalMovimentacao"
-    tabindex="-1"
->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-plus-circle me-2"></i>Nova Movimentação
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-    <div class="modal-dialog">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
 
-        <div class="modal-content rounded-4 border-0">
+          <div class="mb-3">
+            <label class="form-label">Descrição</label>
+            <input type="text" name="descricao" class="form-control"
+                   placeholder="Ex: Venda de sacas, Adubo…" required>
+          </div>
 
-            <div class="modal-header">
+          <div class="mb-3">
+            <label class="form-label">Tipo</label>
+            <select name="tipo" class="form-select" required>
+              <option value="LUCRO">Lucro</option>
+              <option value="DESPESA">Despesa</option>
+            </select>
+          </div>
 
-                <h5 class="modal-title fw-bold">
-                    Nova Movimentação
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                ></button>
-
-            </div>
-
-            <form method="POST">
-
-                {% csrf_token %}
-
-                <div class="modal-body">
-
-                    <!-- DESCRIÇÃO -->
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Descrição
-                        </label>
-
-                        <input
-                            type="text"
-                            name="descricao"
-                            class="form-control"
-                            required
-                        >
-
-                    </div>
-
-                    <!-- TIPO -->
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Tipo
-                        </label>
-
-                        <select
-    name="tipo"
-    class="form-select"
-    required
->
-
-    <option value="LUCRO">
-        Lucro
-    </option>
-
-    <option value="DESPESA">
-        Despesa
-    </option>
-
-</select>
-
-                    </div>
-
-                    <!-- VALOR -->
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Valor
-                        </label>
-
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="valor"
-                            class="form-control"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button
-                        type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal"
-                    >
-
-                        Cancelar
-
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="btn btn-coffee"
-                    >
-
-                        Salvar
-
-                    </button>
-
-                </div>
-
-            </form>
+          <div class="mb-3">
+            <label class="form-label">Valor (R$)</label>
+            <input type="number" step="0.01" name="valor" class="form-control"
+                   placeholder="0,00" required>
+          </div>
 
         </div>
+        <div class="modal-footer gap-2">
+          <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn-save">
+            <i class="bi bi-check2 me-1"></i>Salvar
+          </button>
+        </div>
+      </form>
 
     </div>
-
+  </div>
 </div>
 
 {% endblock %}

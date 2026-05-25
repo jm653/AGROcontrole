@@ -65,7 +65,7 @@ Relatórios | AgroControle
                             </div>
 
                             <div class="card-number">
-                                1.280
+                                {{ producao_total }}
                             </div>
 
                             <small>
@@ -105,11 +105,13 @@ Relatórios | AgroControle
                             </div>
 
                             <div class="card-number text-coffee">
-                                R$ 85K
+                                <h4>
+                                R$ {{ faturamento_total }}
+                                </h4>
                             </div>
 
                             <small class="text-success">
-                                +12% este mês
+                                Lucro: R$ {{ lucro_total }}
                             </small>
 
                         </div>
@@ -145,7 +147,7 @@ Relatórios | AgroControle
                             </div>
 
                             <div class="card-number text-coffee">
-                                42
+                                {{ total_lotes }}
                             </div>
 
                             <small class="text-primary">
@@ -185,12 +187,30 @@ Relatórios | AgroControle
                             </div>
 
                             <div class="card-number text-coffee">
-                                94%
+                                {{ eficiencia }}%
                             </div>
 
                             <small class="text-success">
-                                Excelente desempenho
-                            </small>
+
+                                {% if eficiencia >= 80 %}
+
+                                    Excelente desempenho
+
+                                {% elif eficiencia >= 60 %}
+
+                                    Bom desempenho
+
+                                {% elif eficiencia >= 40 %}
+
+                                    Desempenho moderado
+
+                                {% else %}
+
+                                    Baixo desempenho
+
+                                {% endif %}
+
+                        </small>
 
                         </div>
 

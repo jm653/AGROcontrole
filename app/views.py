@@ -8,6 +8,8 @@ from django.db.models import Count
 from django.db.models import Sum, Count
 from .models import Propriedade, Lavoura, LoteDeCafe,MovimentacaoFinanceira
 
+import json
+
 from .forms import (
     LoteForm,
     MovimentacaoFinanceiraForm
@@ -199,6 +201,14 @@ def produtor_dashboard(request):
         'etapas_labels': etapas_labels,
 
         'etapas_valores': etapas_valores,
+
+        # ANTES (no final do produtor_dashboard):
+        'etapas_labels': etapas_labels,
+        'etapas_valores': etapas_valores,
+
+        # DEPOIS:
+        'etapas_labels': json.dumps(etapas_labels),
+        'etapas_valores': json.dumps(etapas_valores),
     }
 
     return render(
@@ -206,6 +216,11 @@ def produtor_dashboard(request):
         'produtor_dashboard.html',
         context
     )
+
+
+
+
+
 from django.db.models import Sum    
 from django.db.models.functions import TruncMonth
 
@@ -720,7 +735,7 @@ def financeiro_view(request):
         produtor=request.user
     ).order_by('-id')
 
-    # FORMULÁRIO
+    # FORM
 
     if request.method == 'POST':
 
@@ -744,7 +759,7 @@ def financeiro_view(request):
 
         form = MovimentacaoFinanceiraForm()
 
-    # FATURAMENTO BRUTO
+    # FATURAMENTO DOS LOTES
 
     faturamento_total = 0
 
@@ -755,9 +770,9 @@ def financeiro_view(request):
             lote.preco_saca
         )
 
-    # LUCROS
+    # ENTRADAS (LUCROS)
 
-    total_lucros = movimentacoes.filter(
+    entradas_total = movimentacoes.filter(
         tipo='LUCRO'
     ).aggregate(
         total=Sum('valor')
@@ -765,18 +780,21 @@ def financeiro_view(request):
 
     # DESPESAS
 
-    total_despesas = movimentacoes.filter(
+    despesas_total = movimentacoes.filter(
         tipo='DESPESA'
     ).aggregate(
         total=Sum('valor')
     )['total'] or 0
 
+    # FATURAMENTO BRUTO REAL
+
+    faturamento_total += entradas_total
+
     # LUCRO FINAL
 
     lucro_total = (
-        faturamento_total +
-        total_lucros -
-        total_despesas
+        faturamento_total -
+        despesas_total
     )
 
     # LOTES MAIS VALIOSOS
@@ -791,7 +809,9 @@ def financeiro_view(request):
 
         'lucro_total': lucro_total,
 
-        'despesas_total': total_despesas,
+        'despesas_total': despesas_total,
+
+        'saldo_final': lucro_total,
 
         'lotes_valiosos': lotes_valiosos,
 
@@ -829,10 +849,6 @@ def editar_movimentacao(request, id):
 
             return redirect('financeiro')
 
-        else:
-
-            print(form.errors)
-
     else:
 
         form = MovimentacaoFinanceiraForm(
@@ -862,6 +878,19 @@ def excluir_movimentacao(request, id):
 
     return redirect('financeiro')
 
+@login_required
+def excluir_movimentacao(request, id):
+
+    movimentacao = get_object_or_404(
+        MovimentacaoFinanceira,
+        id=id,
+        produtor=request.user
+    )
+
+    movimentacao.delete()
+
+    return redirect('financeiro')
+
 # =========================================================
 # RELATÓRIOS
 # =========================================================
@@ -869,9 +898,117 @@ def excluir_movimentacao(request, id):
 @login_required
 def relatorios_view(request):
 
+    # LAVOURAS
+
+    lavouras = Lavoura.objects.filter(
+        propriedade__produtor=request.user
+    )
+
+    # LOTES
+
+    lotes = LoteDeCafe.objects.filter(
+        lavoura__propriedade__produtor=request.user
+    )
+
+    # MOVIMENTAÇÕES
+
+    movimentacoes = MovimentacaoFinanceira.objects.filter(
+        produtor=request.user
+    )
+
+    # PRODUÇÃO TOTAL
+
+    producao_total = 0
+
+    faturamento_total = 0
+
+    for lote in lotes:
+
+        producao_total += lote.quantidade_sacas
+
+        faturamento_total += (
+            lote.quantidade_sacas *
+            lote.preco_saca
+        )
+
+    # DESPESAS
+
+    despesas_total = movimentacoes.filter(
+        tipo='DESPESA'
+    ).aggregate(
+        total=Sum('valor')
+    )['total'] or 0
+
+    # ENTRADAS
+
+    entradas_total = movimentacoes.filter(
+        tipo='LUCRO'
+    ).aggregate(
+        total=Sum('valor')
+    )['total'] or 0
+
+    # FATURAMENTO REAL
+
+    faturamento_total += entradas_total
+
+    # LUCRO FINAL
+
+    lucro_total = (
+        faturamento_total -
+        despesas_total
+    )
+
+    # TOTAL DE LOTES
+
+    total_lotes = lotes.count()
+
+
+
+
+
+
+
+    # EFICIÊNCIA
+
+    if faturamento_total > 0:
+
+     eficiencia = round(
+        (lucro_total / faturamento_total) * 100,
+        1
+    )
+
+    else:
+
+     eficiencia = 0
+
+
+
+
+
+
+
+
+
+    context = {
+
+        'producao_total': producao_total,
+
+        'faturamento_total': faturamento_total,
+
+        'lucro_total': lucro_total,
+
+        'despesas_total': despesas_total,
+
+        'total_lotes': total_lotes,
+
+        'eficiencia': eficiencia,
+
+    }
+
     return render(
         request,
-        'relatorios.html'
+        'relatorios.html',
+        context
     )
 
 
