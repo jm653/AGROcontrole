@@ -1125,53 +1125,265 @@ def exportar_excel(request):
 #PDF
 # =========================================================
 
+# =========================================================
+# SUBSTITUA a função exportar_pdf no seu views.py por esta
+# =========================================================
+# Dependência: pip install reportlab
+# (provavelmente já está instalado pois você já usa canvas)
+# =========================================================
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import (
+    SimpleDocTemplate, Table, TableStyle,
+    Paragraph, Spacer, HRFlowable
+)
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+from reportlab.platypus import KeepTogether
+from datetime import datetime
+
 @login_required
 def exportar_pdf(request):
 
+    # ── dados ──────────────────────────────────────────
     movimentacoes = MovimentacaoFinanceira.objects.filter(
         produtor=request.user
+    ).order_by('-data')
+
+    lotes = LoteDeCafe.objects.filter(
+        lavoura__propriedade__produtor=request.user
     )
 
-    response = HttpResponse(
-        content_type='application/pdf'
+    faturamento_total = sum(
+        l.quantidade_sacas * l.preco_saca for l in lotes
+    )
+    total_lucros = movimentacoes.filter(tipo='LUCRO').aggregate(
+        total=Sum('valor'))['total'] or 0
+    total_despesas = movimentacoes.filter(tipo='DESPESA').aggregate(
+        total=Sum('valor'))['total'] or 0
+    lucro_total = faturamento_total + total_lucros - total_despesas
+    producao_total = sum(l.quantidade_sacas for l in lotes)
+
+    # ── response ───────────────────────────────────────
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=relatorio_agrocontrole.pdf'
+
+    # ── cores ──────────────────────────────────────────
+    ESPRESSO  = colors.HexColor('#1c0a03')
+    COFFEE    = colors.HexColor('#4E342E')
+    CARAMEL   = colors.HexColor('#c8813a')
+    CREAM     = colors.HexColor('#F5F5DC')
+    IVORY     = colors.HexColor('#fdfaf4')
+    SUCCESS   = colors.HexColor('#2d7a4f')
+    DANGER    = colors.HexColor('#b83232')
+    MUTED     = colors.HexColor('#9a8878')
+    WHITE     = colors.white
+    LIGHT_LINE= colors.HexColor('#ede5d8')
+
+    # ── doc ────────────────────────────────────────────
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=A4,
+        rightMargin=2*cm, leftMargin=2*cm,
+        topMargin=2*cm,   bottomMargin=2*cm,
     )
 
-    response[
-        'Content-Disposition'
-    ] = 'attachment; filename=relatorio.pdf'
+    W, H = A4
+    col_w = W - 4*cm   # usable width
 
-    pdf = canvas.Canvas(response)
+    # ── estilos ────────────────────────────────────────
+    styles = getSampleStyleSheet()
 
-    pdf.setFont("Helvetica-Bold", 16)
+    def s(name, **kw):
+        base = styles['Normal']
+        return ParagraphStyle(name, parent=base, **kw)
 
-    pdf.drawString(
-        200,
-        800,
-        "Relatório Financeiro"
+    ST = {
+        'header_title': s('ht',
+            fontSize=22, textColor=WHITE,
+            fontName='Helvetica-Bold', leading=28),
+        'header_sub': s('hs',
+            fontSize=9, textColor=colors.HexColor('#d7ccc8'),
+            fontName='Helvetica', leading=13),
+        'header_date': s('hd',
+            fontSize=8, textColor=colors.HexColor('#a1887f'),
+            fontName='Helvetica', alignment=TA_RIGHT),
+        'section': s('sec',
+            fontSize=11, textColor=ESPRESSO,
+            fontName='Helvetica-Bold', spaceBefore=18, spaceAfter=6),
+        'label': s('lbl',
+            fontSize=7.5, textColor=MUTED,
+            fontName='Helvetica', leading=11),
+        'value': s('val',
+            fontSize=18, textColor=ESPRESSO,
+            fontName='Helvetica-Bold', leading=22),
+        'value_green': s('vg',
+            fontSize=18, textColor=SUCCESS,
+            fontName='Helvetica-Bold', leading=22),
+        'value_red': s('vr',
+            fontSize=18, textColor=DANGER,
+            fontName='Helvetica-Bold', leading=22),
+        'normal': s('nm',
+            fontSize=9, textColor=COFFEE,
+            fontName='Helvetica', leading=13),
+        'footer': s('ft',
+            fontSize=7.5, textColor=MUTED,
+            fontName='Helvetica', alignment=TA_CENTER),
+    }
+
+    story = []
+
+    # ══════════════════════════════════════════════════
+    # HEADER BLOCK (tabela com fundo escuro)
+    # ══════════════════════════════════════════════════
+    now_str = datetime.now().strftime('%d/%m/%Y às %H:%M')
+    user_str = request.user.get_full_name() or request.user.username
+
+    header_left = [
+        Paragraph('☕ AgroControle', ST['header_title']),
+        Spacer(1, 4),
+        Paragraph('Relatório Financeiro de Produção', ST['header_sub']),
+    ]
+    header_right = [
+        Paragraph(f'Gerado em {now_str}', ST['header_date']),
+        Spacer(1, 4),
+        Paragraph(f'Produtor: {user_str}', ST['header_date']),
+    ]
+
+    header_table = Table(
+        [[header_left, header_right]],
+        colWidths=[col_w * 0.6, col_w * 0.4]
     )
+    header_table.setStyle(TableStyle([
+        ('BACKGROUND',   (0,0), (-1,-1), ESPRESSO),
+        ('ROUNDEDCORNERS', [10]),
+        ('TOPPADDING',   (0,0), (-1,-1), 20),
+        ('BOTTOMPADDING',(0,0), (-1,-1), 20),
+        ('LEFTPADDING',  (0,0), (0,-1),  20),
+        ('RIGHTPADDING', (-1,0),(-1,-1), 20),
+        ('VALIGN',       (0,0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',        (1,0), (1,-1),  'RIGHT'),
+    ]))
+    story.append(header_table)
+    story.append(Spacer(1, 20))
 
-    y = 750
+    # ══════════════════════════════════════════════════
+    # KPI CARDS (4 colunas)
+    # ══════════════════════════════════════════════════
+    def kpi_cell(label, value, value_style='value'):
+        return [
+            Paragraph(label.upper(), ST['label']),
+            Spacer(1, 4),
+            Paragraph(str(value), ST[value_style]),
+        ]
 
-    pdf.setFont("Helvetica", 12)
+    eficiencia_val = round((lucro_total / faturamento_total * 100), 1) if faturamento_total > 0 else 0
+
+    kpi_data = [[
+        kpi_cell('Produção Total', f'{producao_total} sacas'),
+        kpi_cell('Faturamento Bruto', f'R$ {faturamento_total:,.2f}'),
+        kpi_cell('Lucro Final', f'R$ {lucro_total:,.2f}',
+                 'value_green' if lucro_total >= 0 else 'value_red'),
+        kpi_cell('Eficiência', f'{eficiencia_val}%'),
+    ]]
+
+    kpi_table = Table(kpi_data, colWidths=[col_w/4]*4, rowHeights=[70])
+    kpi_table.setStyle(TableStyle([
+        ('BACKGROUND',   (0,0), (0,-1), IVORY),
+        ('BACKGROUND',   (1,0), (1,-1), IVORY),
+        ('BACKGROUND',   (2,0), (2,-1), IVORY),
+        ('BACKGROUND',   (3,0), (3,-1), IVORY),
+        ('BOX',          (0,0), (0,-1), 0.5, LIGHT_LINE),
+        ('BOX',          (1,0), (1,-1), 0.5, LIGHT_LINE),
+        ('BOX',          (2,0), (2,-1), 0.5, LIGHT_LINE),
+        ('BOX',          (3,0), (3,-1), 0.5, LIGHT_LINE),
+        ('TOPPADDING',   (0,0), (-1,-1), 14),
+        ('BOTTOMPADDING',(0,0), (-1,-1), 14),
+        ('LEFTPADDING',  (0,0), (-1,-1), 14),
+        ('RIGHTPADDING', (0,0), (-1,-1), 14),
+        ('VALIGN',       (0,0), (-1,-1), 'TOP'),
+        ('LINEABOVE',    (0,0), (0,-1), 3, CARAMEL),
+        ('LINEABOVE',    (1,0), (1,-1), 3, CARAMEL),
+        ('LINEABOVE',    (2,0), (2,-1), 3, SUCCESS),
+        ('LINEABOVE',    (3,0), (3,-1), 3, colors.HexColor('#1a5fa0')),
+    ]))
+    story.append(kpi_table)
+    story.append(Spacer(1, 22))
+
+    # ══════════════════════════════════════════════════
+    # MOVIMENTAÇÕES FINANCEIRAS
+    # ══════════════════════════════════════════════════
+    story.append(Paragraph('Movimentações Financeiras', ST['section']))
+    story.append(HRFlowable(width=col_w, thickness=1, color=LIGHT_LINE, spaceAfter=8))
+
+    mov_header = ['Descrição', 'Tipo', 'Valor (R$)', 'Data']
+    mov_rows = [mov_header]
 
     for mov in movimentacoes:
+        tipo_label = 'Lucro' if mov.tipo == 'LUCRO' else 'Despesa'
+        sinal = '+' if mov.tipo == 'LUCRO' else '-'
+        mov_rows.append([
+            mov.descricao,
+            tipo_label,
+            f'{sinal} R$ {mov.valor:,.2f}',
+            str(mov.data.strftime('%d/%m/%Y') if hasattr(mov.data, 'strftime') else mov.data),
+        ])
 
-        texto = (
-            f'{mov.descricao} | '
-            f'{mov.tipo} | '
-            f'R$ {mov.valor}'
-        )
+    if len(mov_rows) == 1:
+        mov_rows.append(['Nenhuma movimentação encontrada.', '', '', ''])
 
-        pdf.drawString(
-            50,
-            y,
-            texto
-        )
+    col_widths = [col_w*0.42, col_w*0.16, col_w*0.22, col_w*0.20]
+    mov_table = Table(mov_rows, colWidths=col_widths, repeatRows=1)
 
-        y -= 25
+    mov_style = [
+        # header
+        ('BACKGROUND',   (0,0), (-1,0),  ESPRESSO),
+        ('TEXTCOLOR',    (0,0), (-1,0),  WHITE),
+        ('FONTNAME',     (0,0), (-1,0),  'Helvetica-Bold'),
+        ('FONTSIZE',     (0,0), (-1,0),  8),
+        ('TOPPADDING',   (0,0), (-1,0),  9),
+        ('BOTTOMPADDING',(0,0), (-1,0),  9),
+        ('LEFTPADDING',  (0,0), (-1,0),  10),
+        # rows
+        ('FONTNAME',     (0,1), (-1,-1), 'Helvetica'),
+        ('FONTSIZE',     (0,1), (-1,-1), 8.5),
+        ('TEXTCOLOR',    (0,1), (-1,-1), COFFEE),
+        ('TOPPADDING',   (0,1), (-1,-1), 8),
+        ('BOTTOMPADDING',(0,1), (-1,-1), 8),
+        ('LEFTPADDING',  (0,1), (-1,-1), 10),
+        ('ROWBACKGROUNDS',(0,1),(-1,-1), [WHITE, IVORY]),
+        ('LINEBELOW',    (0,0), (-1,-1), 0.4, LIGHT_LINE),
+        ('BOX',          (0,0), (-1,-1), 0.5, LIGHT_LINE),
+        ('VALIGN',       (0,0), (-1,-1), 'MIDDLE'),
+    ]
 
-    pdf.save()
+    # colorir coluna valor por tipo
+    for i, row in enumerate(mov_rows[1:], 1):
+        if len(row) > 1:
+            if row[1] == 'Lucro':
+                mov_style.append(('TEXTCOLOR', (2,i), (2,i), SUCCESS))
+                mov_style.append(('FONTNAME',  (2,i), (2,i), 'Helvetica-Bold'))
+            elif row[1] == 'Despesa':
+                mov_style.append(('TEXTCOLOR', (2,i), (2,i), DANGER))
+                mov_style.append(('FONTNAME',  (2,i), (2,i), 'Helvetica-Bold'))
 
+    mov_table.setStyle(TableStyle(mov_style))
+    story.append(mov_table)
+    story.append(Spacer(1, 22))
+
+    # ══════════════════════════════════════════════════
+    # FOOTER
+    # ══════════════════════════════════════════════════
+    story.append(HRFlowable(width=col_w, thickness=0.5, color=LIGHT_LINE, spaceBefore=10, spaceAfter=8))
+    story.append(Paragraph(
+        f'AgroControle — Relatório gerado em {now_str} · Documento confidencial',
+        ST['footer']
+    ))
+
+    # ── build ──────────────────────────────────────────
+    doc.build(story)
     return response
 
 # =========================================================
