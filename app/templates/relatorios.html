@@ -26,14 +26,14 @@ Relatórios | AgroControle
 
         <div class="d-flex gap-2">
 
-            <button class="btn btn-outline-dark">
+            <a href="{% url 'exportar_pdf' %}" class="btn btn-outline-dark"></a>
 
                 <i class="bi bi-file-earmark-pdf"></i>
                 Exportar PDF
 
             </button>
 
-            <button class="btn btn-coffee">
+            <a href="{% url 'exportar_excel' %}" class="btn btn-coffee"></a>
 
                 <i class="bi bi-file-earmark-excel"></i>
                 Exportar Excel
@@ -44,181 +44,39 @@ Relatórios | AgroControle
 
     </div>
 
-    <!-- CARDS -->
+   <!-- CARDS -->
 
-    <div class="row g-4 mb-4">
+<div class="row g-4 mb-4">
 
-        <!-- PRODUÇÃO TOTAL -->
+    <!-- PRODUÇÃO TOTAL -->
 
-        <div class="col-md-3">
+    <div class="col-md-3">
 
-            <div class="card card-dashboard bg-coffee">
+        <div class="card card-dashboard bg-coffee h-100">
 
-                <div class="card-body">
+            <div class="card-body">
 
-                    <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
 
-                        <div>
+                    <div>
 
-                            <div class="card-title">
-                                Produção Total
-                            </div>
-
-                            <div class="card-number">
-                                {{ producao_total }}
-                            </div>
-
-                            <small>
-                                sacas produzidas
-                            </small>
-
+                        <div class="card-title">
+                            Produção Total
                         </div>
 
-                        <div class="icon-card">
-
-                            <i class="bi bi-cup-hot-fill"></i>
-
+                        <div class="card-number">
+                            {{ producao_total }}
                         </div>
 
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- FATURAMENTO -->
-
-        <div class="col-md-3">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title text-muted">
-                                Faturamento
-                            </div>
-
-                            <div class="card-number text-coffee">
-                                <h4>
-                                R$ {{ faturamento_total }}
-                                </h4>
-                            </div>
-
-                            <small class="text-success">
-                                Lucro: R$ {{ lucro_total }}
-                            </small>
-
-                        </div>
-
-                        <div class="icon-card-coffee">
-
-                            <i class="bi bi-cash-coin"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- LOTES -->
-
-        <div class="col-md-3">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title text-muted">
-                                Lotes Finalizados
-                            </div>
-
-                            <div class="card-number text-coffee">
-                                {{ total_lotes }}
-                            </div>
-
-                            <small class="text-primary">
-                                Qualidade Premium
-                            </small>
-
-                        </div>
-
-                        <div class="icon-card-coffee">
-
-                            <i class="bi bi-box-seam"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- EFICIÊNCIA -->
-
-        <div class="col-md-3">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title text-muted">
-                                Eficiência
-                            </div>
-
-                            <div class="card-number text-coffee">
-                                {{ eficiencia }}%
-                            </div>
-
-                            <small class="text-success">
-
-                                {% if eficiencia >= 80 %}
-
-                                    Excelente desempenho
-
-                                {% elif eficiencia >= 60 %}
-
-                                    Bom desempenho
-
-                                {% elif eficiencia >= 40 %}
-
-                                    Desempenho moderado
-
-                                {% else %}
-
-                                    Baixo desempenho
-
-                                {% endif %}
-
+                        <small>
+                            sacas produzidas
                         </small>
 
-                        </div>
+                    </div>
 
-                        <div class="icon-card-coffee">
+                    <div class="icon-card">
 
-                            <i class="bi bi-graph-up-arrow"></i>
-
-                        </div>
+                        <i class="bi bi-cup-hot-fill"></i>
 
                     </div>
 
@@ -229,6 +87,154 @@ Relatórios | AgroControle
         </div>
 
     </div>
+
+    <!-- FATURAMENTO -->
+
+    <div class="col-md-3">
+
+        <div class="card card-dashboard h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title text-muted">
+                            Faturamento Total
+                        </div>
+
+                        <div class="card-number text-coffee">
+                            R$ {{ faturamento_total }}
+                        </div>
+
+                        <small class="text-success">
+                            Lucro: R$ {{ lucro_total }}
+                        </small>
+
+                    </div>
+
+                    <div class="icon-card-coffee">
+
+                        <i class="bi bi-cash-coin"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MELHOR LAVOURA -->
+
+    <div class="col-md-3">
+
+        <div class="card card-dashboard h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title text-muted">
+                            Melhor Lavoura
+                        </div>
+
+                        <div class="card-number text-coffee">
+
+                            {% if melhor_lavoura %}
+                                {{ melhor_lavoura.nome }}
+                            {% else %}
+                                ---
+                            {% endif %}
+
+                        </div>
+
+                        <small class="text-primary">
+
+                            Maior produção registrada
+
+                        </small>
+
+                    </div>
+
+                    <div class="icon-card-coffee">
+
+                        <i class="bi bi-trophy-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- EFICIÊNCIA -->
+
+    <div class="col-md-3">
+
+        <div class="card card-dashboard h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="card-title text-muted">
+                            Eficiência
+                        </div>
+
+                        <div class="card-number text-coffee">
+                            {{ eficiencia }}%
+                        </div>
+
+                        <small class="text-success">
+
+                            {% if eficiencia >= 80 %}
+
+                                Excelente desempenho
+
+                            {% elif eficiencia >= 60 %}
+
+                                Bom desempenho
+
+                            {% elif eficiencia >= 40 %}
+
+                                Desempenho moderado
+
+                            {% else %}
+
+                                Baixo desempenho
+
+                            {% endif %}
+
+                        </small>
+
+                    </div>
+
+                    <div class="icon-card-coffee">
+
+                        <i class="bi bi-graph-up-arrow"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
     <!-- GRÁFICOS -->
 
@@ -267,6 +273,235 @@ Relatórios | AgroControle
         </div>
 
     </div>
+
+<!-- RELATÓRIO POR LAVOURA -->
+
+<div class="table-container mb-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h5 class="fw-bold text-coffee m-0">
+
+                Relatório por Lavoura
+
+            </h5>
+
+            <small class="text-muted">
+
+                Desempenho individual de cada lavoura
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>Lavoura</th>
+                    <th>Total de Sacas</th>
+                    <th>Lotes</th>
+                    <th>Faturamento</th>
+                    <th>Desempenho</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in relatorio_lavouras %}
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+
+                            {{ item.nome }}
+
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        {{ item.sacas }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.lotes }}
+
+                    </td>
+
+                    <td class="text-coffee fw-bold">
+
+                        R$ {{ item.faturamento }}
+
+                    </td>
+
+                    <td>
+
+                        {% if item.faturamento > 1000000 %}
+
+                            <span class="badge bg-success">
+
+                                Excelente
+
+                            </span>
+
+                        {% elif item.faturamento > 300000 %}
+
+                            <span class="badge bg-primary">
+
+                                Bom
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Médio
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="5" class="text-center text-muted py-4">
+
+                        Nenhuma lavoura encontrada.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-6">
+
+        <div class="card card-dashboard">
+
+            <div class="card-body">
+
+                <h5 class="text-coffee fw-bold">
+
+                    Entradas
+
+                </h5>
+
+                <h2 class="text-success">
+
+                    R$ {{ faturamento_total }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="card card-dashboard">
+
+            <div class="card-body">
+
+                <h5 class="text-coffee fw-bold">
+
+                    Saídas
+
+                </h5>
+
+                <h2 class="text-danger">
+
+                    R$ {{ despesas_total }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="chart-container mt-4">
+
+    <h5 class="chart-title">
+
+        Ranking de Lavouras
+
+    </h5>
+
+    <div class="d-flex flex-column gap-3">
+
+        {% for item in relatorio_lavouras %}
+
+        <div>
+
+            <div class="d-flex justify-content-between">
+
+                <strong>
+
+                    {{ item.nome }}
+
+                </strong>
+
+                <span>
+
+                    R$ {{ item.faturamento }}
+
+                </span>
+
+            </div>
+
+            <div class="progress mt-1">
+
+                <div
+                    class="progress-bar bg-coffee"
+                    style="width: 100%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
 
     <!-- TABELA -->
 
@@ -309,95 +544,324 @@ Relatórios | AgroControle
 
                 <tbody>
 
-                    <tr>
+    <!-- RELATÓRIO FINANCEIRO -->
 
-                        <td>
+    <div class="mb-4">
 
-                            <strong>
-                                Produção Janeiro
-                            </strong>
+    <form method="GET" class="d-flex gap-2">
 
-                        </td>
+        <select
+            name="periodo"
+            class="form-select w-auto"
+        >
 
-                        <td>
-                            Jan/2026
-                        </td>
+            <option value="">
+                Todo período
+            </option>
 
-                        <td>
-                            Produção
-                        </td>
+            <option value="7dias">
+                Últimos 7 dias
+            </option>
 
-                        <td>
+            <option value="30dias">
+                Últimos 30 dias
+            </option>
 
-                            <span class="badge bg-success">
-                                Finalizado
-                            </span>
+            <option value="365dias">
+                Último ano
+            </option>
 
-                        </td>
+        </select>
 
-                        <td>
+        <button class="btn btn-coffee">
 
-                            <button class="btn btn-sm btn-outline-dark">
+            Filtrar
 
-                                <i class="bi bi-eye"></i>
+        </button>
 
-                            </button>
+    </form>
 
-                            <button class="btn btn-sm btn-outline-success">
+</div>
 
-                                <i class="bi bi-download"></i>
+    <tr>
 
-                            </button>
+        <td>
 
-                        </td>
+            <strong>
+                Relatório Financeiro Geral
+            </strong>
 
-                    </tr>
+        </td>
 
-                    <tr>
+        <td>
+            Mensal
+        </td>
 
-                        <td>
+        <td>
+            Financeiro
+        </td>
 
-                            <strong>
-                                Relatório Financeiro
-                            </strong>
+        <td>
 
-                        </td>
+            <span class="badge bg-success">
+                Atualizado
+            </span>
 
-                        <td>
-                            Fev/2026
-                        </td>
+        </td>
 
-                        <td>
-                            Financeiro
-                        </td>
+        <td>
 
-                        <td>
+            <div class="d-flex gap-2">
 
-                            <span class="badge bg-warning text-dark">
-                                Em análise
-                            </span>
+                <button class="btn btn-sm btn-outline-dark">
 
-                        </td>
+                    <i class="bi bi-eye"></i>
 
-                        <td>
+                </button>
 
-                            <button class="btn btn-sm btn-outline-dark">
+                <button class="btn btn-sm btn-outline-success">
 
-                                <i class="bi bi-eye"></i>
+                    <i class="bi bi-file-earmark-pdf"></i>
 
-                            </button>
+                </button>
 
-                            <button class="btn btn-sm btn-outline-success">
+                <button class="btn btn-sm btn-outline-primary">
 
-                                <i class="bi bi-download"></i>
+                    <i class="bi bi-file-earmark-excel"></i>
 
-                            </button>
+                </button>
 
-                        </td>
+            </div>
 
-                    </tr>
+        </td>
 
-                </tbody>
+    </tr>
+
+    <!-- PRODUÇÃO -->
+
+    <tr>
+
+        <td>
+
+            <strong>
+                Relatório de Produção
+            </strong>
+
+        </td>
+
+        <td>
+            Safra Atual
+        </td>
+
+        <td>
+            Produção
+        </td>
+
+        <td>
+
+            <span class="badge bg-success">
+                Finalizado
+            </span>
+
+        </td>
+
+        <td>
+
+            <div class="d-flex gap-2">
+
+                <button class="btn btn-sm btn-outline-dark">
+
+                    <i class="bi bi-eye"></i>
+
+                </button>
+
+                <button class="btn btn-sm btn-outline-success">
+
+                    <i class="bi bi-file-earmark-pdf"></i>
+
+                </button>
+
+                <button class="btn btn-sm btn-outline-primary">
+
+                    <i class="bi bi-file-earmark-excel"></i>
+
+                </button>
+
+            </div>
+
+        </td>
+
+    </tr>
+
+    <!-- DESPESAS -->
+
+    <tr>
+
+        <td>
+
+            <strong>
+                Relatório de Despesas
+            </strong>
+
+        </td>
+
+        <td>
+            Últimos 30 dias
+        </td>
+
+        <td>
+            Custos
+        </td>
+
+        <td>
+
+            <span class="badge bg-warning text-dark">
+                Em análise
+            </span>
+
+        </td>
+
+        <td>
+
+            <div class="d-flex gap-2">
+
+                <button class="btn btn-sm btn-outline-dark">
+
+                    <i class="bi bi-eye"></i>
+
+                </button>
+
+                <button class="btn btn-sm btn-outline-success">
+
+                    <i class="bi bi-file-earmark-pdf"></i>
+
+                </button>
+
+                <button class="btn btn-sm btn-outline-primary">
+
+                    <i class="bi bi-file-earmark-excel"></i>
+
+                </button>
+
+            </div>
+
+        </td>
+
+    </tr>
+
+    <!-- PRODUTIVIDADE -->
+
+    <tr>
+
+        <td>
+
+            <strong>
+                Relatório de Produtividade
+            </strong>
+
+        </td>
+
+        <td>
+            Trimestral
+        </td>
+
+        <td>
+            Desempenho
+        </td>
+
+        <td>
+
+            <span class="badge bg-success">
+                Finalizado
+            </span>
+
+        </td>
+
+        <td>
+
+            <div class="d-flex gap-2">
+
+                <button class="btn btn-sm btn-outline-dark">
+
+                    <i class="bi bi-eye"></i>
+
+                </button>
+
+                <button class="btn btn-sm btn-outline-success">
+
+                    <i class="bi bi-file-earmark-pdf"></i>
+
+                </button>
+
+                <button class="btn btn-sm btn-outline-primary">
+
+                    <i class="bi bi-file-earmark-excel"></i>
+
+                </button>
+
+            </div>
+
+        </td>
+
+    </tr>
+
+    <!-- CONSOLIDADO -->
+
+    <tr>
+
+        <td>
+
+            <strong>
+                Relatório Consolidado
+            </strong>
+
+        </td>
+
+        <td>
+            Anual
+        </td>
+
+        <td>
+            Geral
+        </td>
+
+        <td>
+
+            <span class="badge bg-primary">
+                Gerado automaticamente
+            </span>
+
+        </td>
+
+        <td>
+
+            <div class="d-flex gap-2">
+
+                <button class="btn btn-sm btn-outline-dark">
+
+                    <i class="bi bi-eye"></i>
+
+                </button>
+
+                <button class="btn btn-sm btn-outline-success">
+
+                    <i class="bi bi-file-earmark-pdf"></i>
+
+                </button>
+
+                <button class="btn btn-sm btn-outline-primary">
+
+                    <i class="bi bi-file-earmark-excel"></i>
+
+                </button>
+
+            </div>
+
+        </td>
+
+    </tr>
+
+</tbody>
 
             </table>
 

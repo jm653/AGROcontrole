@@ -7,6 +7,18 @@ from django.db.models import Sum
 from django.db.models import Count
 from django.db.models import Sum, Count
 from .models import Propriedade, Lavoura, LoteDeCafe,MovimentacaoFinanceira
+from django.db.models import Sum
+from django.http import HttpResponse
+from datetime import datetime
+import openpyxl
+from datetime import timedelta
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, HRFlowable
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 
 import json
 
@@ -912,9 +924,31 @@ def relatorios_view(request):
 
     # MOVIMENTAÇÕES
 
+    # FILTRO DE PERÍODO
+
+    periodo = request.GET.get('periodo')
+
     movimentacoes = MovimentacaoFinanceira.objects.filter(
         produtor=request.user
     )
+
+
+    if periodo == '7dias':
+        movimentacoes = movimentacoes.filter(
+            data__gte=datetime.now().date() - timedelta(days=7)
+        )
+
+    elif periodo == '30dias':
+
+        movimentacoes = movimentacoes.filter(
+            data__gte=datetime.now().date() - timedelta(days=30)
+        )
+
+    elif periodo == '365dias':
+
+        movimentacoes = movimentacoes.filter(
+            data__gte=datetime.now().date() - timedelta(days=365)
+        )
 
     # PRODUÇÃO TOTAL
 
@@ -939,7 +973,7 @@ def relatorios_view(request):
         total=Sum('valor')
     )['total'] or 0
 
-    # ENTRADAS
+    # ENTRADAS / LUCROS
 
     entradas_total = movimentacoes.filter(
         tipo='LUCRO'
@@ -947,7 +981,7 @@ def relatorios_view(request):
         total=Sum('valor')
     )['total'] or 0
 
-    # FATURAMENTO REAL
+    # FATURAMENTO BRUTO REAL
 
     faturamento_total += entradas_total
 
@@ -962,32 +996,57 @@ def relatorios_view(request):
 
     total_lotes = lotes.count()
 
-
-
-
-
-
-
     # EFICIÊNCIA
 
     if faturamento_total > 0:
 
-     eficiencia = round(
-        (lucro_total / faturamento_total) * 100,
-        1
-    )
+        eficiencia = round(
+            (lucro_total / faturamento_total) * 100,
+            1
+        )
 
     else:
 
-     eficiencia = 0
+        eficiencia = 0
 
+    # RELATÓRIO POR LAVOURA
 
+    relatorio_lavouras = []
 
+    for lavoura in lavouras:
 
+        lotes_lavoura = LoteDeCafe.objects.filter(
+            lavoura=lavoura
+        )
 
+        total_sacas = 0
 
+        faturamento_lavoura = 0
 
+        for lote in lotes_lavoura:
 
+            total_sacas += lote.quantidade_sacas
+
+            faturamento_lavoura += (
+                lote.quantidade_sacas *
+                lote.preco_saca
+            )
+
+        quantidade_lotes = lotes_lavoura.count()
+
+        relatorio_lavouras.append({
+
+            'nome': lavoura.nome,
+
+            'sacas': total_sacas,
+
+            'faturamento': faturamento_lavoura,
+
+            'lotes': quantidade_lotes,
+
+        })
+
+    # CONTEXT
 
     context = {
 
@@ -1003,6 +1062,8 @@ def relatorios_view(request):
 
         'eficiencia': eficiencia,
 
+        'relatorio_lavouras': relatorio_lavouras,
+
     }
 
     return render(
@@ -1011,6 +1072,107 @@ def relatorios_view(request):
         context
     )
 
+
+# =========================================================
+#EXPORTAR EXEL 
+# =========================================================
+
+@login_required
+def exportar_excel(request):
+
+    movimentacoes = MovimentacaoFinanceira.objects.filter(
+        produtor=request.user
+    )
+
+    workbook = openpyxl.Workbook()
+
+    sheet = workbook.active
+
+    sheet.title = 'Relatório Financeiro'
+
+    # CABEÇALHOS
+
+    sheet['A1'] = 'Descrição'
+    sheet['B1'] = 'Tipo'
+    sheet['C1'] = 'Valor'
+    sheet['D1'] = 'Data'
+
+    linha = 2
+
+    for mov in movimentacoes:
+
+        sheet[f'A{linha}'] = mov.descricao
+        sheet[f'B{linha}'] = mov.tipo
+        sheet[f'C{linha}'] = float(mov.valor)
+        sheet[f'D{linha}'] = str(mov.data)
+
+        linha += 1
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+    response[
+        'Content-Disposition'
+    ] = 'attachment; filename=relatorio.xlsx'
+
+    workbook.save(response)
+
+    return response
+
+
+# =========================================================
+#PDF
+# =========================================================
+
+@login_required
+def exportar_pdf(request):
+
+    movimentacoes = MovimentacaoFinanceira.objects.filter(
+        produtor=request.user
+    )
+
+    response = HttpResponse(
+        content_type='application/pdf'
+    )
+
+    response[
+        'Content-Disposition'
+    ] = 'attachment; filename=relatorio.pdf'
+
+    pdf = canvas.Canvas(response)
+
+    pdf.setFont("Helvetica-Bold", 16)
+
+    pdf.drawString(
+        200,
+        800,
+        "Relatório Financeiro"
+    )
+
+    y = 750
+
+    pdf.setFont("Helvetica", 12)
+
+    for mov in movimentacoes:
+
+        texto = (
+            f'{mov.descricao} | '
+            f'{mov.tipo} | '
+            f'R$ {mov.valor}'
+        )
+
+        pdf.drawString(
+            50,
+            y,
+            texto
+        )
+
+        y -= 25
+
+    pdf.save()
+
+    return response
 
 # =========================================================
 # PERFIL
