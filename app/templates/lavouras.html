@@ -1,461 +1,190 @@
 {% extends 'base.html' %}
-
-{% block title %}
-Lavouras
-{% endblock %}
-
+{% block title %}Lavouras | AgroControle{% endblock %}
 {% block content %}
 
-<div class="container-fluid">
+<style>
+:root{--esp:#1c0a03;--roast:#3b1a07;--coffee:#4E342E;--mid:#6D4C41;--caramel:#c8813a;--gold:#e8a84e;--cream:#F5F5DC;--ivory:#fdfaf4;--muted:#9a8878;--success:#2d7a4f;--danger:#b83232;--warn:#b87d1a;--info:#1a5fa0;--s-bg:#edf7f1;--i-bg:#e8f2fc;--white:#ffffff;--card-r:20px;--sm-r:12px;--shd:0 2px 16px rgba(62,39,35,0.09);--shd-md:0 8px 32px rgba(62,39,35,0.13);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;animation:fadeUp .45s ease both;}
+.page-title{font-size:1.7rem;font-weight:700;color:var(--esp);letter-spacing:-.03em;line-height:1.2;}
+.page-sub{font-size:.8rem;color:var(--muted);margin-top:.2rem;font-weight:400;}
+.btn-new{display:inline-flex;align-items:center;gap:8px;background:var(--esp);color:#fff;border:none;border-radius:var(--sm-r);padding:.72rem 1.4rem;font-size:.84rem;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;box-shadow:0 4px 16px rgba(28,10,3,.25);position:relative;overflow:hidden;}
+.btn-new::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(232,168,78,.2) 50%,transparent 70%);transform:translateX(-100%);transition:transform .4s;}
+.btn-new:hover{background:var(--roast);transform:translateY(-2px);color:#fff;}
+.btn-new:hover::after{transform:translateX(100%);}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-bottom:1.5rem;}
+.kpi-card{background:var(--white);border-radius:var(--card-r);padding:1.4rem 1.6rem;border:1px solid rgba(62,39,35,.06);box-shadow:var(--shd);position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s;animation:fadeUp .5s ease both;}
+.kpi-card:nth-child(1){animation-delay:.05s}.kpi-card:nth-child(2){animation-delay:.1s}.kpi-card:nth-child(3){animation-delay:.15s}
+.kpi-card:hover{transform:translateY(-4px);box-shadow:var(--shd-md);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--card-r) var(--card-r) 0 0;}
+.kpi-card.k1::before{background:linear-gradient(90deg,var(--coffee),var(--mid));}
+.kpi-card.k2::before{background:linear-gradient(90deg,var(--caramel),var(--gold));}
+.kpi-card.k3::before{background:linear-gradient(90deg,var(--success),#52b37a);}
+.kpi-blob{position:absolute;bottom:-20px;right:-16px;width:80px;height:80px;border-radius:50%;opacity:.05;}
+.kpi-card.k1 .kpi-blob{background:var(--coffee);}.kpi-card.k2 .kpi-blob{background:var(--caramel);}.kpi-card.k3 .kpi-blob{background:var(--success);}
+.kpi-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:.9rem;}
+.kpi-card.k1 .kpi-icon{background:rgba(78,52,46,.1);color:var(--coffee);}.kpi-card.k2 .kpi-icon{background:rgba(200,129,58,.1);color:var(--caramel);}.kpi-card.k3 .kpi-icon{background:rgba(45,122,79,.1);color:var(--success);}
+.kpi-label{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem;}
+.kpi-value{font-size:2rem;font-weight:700;letter-spacing:-.04em;color:var(--esp);line-height:1;}
+.kpi-value small{font-size:1rem;font-weight:500;opacity:.55;margin-right:2px;}
+.sc{background:var(--white);border-radius:var(--card-r);box-shadow:var(--shd);border:1px solid rgba(62,39,35,.06);overflow:hidden;animation:fadeUp .5s ease both .2s;}
+.sc-head{display:flex;justify-content:space-between;align-items:center;padding:1.4rem 1.8rem 0;margin-bottom:1rem;}
+.sc-head h4{font-size:.95rem;font-weight:700;color:var(--esp);margin:0 0 .1rem;}.sc-head p{font-size:.75rem;color:var(--muted);margin:0;}
+.sc-ico{width:38px;height:38px;background:rgba(78,52,46,.08);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--coffee);font-size:1.1rem;flex-shrink:0;}
+.search-wrap{position:relative;}.search-wrap input{padding:.5rem .85rem .5rem 2.2rem;border:1.5px solid #e5d9cc;border-radius:var(--sm-r);font-size:.84rem;color:var(--esp);font-family:'Poppins',sans-serif;transition:border-color .2s;width:230px;outline:none;}
+.search-wrap input:focus{border-color:var(--caramel);box-shadow:0 0 0 3px rgba(200,129,58,.12);}
+.search-wrap i{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;}
+.fin-table-wrap{overflow-x:auto;padding:0 .5rem 1.5rem;}
+.fin-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.83rem;}
+.fin-table thead th{padding:.55rem 1.1rem;font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(62,39,35,.08);white-space:nowrap;}
+.fin-table tbody tr{transition:background .13s;}.fin-table tbody tr:hover{background:rgba(245,245,220,.55);}
+.fin-table tbody td{padding:.85rem 1.1rem;color:#2a1810;border-bottom:1px solid rgba(62,39,35,.05);vertical-align:middle;}
+.fin-table tbody tr:last-child td{border-bottom:none;}
+.td-bold{font-weight:700;color:var(--esp);}
+.lav-avatar{width:38px;height:38px;background:rgba(45,122,79,.08);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--success);font-size:1rem;flex-shrink:0;}
+.btn-action{width:30px;height:30px;border:none;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none;}
+.btn-action:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.13);}
+.btn-action.edit{background:rgba(78,52,46,.1);color:var(--coffee);}.btn-action.del{background:rgba(184,50,50,.1);color:var(--danger);}.btn-action.view{background:rgba(26,95,160,.1);color:var(--info);}
+.empty-state{padding:3rem 1rem;text-align:center;color:var(--muted);}
+.empty-state i{font-size:2.5rem;opacity:.3;display:block;margin-bottom:.75rem;}
+.empty-state p{font-size:.85rem;margin:0;}
+.modal-content{border:none!important;border-radius:var(--card-r)!important;box-shadow:0 20px 60px rgba(62,39,35,.18)!important;overflow:hidden;}
+.modal-header{background:var(--esp);border:none!important;padding:1.3rem 1.7rem;}
+.modal-header .modal-title{color:#fff;font-weight:700;font-size:.97rem;}
+.modal-header .modal-title small{display:block;font-size:.72rem;font-weight:400;color:rgba(255,255,255,.55);margin-top:.1rem;}
+.modal-header .btn-close{filter:invert(1);opacity:.7;}
+.modal-body{padding:1.7rem;}.modal-footer{border:none!important;padding:0 1.7rem 1.7rem;gap:.6rem;}
+.form-label{font-size:.7rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;}
+.form-control,.form-select{border:1.5px solid #e5d9cc!important;border-radius:var(--sm-r)!important;padding:.72rem 1rem!important;font-size:.88rem!important;color:var(--esp)!important;background:#fff!important;transition:border-color .2s,box-shadow .2s!important;font-family:'Poppins',sans-serif!important;}
+.form-control:focus,.form-select:focus{border-color:var(--caramel)!important;box-shadow:0 0 0 3px rgba(200,129,58,.13)!important;outline:none!important;}
+.btn-cancel{background:#f3ede6;color:var(--coffee);border:none;border-radius:var(--sm-r);padding:.68rem 1.3rem;font-weight:600;font-size:.84rem;cursor:pointer;transition:background .2s;}
+.btn-cancel:hover{background:#ece3d8;}
+.btn-save{background:var(--esp);color:#fff;border:none;border-radius:var(--sm-r);padding:.68rem 1.5rem;font-weight:600;font-size:.84rem;cursor:pointer;transition:background .2s,transform .15s;}
+.btn-save:hover{background:var(--roast);transform:translateY(-1px);color:#fff;}
+@media(max-width:900px){.kpi-grid{grid-template-columns:1fr;}.page-header{flex-direction:column;gap:1rem;}}
+</style>
 
-    <!-- TOPO -->
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-
-            <h2 class="fw-bold text-coffee">
-                Lavouras
-            </h2>
-
-            <p class="text-muted mb-0">
-                Gerencie suas áreas de produção cafeeira
-            </p>
-
-        </div>
-
-        <button
-            class="btn btn-coffee"
-            data-bs-toggle="modal"
-            data-bs-target="#modalLavoura"
-        >
-
-            <i class="bi bi-plus-circle"></i>
-            Nova Lavoura
-
-        </button>
-
+<div class="container-fluid px-2">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Lavouras</div>
+      <div class="page-sub">Gerencie suas áreas de produção cafeeira</div>
     </div>
+    <button class="btn-new" data-bs-toggle="modal" data-bs-target="#modalLavoura">
+      <i class="bi bi-plus-lg"></i> Nova Lavoura
+    </button>
+  </div>
 
-    <!-- CARDS -->
-
-    <div class="row g-4 mb-4">
-
-        <div class="col-md-4">
-
-            <div class="card card-dashboard bg-coffee">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title">
-                                Total de Lavouras
-                            </div>
-
-                            <div class="card-number">
-                                {{ lavouras.count }}
-                            </div>
-
-                        </div>
-
-                        <div class="icon-card">
-
-                            <i class="bi bi-tree-fill"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title text-muted">
-                                Área Total
-                            </div>
-
-                            <div class="card-number text-coffee">
-                                 {{ total_area }} ha
-                            </div>
-
-                        </div>
-
-                        <div class="icon-card-coffee">
-
-                            <i class="bi bi-map-fill"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title text-muted">
-                                Variedades
-                            </div>
-
-                            <div class="card-number text-coffee">
-                                {{ lavouras.count }}
-                            </div>
-
-                        </div>
-
-                        <div class="icon-card-coffee">
-
-                            <i class="bi bi-cup-hot-fill"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
+  <div class="kpi-grid">
+    <div class="kpi-card k1">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-tree-fill"></i></div>
+      <div class="kpi-label">Total de Lavouras</div>
+      <div class="kpi-value">{{ lavouras.count }}</div>
     </div>
-
-    <!-- TABELA -->
-
-    <div class="table-container">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <h5 class="fw-bold text-coffee m-0">
-                Lista de Lavouras
-            </h5>
-
-            <input
-                type="text"
-                class="form-control"
-                placeholder="Pesquisar lavoura..."
-                style="width: 250px;"
-            >
-
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="table align-middle table-hover">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Nome</th>
-                        <th>Propriedade</th>
-                        <th>Variedade</th>
-                        <th>Área</th>
-                        <th>Plantio</th>
-                        <th class="text-center">
-                            Ações
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for lavoura in lavouras %}
-
-                    <tr>
-
-                        <td>
-
-                            <div class="d-flex align-items-center gap-3">
-
-                                <div
-                                    class="icon-card-coffee"
-                                    style="width:50px;height:50px;"
-                                >
-
-                                    <i class="bi bi-tree-fill"></i>
-
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        {{ lavoura.nome }}
-                                    </strong>
-
-                                    <div class="text-muted small">
-
-                                        Produção Cafeeira
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-                        <td>
-                            {{ lavoura.propriedade.nome }}
-                        </td>
-
-                        <td>
-                            {{ lavoura.variedade }}
-                        </td>
-
-                        <td>
-                            {{ lavoura.area }} ha
-                        </td>
-
-                        <td>
-                            {{ lavoura.data_plantio }}
-                        </td>
-
-                        <td>
-
-                            <div class="d-flex justify-content-center gap-2">
-
-                                <!-- EDITAR -->
-
-                                <a
-                                    href="{% url 'editar_lavoura' lavoura.id %}"
-                                    class="btn btn-sm btn-editar"
-                                >
-
-                                    <i class="bi bi-pencil-fill"></i>
-
-                                </a>
-
-                                <!-- EXCLUIR -->
-
-                                <a
-                                    href="{% url 'excluir_lavoura' lavoura.id %}"
-                                    class="btn btn-sm btn-excluir"
-                                >
-
-                                    <i class="bi bi-trash-fill"></i>
-
-                                </a>
-
-                                <!-- VISUALIZAR -->
-
-                                <a
-                                    href="{% url 'visualizar_lavoura' lavoura.id %}"
-                                    class="btn btn-sm btn-visualizar"
-                                >
-
-                                    <i class="bi bi-eye-fill"></i>
-
-                                </a>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                    {% empty %}
-
-                    <tr>
-
-                        <td colspan="6">
-
-                            <div class="text-center py-5">
-
-                                <i class="bi bi-tree fs-1 text-muted"></i>
-
-                                <h5 class="mt-3">
-
-                                    Nenhuma lavoura cadastrada
-
-                                </h5>
-
-                                <p class="text-muted">
-
-                                    Clique em “Nova Lavoura”
-
-                                </p>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
+    <div class="kpi-card k2">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-map-fill"></i></div>
+      <div class="kpi-label">Área Total</div>
+      <div class="kpi-value">{{ total_area }}<small> ha</small></div>
     </div>
+    <div class="kpi-card k3">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-cup-hot-fill"></i></div>
+      <div class="kpi-label">Variedades</div>
+      <div class="kpi-value">{{ lavouras.count }}</div>
+    </div>
+  </div>
 
-</div>
-
-<!-- MODAL -->
-
-<div
-    class="modal fade"
-    id="modalLavoura"
-    tabindex="-1"
->
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content border-0 rounded-4">
-
-            <div class="modal-header">
-
+  <div class="sc">
+    <div class="sc-head">
+      <div><h4>Lista de Lavouras</h4><p>Todas as áreas produtivas cadastradas</p></div>
+      <div class="search-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchLav" placeholder="Pesquisar lavoura…">
+      </div>
+    </div>
+    <div class="fin-table-wrap">
+      <table class="fin-table" id="tabelaLav">
+        <thead>
+          <tr>
+            <th>Lavoura</th><th>Propriedade</th><th>Variedade</th>
+            <th>Área</th><th>Plantio</th><th style="text-align:center;">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lavoura in lavouras %}
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:.75rem;">
+                <div class="lav-avatar"><i class="bi bi-tree-fill"></i></div>
                 <div>
-
-                    <h4 class="fw-bold text-coffee mb-0">
-
-                        Nova Lavoura
-
-                    </h4>
-
-                    <small class="text-muted">
-
-                        Cadastre uma nova área produtiva
-
-                    </small>
-
+                  <div class="td-bold">{{ lavoura.nome }}</div>
+                  <div style="font-size:.72rem;color:var(--muted);">Produção Cafeeira</div>
                 </div>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                ></button>
-
-            </div>
-
-            <form
-                method="POST"
-                action="{% url 'cadastrar_lavoura' %}"
-            >
-
-                {% csrf_token %}
-
-                <div class="modal-body">
-
-                    <div class="row">
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Nome
-                            </label>
-
-                            {{ form.nome }}
-
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Propriedade
-                            </label>
-
-                            {{ form.propriedade }}
-
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Variedade
-                            </label>
-
-                            {{ form.variedade }}
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Área (ha)
-                            </label>
-
-                            {{ form.area }}
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Plantio
-                            </label>
-
-                            {{ form.data_plantio }}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button
-                        type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal"
-                    >
-                        Cancelar
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="btn btn-coffee"
-                    >
-
-                        <i class="bi bi-check-circle"></i>
-                        Salvar Lavoura
-
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
+              </div>
+            </td>
+            <td>{{ lavoura.propriedade.nome }}</td>
+            <td style="color:var(--muted);font-size:.82rem;">{{ lavoura.variedade }}</td>
+            <td>{{ lavoura.area }} ha</td>
+            <td style="color:var(--muted);font-size:.82rem;">{{ lavoura.data_plantio }}</td>
+            <td>
+              <div style="display:flex;gap:6px;justify-content:center;">
+                <a href="{% url 'visualizar_lavoura' lavoura.id %}" class="btn-action view" title="Visualizar"><i class="bi bi-eye-fill"></i></a>
+                <a href="{% url 'editar_lavoura' lavoura.id %}" class="btn-action edit" title="Editar"><i class="bi bi-pencil-fill"></i></a>
+                <a href="{% url 'excluir_lavoura' lavoura.id %}" class="btn-action del" title="Excluir"><i class="bi bi-trash-fill"></i></a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6">
+            <div class="empty-state"><i class="bi bi-tree"></i><p>Nenhuma lavoura cadastrada ainda.</p></div>
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-
+  </div>
 </div>
 
+<div class="modal fade" id="modalLavoura" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-tree-fill me-2"></i>Nova Lavoura
+          <small>Cadastre uma nova área produtiva</small>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{% url 'cadastrar_lavoura' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <div><label class="form-label">Nome da Lavoura</label>{{ form.nome }}</div>
+            <div><label class="form-label">Propriedade</label>{{ form.propriedade }}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+            <div><label class="form-label">Variedade</label>{{ form.variedade }}</div>
+            <div><label class="form-label">Área (ha)</label>{{ form.area }}</div>
+            <div><label class="form-label">Data de Plantio</label>{{ form.data_plantio }}</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn-save"><i class="bi bi-check2 me-1"></i>Salvar Lavoura</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('searchLav').addEventListener('input',function(){
+  const q=this.value.toLowerCase();
+  document.querySelectorAll('#tabelaLav tbody tr').forEach(function(tr){
+    tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
+  });
+});
+</script>
 {% endblock %}
