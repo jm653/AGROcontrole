@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Detalhes do Lote
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="fw-bold text-coffee mb-4">
+        {{ lote.codigo }}
+    </h2>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <h5>Informações Gerais</h5>
+
+                    <hr>
+
+                    <p>
+                        <strong>Lavoura:</strong>
+                        {{ lote.lavoura.nome }}
+                    </p>
+
+                    <p>
+                        <strong>Propriedade:</strong>
+                        {{ lote.lavoura.propriedade.nome }}
+                    </p>
+
+                    <p>
+                        <strong>Quantidade:</strong>
+                        {{ lote.quantidade_sacas }} sacas
+                    </p>
+
+                    <p>
+                        <strong>Qualidade:</strong>
+                        {{ lote.qualidade }}
+                    </p>
+
+                    <p>
+                        <strong>Preço da Saca:</strong>
+                        R$ {{ lote.preco_saca }}
+                    </p>
+
+                    <p>
+                        <strong>Etapa Atual:</strong>
+                        {{ lote.get_etapa_display }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-8">
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <h5>
+                        Histórico do Lote
+                    </h5>
+
+                    <hr>
+
+                    {% for registro in registros %}
+
+                    <div class="border-bottom pb-3 mb-3">
+
+                        <strong>
+                            {{ registro.funcionario }}
+                        </strong>
+
+                        <small class="text-muted">
+
+                            {{ registro.data|date:"d/m/Y H:i" }}
+
+                        </small>
+
+                        <p class="mt-2 mb-0">
+
+                            {{ registro.descricao }}
+
+                        </p>
+
+                    </div>
+
+                    {% empty %}
+
+                    <p class="text-muted">
+
+                        Nenhum registro encontrado.
+
+                    </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

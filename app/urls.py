@@ -111,6 +111,12 @@ urlpatterns = [
     ),
 
     path(
+    'rastreabilidade/lote/<int:lote_id>/',
+    views.detalhe_lote_view,
+    name='detalhe_lote'
+    ),
+
+    path(
         'perfil/',
         views.perfil_view,
         name='perfil'

@@ -54,7 +54,7 @@ Rastreabilidade | AgroControle
                             </div>
 
                             <div class="card-number">
-                                28
+                               {{ total_lotes }}
                             </div>
 
                             <small>
@@ -94,7 +94,7 @@ Rastreabilidade | AgroControle
                             </div>
 
                             <div class="card-number text-coffee">
-                                9
+                                {{ lotes_colheita }}
                             </div>
 
                             <small class="text-warning">
@@ -134,7 +134,7 @@ Rastreabilidade | AgroControle
                             </div>
 
                             <div class="card-number text-coffee">
-                                11
+                                {{ lotes_secagem }}
                             </div>
 
                             <small class="text-primary">
@@ -174,7 +174,7 @@ Rastreabilidade | AgroControle
                             </div>
 
                             <div class="card-number text-coffee">
-                                42
+                               {{ lotes_finalizados }}
                             </div>
 
                             <small class="text-success">
@@ -221,177 +221,88 @@ Rastreabilidade | AgroControle
 
                 <div class="timeline">
 
-                    <!-- ITEM -->
+<div class="timeline">
 
-                    <div class="timeline-item mb-4">
+    {% for registro in registros %}
 
-                        <div class="d-flex">
+    <div class="timeline-item mb-4">
 
-                            <div class="me-4">
+        <div class="d-flex">
 
-                                <div class="timeline-icon bg-success">
+            <div class="me-4">
 
-                                    <i class="bi bi-seedling text-white"></i>
+                {% if registro.LoteDeCafe.etapa == 'plantio' %}
 
-                                </div>
-
-                            </div>
-
-                            <div class="w-100">
-
-                                <div class="card border-0 shadow-sm">
-
-                                    <div class="card-body">
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <div>
-
-                                                <h6 class="fw-bold">
-                                                    Plantio realizado
-                                                </h6>
-
-                                                <small class="text-muted">
-                                                    Lote CAF-2026-001
-                                                </small>
-
-                                            </div>
-
-                                            <small class="text-muted">
-                                                08:42
-                                            </small>
-
-                                        </div>
-
-                                        <p class="mt-3 mb-0 text-muted">
-
-                                            Plantio concluído na Fazenda Boa Esperança.
-
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
+                    <div class="timeline-icon bg-success">
+                        <i class="bi bi-seedling text-white"></i>
                     </div>
 
-                    <!-- ITEM -->
+                {% elif registro.LoteDeCafe.etapa == 'colheita' %}
 
-                    <div class="timeline-item mb-4">
-
-                        <div class="d-flex">
-
-                            <div class="me-4">
-
-                                <div class="timeline-icon bg-warning">
-
-                                    <i class="bi bi-scissors text-white"></i>
-
-                                </div>
-
-                            </div>
-
-                            <div class="w-100">
-
-                                <div class="card border-0 shadow-sm">
-
-                                    <div class="card-body">
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <div>
-
-                                                <h6 class="fw-bold">
-                                                    Colheita iniciada
-                                                </h6>
-
-                                                <small class="text-muted">
-                                                    Lote CAF-2026-002
-                                                </small>
-
-                                            </div>
-
-                                            <small class="text-muted">
-                                                10:15
-                                            </small>
-
-                                        </div>
-
-                                        <p class="mt-3 mb-0 text-muted">
-
-                                            Funcionários iniciaram a colheita manual do lote.
-
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
+                    <div class="timeline-icon bg-warning">
+                        <i class="bi bi-scissors text-white"></i>
                     </div>
 
-                    <!-- ITEM -->
+                {% elif registro.LoteDeCafe.etapa == 'secagem' %}
 
-                    <div class="timeline-item">
+                    <div class="timeline-icon bg-info">
+                        <i class="bi bi-sun text-white"></i>
+                    </div>
 
-                        <div class="d-flex">
+                {% elif registro.LoteDeCafe.etapa == 'armazenamento' %}
 
-                            <div class="me-4">
+                    <div class="timeline-icon bg-primary">
+                        <i class="bi bi-box-seam text-white"></i>
+                    </div>
 
-                                <div class="timeline-icon bg-primary">
+                {% else %}
 
-                                    <i class="bi bi-box-seam text-white"></i>
+                    <div class="timeline-icon bg-secondary">
+                        <i class="bi bi-check-circle text-white"></i>
+                    </div>
 
-                                </div>
+                {% endif %}
 
-                            </div>
+            </div>
 
-                            <div class="w-100">
+            <div class="w-100">
 
-                                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow-sm">
 
-                                    <div class="card-body">
+                    <div class="card-body">
 
-                                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between">
 
-                                            <div>
+                            <div>
 
-                                                <h6 class="fw-bold">
-                                                    Armazenamento concluído
-                                                </h6>
+                                <h6 class="fw-bold">
+                                    {{ registro.get_lotedecafe_etapa_display }}
+                                </h6>
 
-                                                <small class="text-muted">
-                                                    Lote CAF-2026-003
-                                                </small>
-
-                                            </div>
-
-                                            <small class="text-muted">
-                                                14:20
-                                            </small>
-
-                                        </div>
-
-                                        <p class="mt-3 mb-0 text-muted">
-
-                                            Lote armazenado no depósito principal.
-
-                                        </p>
-
-                                    </div>
-
-                                </div>
+                                <small class="text-muted">
+                                    Lote {{ registro.LoteDeCafe.codigo }}
+                                </small>
 
                             </div>
+
+                            <small class="text-muted">
+                                {{ registro.data|date:"d/m/Y H:i" }}
+                            </small>
 
                         </div>
+
+                        <p class="mt-3 mb-0 text-muted">
+
+                            {{ registro.descricao }}
+
+                        </p>
+
+                        <small class="text-muted">
+
+                            Responsável:
+                            {{ registro.funcionario.username }}
+
+                        </small>
 
                     </div>
 
@@ -400,6 +311,20 @@ Rastreabilidade | AgroControle
             </div>
 
         </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="alert alert-info">
+
+        Nenhum registro operacional encontrado.
+
+    </div>
+
+    {% endfor %}
+
+</div>
 
         <!-- STATUS -->
 
@@ -491,11 +416,12 @@ Rastreabilidade | AgroControle
 
                         <td>
 
-                            <button class="btn btn-sm btn-outline-dark">
-
-                                <i class="bi bi-eye"></i>
-
-                            </button>
+                         <a
+                            href="{% url 'detalhe_lote' lote.id %}"
+                            class="btn btn-sm btn-outline-dark">
+                        
+                            <i class="bi bi-eye"></i>
+                        </a>
 
                             <button class="btn btn-sm btn-outline-success">
 

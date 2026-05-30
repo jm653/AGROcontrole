@@ -145,6 +145,16 @@ class RegistroOperacional(models.Model):
         auto_now_add=True
     )
 
+    etapa = models.CharField(
+    max_length=30
+)
+
+    local = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
     def __str__(self):
         return f"{self.funcionario.username} - {self.data}"
     
