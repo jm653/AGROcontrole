@@ -79,6 +79,15 @@ class LoteDeCafe(models.Model):
         on_delete=models.CASCADE
     )
 
+    responsavel = models.ForeignKey(
+        Usuario,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='lotes_responsaveis',
+        limit_choices_to={'tipo': 'funcionario'}
+    )
+
     codigo = models.CharField(
         max_length=50,
         unique=True
@@ -118,11 +127,9 @@ class LoteDeCafe(models.Model):
     )
 
     def valor_total(self):
-
         return self.quantidade_sacas * self.preco_saca
 
     def __str__(self):
-
         return self.codigo
 
 
@@ -198,3 +205,26 @@ class MovimentacaoFinanceira(models.Model):
     def __str__(self):
 
         return self.titulo
+    
+class FuncionarioPropriedade(models.Model):
+
+    funcionario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        limit_choices_to={'tipo': 'funcionario'}
+    )
+
+    propriedade = models.ForeignKey(
+        Propriedade,
+        on_delete=models.CASCADE
+    )
+
+    criado_em = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        unique_together = ('funcionario', 'propriedade')
+
+    def __str__(self):
+        return f"{self.funcionario.username} - {self.propriedade.nome}"

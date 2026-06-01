@@ -84,7 +84,8 @@ class LoteForm(forms.ModelForm):
             'quantidade_sacas',
             'qualidade',
             'preco_saca',
-            'etapa'
+            'etapa',
+            'responsavel',
         ]
 
         widgets = {
@@ -115,7 +116,13 @@ class LoteForm(forms.ModelForm):
                 'class': 'form-select'
             }),
 
+            'responsavel': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+
         }
+
+        
 
 class MovimentacaoFinanceiraForm(forms.ModelForm):
 
@@ -138,7 +145,7 @@ class MovimentacaoFinanceiraForm(forms.ModelForm):
             }),
 
             'tipo': forms.Select(attrs={
-                'class': 'form-select'
+                'class': 'form-select'  
             }),
 
             'valor': forms.NumberInput(attrs={
@@ -146,3 +153,4 @@ class MovimentacaoFinanceiraForm(forms.ModelForm):
             }),
 
         }
+

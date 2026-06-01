@@ -137,11 +137,26 @@ urlpatterns = [
     # FUNCIONÁRIO
     # =========================
 
+
+    path(
+    'avancar-etapa/<int:lote_id>/',
+    views.avancar_etapa,
+    name='avancar_etapa'
+    ),
+
+    
+
     path(
         'tarefas/',
         views.tarefas_view,
         name='tarefas'
     ),
+
+    path(
+    'meus-lotes/',
+    views.meus_lotes,
+    name='meus_lotes'
+    ),  
 
     path(
         'registros/',

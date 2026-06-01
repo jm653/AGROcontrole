@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import json
 import openpyxl
 
-from .models import Propriedade, Lavoura, LoteDeCafe, MovimentacaoFinanceira, RegistroOperacional
+from .models import Propriedade, Lavoura, LoteDeCafe, MovimentacaoFinanceira, RegistroOperacional,Usuario
 from .forms import LavouraForm, PropriedadeForm, LoteForm, MovimentacaoFinanceiraForm
 
 from reportlab.lib.pagesizes import A4
@@ -78,11 +78,79 @@ def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
 
+from .models import FuncionarioPropriedade
+
 @login_required
 def funcionario_dashboard(request):
+
+    lotes = LoteDeCafe.objects.filter(
+        responsavel=request.user
+    )
+
+    context = {
+        'lotes': lotes,
+        'total_lotes': lotes.count()
+    }
+
+    return render(
+        request,
+        'funcionario_dashboard.html',
+        context
+    )
+
+@login_required
+def avancar_etapa(request, lote_id):
+
+    lote = get_object_or_404(
+        LoteDeCafe,
+        id=lote_id,
+        responsavel=request.user
+    )
+
+    etapas = [
+        'plantio',
+        'colheita',
+        'secagem',
+        'armazenamento',
+        'torra',
+        'qualidade',
+        'venda'
+    ]
+
+    indice = etapas.index(lote.etapa)
+
+    if indice < len(etapas) - 1:
+
+        lote.etapa = etapas[indice + 1]
+        lote.save()
+
+        RegistroOperacional.objects.create(
+            LoteDeCafe=lote,
+            funcionario=request.user,
+            descricao=f"Lote avançado para {lote.etapa}",
+            etapa=lote.etapa
+        )
+
+    return redirect('meus_lotes')
+
+
+@login_required
+def meus_lotes(request):
+
     if request.user.tipo != 'funcionario':
         return HttpResponse("Acesso negado")
-    return render(request, 'funcionario_dashboard.html')
+
+    lotes = LoteDeCafe.objects.filter(
+        responsavel=request.user
+    )
+
+    return render(
+        request,
+        'meus_lotes.html',
+        {
+            'lotes': lotes
+        }
+    )
 
 
 @login_required
@@ -264,23 +332,53 @@ def visualizar_lavoura(request, id):
 
 @login_required
 def lotes_view(request):
-    lotes = LoteDeCafe.objects.filter(lavoura__propriedade__produtor=request.user)
+
+    lotes = LoteDeCafe.objects.filter(
+        lavoura__propriedade__produtor=request.user
+    )
+
     total_sacas = sum(l.quantidade_sacas for l in lotes)
 
     if request.method == 'POST':
+
         form = LoteForm(request.POST)
-        form.fields['lavoura'].queryset = Lavoura.objects.filter(propriedade__produtor=request.user)
+
+        form.fields['lavoura'].queryset = Lavoura.objects.filter(
+            propriedade__produtor=request.user
+        )
+
+        form.fields['responsavel'].queryset = Usuario.objects.filter(
+            tipo='funcionario'
+        )
+
         if form.is_valid():
             form.save()
             return redirect('lotes')
+
         else:
             print(form.errors)
+
     else:
+
         form = LoteForm()
-        form.fields['lavoura'].queryset = Lavoura.objects.filter(propriedade__produtor=request.user)
 
-    return render(request, 'lotes.html', {'lotes': lotes, 'form': form, 'total_sacas': total_sacas})
+        form.fields['lavoura'].queryset = Lavoura.objects.filter(
+            propriedade__produtor=request.user
+        )
 
+        form.fields['responsavel'].queryset = Usuario.objects.filter(
+            tipo='funcionario'
+        )
+
+    return render(
+        request,
+        'lotes.html',
+        {
+            'lotes': lotes,
+            'form': form,
+            'total_sacas': total_sacas
+        }
+    )
 
 @login_required
 def editar_lote(request, id):

@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from .models import FuncionarioPropriedade
+
+admin.site.register(FuncionarioPropriedade)
 
 from .models import (
     Usuario,
@@ -24,6 +27,8 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('tipo',)
         }),
     )
+
+
 
 
 admin.site.register(Usuario, CustomUserAdmin)
