@@ -1,553 +1,418 @@
 {% extends 'base.html' %}
-
-{% block title %}
-Rastreabilidade | AgroControle
-{% endblock %}
-
+{% block title %}Rastreabilidade | AgroControle{% endblock %}
 {% block content %}
 
-<div class="container-fluid">
-
-    <!-- TOPO -->
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-
-            <h2 class="fw-bold text-coffee">
-                Rastreabilidade
-            </h2>
-
-            <p class="text-muted">
-                Acompanhe todas as etapas da produção cafeeira
-            </p>
-
-        </div>
-
-        <button class="btn btn-coffee">
-
-            <i class="bi bi-upc-scan"></i>
-            Rastrear Lote
-
-        </button>
-
-    </div>
-
-    <!-- CARDS -->
-
-    <div class="row g-4 mb-4">
-
-        <!-- LOTES -->
-
-        <div class="col-md-3">
-
-            <div class="card card-dashboard bg-coffee">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title">
-                                Lotes Ativos
-                            </div>
-
-                            <div class="card-number">
-                               {{ total_lotes }}
-                            </div>
-
-                            <small>
-                                Em rastreamento
-                            </small>
-
-                        </div>
-
-                        <div class="icon-card">
-
-                            <i class="bi bi-box-seam"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- COLHEITA -->
-
-        <div class="col-md-3">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title text-muted">
-                                Em Colheita
-                            </div>
-
-                            <div class="card-number text-coffee">
-                                {{ lotes_colheita }}
-                            </div>
-
-                            <small class="text-warning">
-                                Processo ativo
-                            </small>
-
-                        </div>
-
-                        <div class="icon-card-coffee">
-
-                            <i class="bi bi-scissors"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- SECAGEM -->
-
-        <div class="col-md-3">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title text-muted">
-                                Em Secagem
-                            </div>
-
-                            <div class="card-number text-coffee">
-                                {{ lotes_secagem }}
-                            </div>
-
-                            <small class="text-primary">
-                                Monitoramento
-                            </small>
-
-                        </div>
-
-                        <div class="icon-card-coffee">
-
-                            <i class="bi bi-sun"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- FINALIZADOS -->
-
-        <div class="col-md-3">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="card-title text-muted">
-                                Finalizados
-                            </div>
-
-                            <div class="card-number text-coffee">
-                               {{ lotes_finalizados }}
-                            </div>
-
-                            <small class="text-success">
-                                Prontos para venda
-                            </small>
-
-                        </div>
-
-                        <div class="icon-card-coffee">
-
-                            <i class="bi bi-check-circle"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- TIMELINE -->
-
-    <div class="row g-4 mb-4">
-
-        <div class="col-lg-8">
-
-            <div class="chart-container">
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-
-                    <h5 class="chart-title m-0">
-                        Fluxo de Produção
-                    </h5>
-
-                    <span class="badge bg-success">
-                        Atualizado em tempo real
-                    </span>
-
-                </div>
-
-                <div class="timeline">
-
-<div class="timeline">
-
-    {% for registro in registros %}
-
-    <div class="timeline-item mb-4">
-
-        <div class="d-flex">
-
-            <div class="me-4">
-
-                {% if registro.LoteDeCafe.etapa == 'plantio' %}
-
-                    <div class="timeline-icon bg-success">
-                        <i class="bi bi-seedling text-white"></i>
-                    </div>
-
-                {% elif registro.LoteDeCafe.etapa == 'colheita' %}
-
-                    <div class="timeline-icon bg-warning">
-                        <i class="bi bi-scissors text-white"></i>
-                    </div>
-
-                {% elif registro.LoteDeCafe.etapa == 'secagem' %}
-
-                    <div class="timeline-icon bg-info">
-                        <i class="bi bi-sun text-white"></i>
-                    </div>
-
-                {% elif registro.LoteDeCafe.etapa == 'armazenamento' %}
-
-                    <div class="timeline-icon bg-primary">
-                        <i class="bi bi-box-seam text-white"></i>
-                    </div>
-
-                {% else %}
-
-                    <div class="timeline-icon bg-secondary">
-                        <i class="bi bi-check-circle text-white"></i>
-                    </div>
-
-                {% endif %}
-
-            </div>
-
-            <div class="w-100">
-
-                <div class="card border-0 shadow-sm">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-
-                                <h6 class="fw-bold">
-                                    {{ registro.get_lotedecafe_etapa_display }}
-                                </h6>
-
-                                <small class="text-muted">
-                                    Lote {{ registro.LoteDeCafe.codigo }}
-                                </small>
-
-                            </div>
-
-                            <small class="text-muted">
-                                {{ registro.data|date:"d/m/Y H:i" }}
-                            </small>
-
-                        </div>
-
-                        <p class="mt-3 mb-0 text-muted">
-
-                            {{ registro.descricao }}
-
-                        </p>
-
-                        <small class="text-muted">
-
-                            Responsável:
-                            {{ registro.funcionario.username }}
-
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    {% empty %}
-
-    <div class="alert alert-info">
-
-        Nenhum registro operacional encontrado.
-
-    </div>
-
-    {% endfor %}
-
-</div>
-
-        <!-- STATUS -->
-
-        <div class="col-lg-4">
-
-            <div class="chart-container">
-
-                <h5 class="chart-title">
-                    Status dos Lotes
-                </h5>
-
-                <canvas id="graficoRastreio"></canvas>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- TABELA -->
-
-    <div class="table-container">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <h5 class="fw-bold text-coffee m-0">
-
-                Histórico de Lotes
-
-            </h5>
-
-            <input
-                type="text"
-                class="form-control w-25"
-                placeholder="Pesquisar lote...">
-
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="table align-middle">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Código</th>
-                        <th>Fazenda</th>
-                        <th>Etapa</th>
-                        <th>Responsável</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-                                CAF-2026-001
-                            </strong>
-
-                        </td>
-
-                        <td>
-                            Boa Esperança
-                        </td>
-
-                        <td>
-                            Plantio
-                        </td>
-
-                        <td>
-                            João Silva
-                        </td>
-
-                        <td>
-
-                            <span class="badge bg-success">
-                                Concluído
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                         <a
-                            href="{% url 'detalhe_lote' lote.id %}"
-                            class="btn btn-sm btn-outline-dark">
-                        
-                            <i class="bi bi-eye"></i>
-                        </a>
-
-                            <button class="btn btn-sm btn-outline-success">
-
-                                <i class="bi bi-geo-alt"></i>
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-                                CAF-2026-002
-                            </strong>
-
-                        </td>
-
-                        <td>
-                            Santa Helena
-                        </td>
-
-                        <td>
-                            Colheita
-                        </td>
-
-                        <td>
-                            Maria Costa
-                        </td>
-
-                        <td>
-
-                            <span class="badge bg-warning text-dark">
-                                Em andamento
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-outline-dark">
-
-                                <i class="bi bi-eye"></i>
-
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-success">
-
-                                <i class="bi bi-geo-alt"></i>
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-</div>
-
 <style>
-
-.timeline-icon{
-
-    width: 55px;
-    height: 55px;
-
-    border-radius: 16px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 22px;
+:root {
+  --esp:     #1c0a03; --roast:  #3b1a07; --coffee: #4E342E; --mid:    #6D4C41;
+  --caramel: #c8813a; --gold:   #e8a84e; --ivory:  #fdfaf4; --muted:  #9a8878;
+  --success: #2d7a4f; --danger: #b83232; --warn:   #b87d1a; --info:   #1a5fa0;
+  --s-bg:    #edf7f1; --w-bg:   #fef9ec; --i-bg:   #e8f2fc; --d-bg:   #fdf0f0;
+  --white:   #ffffff; --card-r: 20px;    --sm-r:   12px;
+  --shd:     0 2px 16px rgba(62,39,35,0.09);
+  --shd-md:  0 8px 32px rgba(62,39,35,0.13);
 }
 
+@keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scaleIn  { from{opacity:0;transform:scale(0.93)} to{opacity:1;transform:scale(1)} }
+@keyframes pulseDot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:.5} }
+@keyframes slideIn  { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+
+.page-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;animation:fadeUp .45s ease both; }
+.page-title  { font-size:1.7rem;font-weight:700;color:var(--esp);letter-spacing:-.03em;line-height:1.2; }
+.page-sub    { font-size:.8rem;color:var(--muted);margin-top:.2rem;font-weight:400; }
+.live-badge  { display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--success);font-weight:600;margin-top:.45rem; }
+.live-dot    { width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulseDot 1.8s ease-in-out infinite; }
+
+.kpi-grid { display:grid;gap:1.1rem;margin-bottom:1.5rem; }
+.kpi-card { background:var(--white);border-radius:var(--card-r);padding:1.4rem 1.6rem;border:1px solid rgba(62,39,35,.06);box-shadow:var(--shd);position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s;animation:fadeUp .5s ease both; }
+.kpi-card:nth-child(1){animation-delay:.05s}
+.kpi-card:nth-child(2){animation-delay:.10s}
+.kpi-card:nth-child(3){animation-delay:.15s}
+.kpi-card:nth-child(4){animation-delay:.20s}
+.kpi-card:nth-child(5){animation-delay:.25s}
+.kpi-card:hover { transform:translateY(-4px);box-shadow:var(--shd-md); }
+.kpi-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--card-r) var(--card-r) 0 0; }
+.kpi-card.k1::before { background:linear-gradient(90deg,var(--coffee),var(--mid)); }
+.kpi-card.k2::before { background:linear-gradient(90deg,var(--caramel),var(--gold)); }
+.kpi-card.k3::before { background:linear-gradient(90deg,var(--info),#3a8fd4); }
+.kpi-card.k4::before { background:linear-gradient(90deg,var(--success),#52b37a); }
+.kpi-card.k5::before { background:linear-gradient(90deg,var(--danger),#e05555); }
+.kpi-blob { position:absolute;bottom:-20px;right:-16px;width:80px;height:80px;border-radius:50%;opacity:.05; }
+.kpi-card.k1 .kpi-blob { background:var(--coffee); }
+.kpi-card.k2 .kpi-blob { background:var(--caramel); }
+.kpi-card.k3 .kpi-blob { background:var(--info); }
+.kpi-card.k4 .kpi-blob { background:var(--success); }
+.kpi-card.k5 .kpi-blob { background:var(--danger); }
+.kpi-icon { width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:.9rem; }
+.kpi-card.k1 .kpi-icon { background:rgba(78,52,46,.1);color:var(--coffee); }
+.kpi-card.k2 .kpi-icon { background:rgba(200,129,58,.1);color:var(--caramel); }
+.kpi-card.k3 .kpi-icon { background:rgba(26,95,160,.1);color:var(--info); }
+.kpi-card.k4 .kpi-icon { background:rgba(45,122,79,.1);color:var(--success); }
+.kpi-card.k5 .kpi-icon { background:rgba(184,50,50,.1);color:var(--danger); }
+.kpi-label { font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem; }
+.kpi-value { font-size:2rem;font-weight:700;letter-spacing:-.04em;color:var(--esp);line-height:1; }
+.kpi-badge { display:inline-flex;align-items:center;gap:4px;margin-top:.5rem;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:20px; }
+.kpi-badge.good { background:var(--s-bg);color:var(--success); }
+.kpi-badge.warn { background:var(--w-bg);color:var(--warn); }
+.kpi-badge.info { background:var(--i-bg);color:var(--info); }
+.kpi-badge.neu  { background:#f3ede6;color:var(--muted); }
+.kpi-badge.bad  { background:var(--d-bg);color:var(--danger); }
+
+.sc { background:var(--white);border-radius:var(--card-r);box-shadow:var(--shd);border:1px solid rgba(62,39,35,.06);overflow:hidden;animation:fadeUp .5s ease both; }
+.sc-head { display:flex;justify-content:space-between;align-items:center;padding:1.4rem 1.6rem 0;margin-bottom:1.1rem; }
+.sc-head h4 { font-size:.95rem;font-weight:700;color:var(--esp);margin:0 0 .1rem;letter-spacing:-.01em; }
+.sc-head p  { font-size:.75rem;color:var(--muted);margin:0; }
+.sc-ico { width:38px;height:38px;background:rgba(78,52,46,.08);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--coffee);font-size:1.1rem;flex-shrink:0; }
+.sc-body { padding:0 1.6rem 1.5rem; }
+
+.mid-grid { display:grid;grid-template-columns:1fr 340px;gap:1.25rem;margin-bottom:1.5rem; }
+
+.timeline-wrap { padding:0 1.6rem 1.5rem; }
+.tl-item { display:flex;gap:1rem;padding:.9rem 0;border-bottom:1px solid rgba(62,39,35,.05);animation:slideIn .4s ease both; }
+.tl-item:last-child { border-bottom:none; }
+.tl-icon { width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-top:.1rem; }
+.tl-icon.plant { background:var(--s-bg);color:var(--success); }
+.tl-icon.colh  { background:var(--w-bg);color:var(--warn); }
+.tl-icon.sec   { background:var(--i-bg);color:var(--info); }
+.tl-icon.arm   { background:#f3ede6;color:var(--muted); }
+.tl-icon.def   { background:rgba(78,52,46,.08);color:var(--coffee); }
+.tl-body  { flex:1;min-width:0; }
+.tl-top   { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem; }
+.tl-title { font-size:.85rem;font-weight:700;color:var(--esp); }
+.tl-date  { font-size:.72rem;color:var(--muted);white-space:nowrap;margin-left:.5rem; }
+.tl-code  { font-family:'Courier New',monospace;font-size:.72rem;background:rgba(78,52,46,.07);color:var(--coffee);padding:2px 6px;border-radius:5px;font-weight:700;margin-right:.5rem; }
+.tl-desc  { font-size:.78rem;color:#4a3020;margin-top:.35rem;line-height:1.5; }
+.tl-resp  { font-size:.72rem;color:var(--muted);margin-top:.3rem;display:flex;align-items:center;gap:4px; }
+
+.chart-wrap { position:relative;animation:scaleIn .5s ease both .3s; }
+.etapa-row  { display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-bottom:1px solid rgba(62,39,35,.05); }
+.etapa-row:last-child { border-bottom:none; }
+.etapa-dot  { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+.etapa-name { font-size:.8rem;font-weight:600;color:var(--esp);flex:1; }
+.etapa-count{ font-size:.78rem;font-weight:700;color:var(--esp); }
+
+.fin-table-wrap { overflow-x:auto;padding:0 .4rem 1.4rem; }
+.fin-table { width:100%;border-collapse:separate;border-spacing:0;font-size:.83rem; }
+.fin-table thead th { padding:.55rem 1.1rem;font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(62,39,35,.08);white-space:nowrap; }
+.fin-table tbody tr { transition:background .13s; }
+.fin-table tbody tr:hover { background:rgba(245,245,220,.55); }
+.fin-table tbody td { padding:.85rem 1.1rem;color:#2a1810;border-bottom:1px solid rgba(62,39,35,.05);vertical-align:middle; }
+.fin-table tbody tr:last-child td { border-bottom:none; }
+.td-bold { font-weight:700;color:var(--esp); }
+.td-code { font-family:'Courier New',monospace;font-size:.78rem;background:rgba(78,52,46,.07);color:var(--coffee);padding:3px 8px;border-radius:6px;font-weight:700; }
+
+.eb { display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:20px; }
+.eb-plant { background:var(--s-bg);color:var(--success);border:1px solid rgba(45,122,79,.18); }
+.eb-colh  { background:var(--w-bg);color:var(--warn);border:1px solid rgba(184,125,26,.18); }
+.eb-sec   { background:var(--i-bg);color:var(--info);border:1px solid rgba(26,95,160,.18); }
+.eb-arm   { background:#f3ede6;color:var(--muted);border:1px solid rgba(154,136,120,.2); }
+.eb-venda { background:var(--s-bg);color:var(--success);border:1px solid rgba(45,122,79,.18); }
+.eb-def   { background:#f3ede6;color:var(--muted);border:1px solid rgba(154,136,120,.2); }
+
+.status-ok   { display:inline-flex;align-items:center;gap:4px;background:var(--s-bg);color:var(--success);font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid rgba(45,122,79,.18); }
+.status-prog { display:inline-flex;align-items:center;gap:4px;background:var(--w-bg);color:var(--warn);font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid rgba(184,125,26,.18); }
+
+.btn-action { width:30px;height:30px;border:none;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none; }
+.btn-action:hover { transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.13); }
+.btn-action.view { background:rgba(26,95,160,.1);color:var(--info); }
+
+.search-wrap { position:relative; }
+.search-wrap input { padding:.5rem .85rem .5rem 2.2rem;border:1.5px solid #e5d9cc;border-radius:var(--sm-r);font-size:.84rem;color:var(--esp);font-family:'Poppins',sans-serif;transition:border-color .2s;width:210px;outline:none; }
+.search-wrap input:focus { border-color:var(--caramel);box-shadow:0 0 0 3px rgba(200,129,58,.12); }
+.search-wrap i { position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem; }
+
+.empty-state { padding:2.5rem 1rem;text-align:center;color:var(--muted); }
+.empty-state i { font-size:2.2rem;opacity:.3;display:block;margin-bottom:.6rem; }
+.empty-state p { font-size:.82rem;margin:0; }
+
+@media(max-width:1100px) {
+  .mid-grid { grid-template-columns:1fr; }
+}
+@media(max-width:640px) {
+  .page-header { flex-direction:column;gap:1rem; }
+}
 </style>
 
+<div class="container-fluid px-2">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Rastreabilidade</div>
+      <div class="page-sub">Acompanhe todas as etapas da produção cafeeira</div>
+      <div class="live-badge"><span class="live-dot"></span> Monitoramento em tempo real</div>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid" style="grid-template-columns:repeat(5,1fr);">
+    <div class="kpi-card k1">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
+      <div class="kpi-label">Lotes Ativos</div>
+      <div class="kpi-value">{{ total_lotes }}</div>
+      <div class="kpi-badge neu"><i class="bi bi-dash"></i> Em rastreamento</div>
+    </div>
+    <div class="kpi-card k2">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-scissors"></i></div>
+      <div class="kpi-label">Em Colheita</div>
+      <div class="kpi-value">{{ lotes_colheita }}</div>
+      <div class="kpi-badge warn"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Processo ativo</div>
+    </div>
+    <div class="kpi-card k3">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-sun"></i></div>
+      <div class="kpi-label">Em Secagem</div>
+      <div class="kpi-value">{{ lotes_secagem }}</div>
+      <div class="kpi-badge info"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Monitoramento</div>
+    </div>
+    <div class="kpi-card k4">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-archive"></i></div>
+      <div class="kpi-label">Armazenados</div>
+      <div class="kpi-value">{{ lotes_armazenamento }}</div>
+      <div class="kpi-badge good"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Em estoque</div>
+    </div>
+    <div class="kpi-card k5">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-check-circle"></i></div>
+      <div class="kpi-label">Finalizados</div>
+      <div class="kpi-value">{{ lotes_finalizados }}</div>
+      <div class="kpi-badge good"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Prontos p/ venda</div>
+    </div>
+  </div>
+
+  <!-- MID: Timeline + Donut -->
+  <div class="mid-grid">
+
+    <!-- TIMELINE -->
+    <div class="sc" style="animation-delay:.22s;">
+      <div class="sc-head">
+        <div>
+          <h4>Fluxo de Produção</h4>
+          <p>Últimos registros operacionais</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--success);font-weight:600;">
+          <span class="live-dot"></span> Atualizado
+        </div>
+      </div>
+      <div class="timeline-wrap">
+        {% for registro in registros %}
+        <div class="tl-item">
+          {% if registro.LoteDeCafe.etapa == 'plantio' %}
+            <div class="tl-icon plant"><i class="bi bi-seedling"></i></div>
+          {% elif registro.LoteDeCafe.etapa == 'colheita' %}
+            <div class="tl-icon colh"><i class="bi bi-scissors"></i></div>
+          {% elif registro.LoteDeCafe.etapa == 'secagem' %}
+            <div class="tl-icon sec"><i class="bi bi-sun"></i></div>
+          {% elif registro.LoteDeCafe.etapa == 'armazenamento' %}
+            <div class="tl-icon arm"><i class="bi bi-archive"></i></div>
+          {% else %}
+            <div class="tl-icon def"><i class="bi bi-check-circle"></i></div>
+          {% endif %}
+          <div class="tl-body">
+            <div class="tl-top">
+              <div class="tl-title">{{ registro.LoteDeCafe.get_etapa_display }}</div>
+              <div class="tl-date">{{ registro.data|date:"d/m/Y H:i" }}</div>
+            </div>
+            <div>
+              <span class="tl-code">{{ registro.LoteDeCafe.codigo }}</span>
+              <span style="font-size:.72rem;color:var(--muted);">
+                {{ registro.LoteDeCafe.quantidade_sacas }} sacas &middot; Qualidade {{ registro.LoteDeCafe.qualidade }}
+              </span>
+            </div>
+            {% if registro.descricao %}
+            <div class="tl-desc">{{ registro.descricao }}</div>
+            {% endif %}
+            <div class="tl-resp">
+              <i class="bi bi-person-circle"></i>
+              {{ registro.funcionario.username }}
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+          <i class="bi bi-clock-history"></i>
+          <p>Nenhum registro operacional encontrado.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- STATUS DONUT -->
+    <div class="sc" style="animation-delay:.27s;">
+      <div class="sc-head">
+        <div><h4>Status dos Lotes</h4><p>Distribuição por etapa</p></div>
+        <div class="sc-ico"><i class="bi bi-pie-chart-fill"></i></div>
+      </div>
+      <div class="sc-body">
+        <div class="chart-wrap" style="height:190px;margin-bottom:1.2rem;">
+          <canvas id="graficoRastreio"></canvas>
+        </div>
+        <div>
+          <div class="etapa-row">
+            <span class="etapa-dot" style="background:#4E342E;"></span>
+            <span class="etapa-name">Plantio</span>
+            <span class="etapa-count">{{ lotes_plantio }}</span>
+          </div>
+          <div class="etapa-row">
+            <span class="etapa-dot" style="background:#b87d1a;"></span>
+            <span class="etapa-name">Colheita</span>
+            <span class="etapa-count">{{ lotes_colheita }}</span>
+          </div>
+          <div class="etapa-row">
+            <span class="etapa-dot" style="background:#1a5fa0;"></span>
+            <span class="etapa-name">Secagem</span>
+            <span class="etapa-count">{{ lotes_secagem }}</span>
+          </div>
+          <div class="etapa-row">
+            <span class="etapa-dot" style="background:#9a8878;"></span>
+            <span class="etapa-name">Armazenamento</span>
+            <span class="etapa-count">{{ lotes_armazenamento }}</span>
+          </div>
+          <div class="etapa-row">
+            <span class="etapa-dot" style="background:#2d7a4f;"></span>
+            <span class="etapa-name">Finalizados</span>
+            <span class="etapa-count">{{ lotes_finalizados }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABELA DE LOTES -->
+  <div class="sc" style="animation-delay:.32s;">
+    <div class="sc-head">
+      <div><h4>Histórico de Lotes</h4><p>Todos os lotes em rastreamento</p></div>
+      <div class="search-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchRast" placeholder="Pesquisar lote…">
+      </div>
+    </div>
+    <div class="fin-table-wrap">
+      <table class="fin-table" id="tabelaRast">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Fazenda</th>
+            <th>Etapa</th>
+            <th>Sacas</th>
+            <th>Responsável</th>
+            <th>Status</th>
+            <th style="text-align:center;">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lote in lotes %}
+          <tr>
+            <td><span class="td-code">{{ lote.codigo }}</span></td>
+            <td class="td-bold">{{ lote.lavoura.propriedade.nome }}</td>
+            <td>
+              {% if lote.etapa == 'plantio' %}
+                <span class="eb eb-plant"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Plantio</span>
+              {% elif lote.etapa == 'colheita' %}
+                <span class="eb eb-colh"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Colheita</span>
+              {% elif lote.etapa == 'secagem' %}
+                <span class="eb eb-sec"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Secagem</span>
+              {% elif lote.etapa == 'armazenamento' %}
+                <span class="eb eb-arm"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Armazenamento</span>
+              {% elif lote.etapa == 'venda' %}
+                <span class="eb eb-venda"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Venda</span>
+              {% else %}
+                <span class="eb eb-def"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>{{ lote.get_etapa_display }}</span>
+              {% endif %}
+            </td>
+            <td>{{ lote.quantidade_sacas }}</td>
+            <td style="color:var(--muted);font-size:.82rem;">
+              {% if lote.lavoura.propriedade.produtor %}
+                {{ lote.lavoura.propriedade.produtor.username }}
+              {% endif %}
+            </td>
+            <td>
+              {% if lote.etapa == 'venda' %}
+                <span class="status-ok"><i class="bi bi-check-circle-fill" style="font-size:.7rem;"></i>Concluído</span>
+              {% else %}
+                <span class="status-prog"><i class="bi bi-arrow-repeat" style="font-size:.7rem;"></i>Em andamento</span>
+              {% endif %}
+            </td>
+            <td style="text-align:center;">
+              <a href="{% url 'detalhe_lote' lote.id %}" class="btn-action view" title="Ver detalhes">
+                <i class="bi bi-eye-fill"></i>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7">
+            <div class="empty-state"><i class="bi bi-inbox"></i><p>Nenhum lote encontrado.</p></div>
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
 <script>
+document.addEventListener('DOMContentLoaded', function () {
 
-const ctx = document.getElementById('graficoRastreio');
+  var ctx = document.getElementById('graficoRastreio');
+  if (ctx) {
 
-new Chart(ctx, {
+    var dadosEtapas = [
+      parseInt("{{ lotes_plantio }}"),
+      parseInt("{{ lotes_colheita }}"),
+      parseInt("{{ lotes_secagem }}"),
+      parseInt("{{ lotes_armazenamento }}"),
+      parseInt("{{ lotes_finalizados }}")
+    ];
 
-    type: 'doughnut',
-
-    data: {
-
-        labels: [
-            'Plantio',
-            'Colheita',
-            'Secagem',
-            'Armazenamento'
-        ],
-
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Plantio', 'Colheita', 'Secagem', 'Armazenamento', 'Finalizado'],
         datasets: [{
-
-            data: [
-                20,
-                30,
-                25,
-                25
-            ],
-
-            backgroundColor: [
-                '#4E342E',
-                '#6D4C41',
-                '#8D6E63',
-                '#D7CCC8'
-            ]
-
+          data: dadosEtapas,
+          backgroundColor: ['#4E342E', '#b87d1a', '#1a5fa0', '#9a8878', '#2d7a4f'],
+          borderWidth: 0,
+          hoverOffset: 6
         }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '66%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1c0a03',
+            titleFont: { family: 'Poppins', size: 12, weight: '600' },
+            bodyFont:  { family: 'Poppins', size: 11 },
+            padding: 10,
+            cornerRadius: 10,
+            callbacks: {
+              label: function(c) {
+                return ' ' + c.label + ': ' + c.parsed + ' lote(s)';
+              }
+            }
+          }
+        },
+        animation: { animateRotate: true, duration: 900, easing: 'easeOutQuart' }
+      }
+    });
+  }
 
-    }
+  document.getElementById('searchRast').addEventListener('input', function () {
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('#tabelaRast tbody tr').forEach(function (tr) {
+      tr.style.display = tr.textContent.toLowerCase().indexOf(q) > -1 ? '' : 'none';
+    });
+  });
 
 });
-
 </script>
 
 {% endblock %}
