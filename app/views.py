@@ -9,22 +9,13 @@ import openpyxl
 
 from .models import Propriedade, Lavoura, LoteDeCafe, MovimentacaoFinanceira, RegistroOperacional,Usuario
 from .forms import LavouraForm, PropriedadeForm, LoteForm, MovimentacaoFinanceiraForm
-
+from .models import FuncionarioPropriedade
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, HRFlowable
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
-
-#agora com a mesma base de dedign que voce fez os outros, faça a propriedades, os lotes e as lavouras . 
-# no meu dashboard do produtor, eu quero que ao inves do grafico da producao mensal, voce coloque uma api que mostre o preco do cafe no dia,
-#  e nesse mesmo grafico mais algumas coisas que agreguem ao site. na dashboard tambem, no grafico das etapas do lote, a parte que aparece
-#  escrito armazenamento, o "o" final fica com o grafico sobre ele, e nessa mesma parte troque a barra de quantidade, por exemplo, a barra q
-# ue tem apenas um, esta no mesmo nivel na barra que tem 2. Faça isso tudo de uma vez, agindo como um engenheiro de software. transcreva cada
-#  codigo para eu prosseguir
-
-
 # =========================================================
 # LOGIN
 # =========================================================
@@ -149,6 +140,49 @@ def meus_lotes(request):
         'meus_lotes.html',
         {
             'lotes': lotes
+        }
+    )
+
+@login_required
+def funcionarios_view(request):
+
+    if request.user.tipo != 'produtor':
+        return HttpResponse("Acesso negado")
+
+    propriedades = Propriedade.objects.filter(
+        produtor=request.user
+    )
+
+    vinculos = FuncionarioPropriedade.objects.filter(
+        propriedade__produtor=request.user
+    ).select_related(
+        'funcionario',
+        'propriedade'
+    )
+
+    funcionarios = Usuario.objects.filter(
+        tipo='funcionario'
+    )
+
+    if request.method == 'POST':
+
+        funcionario_id = request.POST.get('funcionario')
+        propriedade_id = request.POST.get('propriedade')
+
+        FuncionarioPropriedade.objects.get_or_create(
+            funcionario_id=funcionario_id,
+            propriedade_id=propriedade_id
+        )
+
+        return redirect('funcionarios')
+
+    return render(
+        request,
+        'funcionarios.html',
+        {
+            'vinculos': vinculos,
+            'funcionarios': funcionarios,
+            'propriedades': propriedades
         }
     )
 
@@ -352,7 +386,17 @@ def lotes_view(request):
         )
 
         if form.is_valid():
-            form.save()
+
+
+            lote = form.save()
+
+
+            RegistroOperacional.objects.create(
+                    LoteDeCafe=lote,
+                    funcionario=lote.responsavel,
+                    descricao="Lote cadastrado no sistema"
+            )
+
             return redirect('lotes')
 
         else:
@@ -422,10 +466,11 @@ def visualizar_lote(request, id):
 def rastreabilidade_view(request):
 
     lotes = LoteDeCafe.objects.filter(
-        lavoura__propriedade__produtor=request.user
+    lavoura__propriedade__produtor=request.user
     ).select_related(
         'lavoura',
-        'lavoura__propriedade'
+        'lavoura__propriedade',
+        'responsavel'
     ).order_by('-criado_em')
 
     registros = RegistroOperacional.objects.filter(
@@ -433,7 +478,7 @@ def rastreabilidade_view(request):
     ).select_related(
         'LoteDeCafe',
         'funcionario'
-    ).order_by('-data')[:20]
+    ).order_by('-data')[:4]
 
     total_lotes = lotes.count()
 
@@ -456,6 +501,13 @@ def rastreabilidade_view(request):
     lotes_finalizados = lotes.filter(
         etapa='venda'
     ).count()
+
+
+    for lote in lotes:
+        print(
+            lote.codigo,
+            lote.responsavel
+    )
 
     context = {
 

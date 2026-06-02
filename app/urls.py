@@ -144,7 +144,11 @@ urlpatterns = [
     name='avancar_etapa'
     ),
 
-    
+    path(
+    'funcionarios/',
+    views.funcionarios_view,
+    name='funcionarios'
+    ),
 
     path(
         'tarefas/',

@@ -1,4 +1,4 @@
-#!/usr/bin/env prython
+#!/usr/bin/env prgiython
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
