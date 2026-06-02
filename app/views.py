@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import json
 import openpyxl
 
-from .models import Propriedade, Lavoura, LoteDeCafe, MovimentacaoFinanceira, RegistroOperacional,Usuario
+from .models import Propriedade, Lavoura, LoteDeCafe, MovimentacaoFinanceira, RegistroOperacional,Usuario,FuncionarioPropriedade
 from .forms import LavouraForm, PropriedadeForm, LoteForm, MovimentacaoFinanceiraForm
 from .models import FuncionarioPropriedade
 from reportlab.lib.pagesizes import A4
@@ -123,6 +123,19 @@ def avancar_etapa(request, lote_id):
         )
 
     return redirect('meus_lotes')
+
+@login_required
+def excluir_vinculo(request, id):
+
+    vinculo = get_object_or_404(
+        FuncionarioPropriedade,
+        id=id,
+        propriedade__produtor=request.user
+    )
+
+    vinculo.delete()
+
+    return redirect('funcionarios')
 
 
 @login_required
@@ -924,6 +937,75 @@ def exportar_pdf(request):
     return response
 
 
+# =========================================================
+# API DE PREÇOS DO CAFÉ — proxy seguro para a Anthropic
+# =========================================================
+
+import urllib.request
+import urllib.error
+
+@login_required
+def coffee_prices_api(request):
+    from django.http import JsonResponse
+    from django.conf import settings
+
+    prompt = "\n".join([
+        "You are a financial data assistant. Return ONLY a raw JSON object, no markdown, no explanation, no backticks.",
+        "Provide realistic approximate current market reference prices for coffee as of today.",
+        "JSON structure (use realistic values based on your latest knowledge):",
+        "{",
+        '  "arabica_usc_lb": 185.40,',
+        '  "arabica_change": "+1.2%",',
+        '  "arabica_up": true,',
+        '  "robusta_usd_ton": 2340,',
+        '  "robusta_change": "-0.4%",',
+        '  "robusta_up": false,',
+        '  "brasil_brl_saca": 1320,',
+        '  "brasil_change": "+0.8%",',
+        '  "brasil_up": true,',
+        '  "especial_brl_saca": 2100,',
+        '  "especial_change": "+2.1%",',
+        '  "especial_up": true,',
+        '  "soluvel_brl_kg": 38,',
+        '  "soluvel_change": "0.0%",',
+        '  "soluvel_up": null,',
+        '  "sparkline_labels": ["Seg","Ter","Qua","Qui","Sex","Sab","Dom"],',
+        '  "sparkline_values": [180, 182, 181, 185, 183, 186, 185]',
+        "}"
+    ])
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 500,
+        "messages": [{"role": "user", "content": prompt}]
+    }).encode('utf-8')
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": settings.ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+        },
+        method="POST"
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            body = json.loads(resp.read().decode('utf-8'))
+            raw = "".join(
+                item.get("text", "")
+                for item in body.get("content", [])
+            )
+            raw = raw.replace("```json", "").replace("```", "").strip()
+            prices = json.loads(raw)
+            return JsonResponse(prices)
+
+    except urllib.error.HTTPError as e:
+        return JsonResponse({"error": f"API error {e.code}"}, status=502)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 # =========================================================
 # PERFIL
 # =========================================================

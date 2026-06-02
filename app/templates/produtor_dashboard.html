@@ -415,7 +415,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ══════════════════════════════════════════
-     COFFEE PRICE WIDGET via Anthropic API
+     COFFEE PRICE WIDGET
+     Chama o backend Django /api/coffee-prices/
+     que faz o proxy seguro para a Anthropic
   ══════════════════════════════════════════ */
   var sparklineChart = null;
 
@@ -452,91 +454,82 @@ document.addEventListener('DOMContentLoaded', function () {
     el.querySelector('.price-mini-value').innerHTML = value;
     var changeEl = el.querySelector('.price-mini-change');
     changeEl.className = 'price-mini-change ' + (isUp === null ? 'neu' : isUp ? 'up' : 'down');
-    changeEl.innerHTML = (isUp === null ? '' : isUp ? '▲ ' : '▼ ') + change;
+    changeEl.innerHTML = (isUp === null ? '' : isUp ? '&#9650; ' : '&#9660; ') + change;
   }
 
-  async function fetchCoffeePrices() {
-    var prompt = [
-      'You are a financial data assistant. Return ONLY a raw JSON object, no markdown, no explanation, no backticks.',
-      'Provide realistic approximate current market reference prices for coffee as of today.',
-      'JSON structure:',
-      '{',
-      '  "arabica_usc_lb": 185.40,',
-      '  "arabica_change": "+1.2%",',
-      '  "arabica_up": true,',
-      '  "robusta_usd_ton": 2340,',
-      '  "robusta_change": "-0.4%",',
-      '  "robusta_up": false,',
-      '  "brasil_brl_saca": 1320,',
-      '  "brasil_change": "+0.8%",',
-      '  "brasil_up": true,',
-      '  "especial_brl_saca": 2100,',
-      '  "especial_change": "+2.1%",',
-      '  "especial_up": true,',
-      '  "soluvel_brl_kg": 38,',
-      '  "soluvel_change": "0.0%",',
-      '  "soluvel_up": null,',
-      '  "sparkline_labels": ["Seg","Ter","Qua","Qui","Sex","Sab","Dom"],',
-      '  "sparkline_values": [180, 182, 181, 185, 183, 186, 185]',
-      '}'
-    ].join('\n');
+  function showError() {
+    document.getElementById('arabicaVal').textContent = '—';
+    document.getElementById('arabicaSub').textContent = 'Erro ao carregar cotação';
+    ['pm-robusta','pm-brl','pm-esp','pm-sol'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.querySelector('.price-mini-value').textContent = '—';
+      var ch = el.querySelector('.price-mini-change');
+      ch.textContent = 'Indisponível';
+      ch.className = 'price-mini-change neu';
+    });
+  }
 
-    try {
-      var resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 500,
-          messages: [{ role: 'user', content: prompt }]
-        })
-      });
-
-      var data = await resp.json();
-      var raw = data.content.map(function(i){ return i.text || ''; }).join('');
-      raw = raw.replace(/```json|```/g, '').trim();
-      var prices = JSON.parse(raw);
+  function fetchCoffeePrices() {
+    fetch('/api/coffee-prices/', {
+      method: 'GET',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(resp) {
+      if (!resp.ok) throw new Error('status ' + resp.status);
+      return resp.json();
+    })
+    .then(function(prices) {
 
       /* Arábica main card */
-      document.getElementById('arabicaVal').textContent = prices.arabica_usc_lb.toFixed(2);
-      document.getElementById('arabicaSub').textContent = 'ICE Futures · Referência de mercado';
+      document.getElementById('arabicaVal').textContent =
+        parseFloat(prices.arabica_usc_lb).toFixed(2);
+      document.getElementById('arabicaSub').textContent =
+        'ICE Futures · Referência de mercado';
+
       var chEl = document.getElementById('arabicaChange');
       chEl.style.display = 'inline-flex';
       chEl.className = 'main-price-change ' + (prices.arabica_up ? 'up' : 'down');
-      chEl.innerHTML = (prices.arabica_up ? '▲ ' : '▼ ') + prices.arabica_change + ' hoje';
+      chEl.innerHTML =
+        (prices.arabica_up ? '&#9650; ' : '&#9660; ') +
+        prices.arabica_change + ' hoje';
 
       /* Mini cards */
-      setMiniCard('pm-robusta',
-        'US$ ' + prices.robusta_usd_ton.toLocaleString('pt-BR') + '<span style="font-size:.7rem;opacity:.55;">/ton</span>',
-        prices.robusta_change, prices.robusta_up);
-      setMiniCard('pm-brl',
-        'R$ ' + prices.brasil_brl_saca.toLocaleString('pt-BR') + '<span style="font-size:.7rem;opacity:.55;">/saca</span>',
-        prices.brasil_change, prices.brasil_up);
-      setMiniCard('pm-esp',
-        'R$ ' + prices.especial_brl_saca.toLocaleString('pt-BR') + '<span style="font-size:.7rem;opacity:.55;">/saca</span>',
-        prices.especial_change, prices.especial_up);
-      setMiniCard('pm-sol',
-        'R$ ' + prices.soluvel_brl_kg.toLocaleString('pt-BR') + '<span style="font-size:.7rem;opacity:.55;">/kg</span>',
-        prices.soluvel_change, prices.soluvel_up);
+      setMiniCard(
+        'pm-robusta',
+        'US$ ' + parseInt(prices.robusta_usd_ton).toLocaleString('pt-BR') +
+        '<span style="font-size:.7rem;opacity:.55;">/ton</span>',
+        prices.robusta_change, prices.robusta_up
+      );
+      setMiniCard(
+        'pm-brl',
+        'R$ ' + parseInt(prices.brasil_brl_saca).toLocaleString('pt-BR') +
+        '<span style="font-size:.7rem;opacity:.55;">/saca</span>',
+        prices.brasil_change, prices.brasil_up
+      );
+      setMiniCard(
+        'pm-esp',
+        'R$ ' + parseInt(prices.especial_brl_saca).toLocaleString('pt-BR') +
+        '<span style="font-size:.7rem;opacity:.55;">/saca</span>',
+        prices.especial_change, prices.especial_up
+      );
+      setMiniCard(
+        'pm-sol',
+        'R$ ' + parseInt(prices.soluvel_brl_kg).toLocaleString('pt-BR') +
+        '<span style="font-size:.7rem;opacity:.55;">/kg</span>',
+        prices.soluvel_change, prices.soluvel_up
+      );
 
       /* Sparkline */
-      renderSparkline({ labels: prices.sparkline_labels, values: prices.sparkline_values });
+      renderSparkline({
+        labels: prices.sparkline_labels,
+        values: prices.sparkline_values
+      });
 
       /* Badge */
       document.getElementById('priceUpdateBadge').style.display = 'flex';
-
-    } catch(e) {
-      document.getElementById('arabicaVal').textContent = '—';
-      document.getElementById('arabicaSub').textContent = 'Erro ao carregar cotação';
-      ['pm-robusta','pm-brl','pm-esp','pm-sol'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        el.querySelector('.price-mini-value').textContent = '—';
-        var ch = el.querySelector('.price-mini-change');
-        ch.textContent = 'Indisponível';
-        ch.className = 'price-mini-change neu';
-      });
-    }
+    })
+    .catch(function() { showError(); });
   }
 
   fetchCoffeePrices();

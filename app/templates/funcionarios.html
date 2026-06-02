@@ -2,42 +2,50 @@
 
 {% block content %}
 
-<h3>Funcionários</h3>
+<h3>Vincular Funcionário</h3>
 
 <form method="POST">
     {% csrf_token %}
 
-    <select name="funcionario">
-        {% for f in funcionarios %}
-            <option value="{{ f.id }}">
-                {{ f.username }}
+    <select name="funcionario" class="form-select mb-2">
+        {% for funcionario in funcionarios %}
+            <option value="{{ funcionario.id }}">
+                {{ funcionario.username }}
             </option>
         {% endfor %}
     </select>
 
-    <select name="propriedade">
-        {% for p in propriedades %}
-            <option value="{{ p.id }}">
-                {{ p.nome }}
+    <select name="propriedade" class="form-select mb-2">
+        {% for propriedade in propriedades %}
+            <option value="{{ propriedade.id }}">
+                {{ propriedade.nome }}
             </option>
         {% endfor %}
     </select>
 
-    <button type="submit">
+    <button class="btn btn-success">
         Vincular
     </button>
-
 </form>
 
 <hr>
 
+<h3>Funcionários Vinculados</h3>
+
 <table class="table">
 
     <thead>
+
         <tr>
+
             <th>Funcionário</th>
+
             <th>Propriedade</th>
+
+            <th>Ações</th>
+
         </tr>
+
     </thead>
 
     <tbody>
@@ -45,8 +53,22 @@
         {% for v in vinculos %}
 
         <tr>
-            <td>{{ v.funcionario }}</td>
-            <td>{{ v.propriedade }}</td>
+
+            <td>{{ v.funcionario.username }}</td>
+
+            <td>{{ v.propriedade.nome }}</td>
+
+            <td>
+
+                <a
+                    href="{% url 'excluir_vinculo' v.id %}"
+                    class="btn btn-danger btn-sm"
+                >
+                    Excluir
+                </a>
+
+            </td>
+
         </tr>
 
         {% endfor %}
