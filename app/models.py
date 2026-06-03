@@ -15,6 +15,18 @@ class Usuario(AbstractUser):
         choices=TIPOS
     )
 
+    @property
+    def is_admin(self):
+        return self.tipo == 'admin'
+
+    @property
+    def is_produtor(self):
+        return self.tipo == 'produtor'
+
+    @property
+    def is_funcionario(self):
+        return self.tipo == 'funcionario'
+
     def __str__(self):
         return self.username
 
@@ -228,3 +240,57 @@ class FuncionarioPropriedade(models.Model):
 
     def __str__(self):
         return f"{self.funcionario.username} - {self.propriedade.nome}"
+    
+class Notificacao(models.Model):
+
+    usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE
+    )
+
+    titulo = models.CharField(
+        max_length=200
+    )
+
+    mensagem = models.TextField()
+
+    lida = models.BooleanField(
+        default=False
+    )
+
+    criada_em = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return self.titulo
+    
+    
+class Relatorio(models.Model):
+
+    nome = models.CharField(max_length=100)
+
+    descricao = models.TextField()
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nome
+    
+class Equipamento(models.Model):
+
+    nome = models.CharField(max_length=100)
+
+    status = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nome
+    
+class Fornecedor(models.Model):
+
+    nome = models.CharField(max_length=100)
+
+    telefone = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nome

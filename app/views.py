@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import json
 import openpyxl
 
-from .models import Propriedade, Lavoura, LoteDeCafe, MovimentacaoFinanceira, RegistroOperacional,Usuario,FuncionarioPropriedade
+from .models import Propriedade, Lavoura, LoteDeCafe, MovimentacaoFinanceira, RegistroOperacional,Usuario,FuncionarioPropriedade,Notificacao
 from .forms import LavouraForm, PropriedadeForm, LoteForm, MovimentacaoFinanceiraForm
 from .models import FuncionarioPropriedade
 from reportlab.lib.pagesizes import A4
@@ -159,7 +159,7 @@ def meus_lotes(request):
 @login_required
 def funcionarios_view(request):
 
-    if request.user.tipo != 'produtor':
+    if request.user.tipo not in ['produtor', 'admin']:  
         return HttpResponse("Acesso negado")
 
     propriedades = Propriedade.objects.filter(
@@ -198,6 +198,9 @@ def funcionarios_view(request):
             'propriedades': propriedades
         }
     )
+
+
+
 
 
 @login_required
@@ -283,6 +286,21 @@ def editar_propriedade(request, id):
         form = PropriedadeForm(instance=propriedade)
     return render(request, 'editar_propriedade.html', {'form': form, 'propriedade': propriedade})
 
+@login_required
+def notificacoes(request):
+
+    notificacoes = Notificacao.objects.filter(
+        usuario=request.user
+    ).order_by('-criada_em')
+
+    return render(
+        request,
+        'notificacoes.html',
+        {
+            'notificacoes': notificacoes
+        }
+    )
+
 
 @login_required
 def excluir_propriedade(request, id):
@@ -324,7 +342,7 @@ def lavouras_view(request):
 
 @login_required
 def cadastrar_lavoura(request):
-    if request.user.tipo != 'produtor':
+    if request.user.tipo not in ['produtor', 'admin']:
         return HttpResponse("Acesso negado")
     if request.method == 'POST':
         form = LavouraForm(request.POST)
