@@ -237,6 +237,24 @@
   </style>
 </head>
 
+<script>
+  // Persiste a posição do scroll da sidebar entre páginas
+  var nav = document.querySelector('.sidebar-nav');
+  var key = 'sidebar_scroll';
+
+  // Restaura ao carregar
+  var saved = sessionStorage.getItem(key);
+  if (saved) nav.scrollTop = parseInt(saved);
+
+  // Salva ao clicar em qualquer link da sidebar
+  document.querySelectorAll('.sidebar-nav a, .sidebar-footer a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      sessionStorage.setItem(key, nav.scrollTop);
+    });
+  });
+</script>
+
+
 <body>
 
   <!-- SIDEBAR -->

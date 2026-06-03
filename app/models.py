@@ -27,6 +27,10 @@ class Usuario(AbstractUser):
     def is_funcionario(self):
         return self.tipo == 'funcionario'
 
+    class Meta:
+        verbose_name = 'Usuário'
+        verbose_name_plural = 'Usuários'
+
     def __str__(self):
         return self.username
 
@@ -39,14 +43,22 @@ class Propriedade(models.Model):
         limit_choices_to={'tipo': 'produtor'}
     )
 
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(
+        max_length=100
+    )
 
-    cidade = models.CharField(max_length=100)
+    cidade = models.CharField(
+        max_length=100
+    )
 
     hectares = models.DecimalField(
         max_digits=10,
         decimal_places=2
     )
+
+    class Meta:
+        verbose_name = 'Propriedade'
+        verbose_name_plural = 'Propriedades'
 
     def __str__(self):
         return self.nome
@@ -59,9 +71,13 @@ class Lavoura(models.Model):
         on_delete=models.CASCADE
     )
 
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(
+        max_length=100
+    )
 
-    variedade = models.CharField(max_length=100)
+    variedade = models.CharField(
+        max_length=100
+    )
 
     area = models.DecimalField(
         max_digits=10,
@@ -69,6 +85,10 @@ class Lavoura(models.Model):
     )
 
     data_plantio = models.DateField()
+
+    class Meta:
+        verbose_name = 'Lavoura'
+        verbose_name_plural = 'Lavouras'
 
     def __str__(self):
         return self.nome
@@ -138,11 +158,16 @@ class LoteDeCafe(models.Model):
         auto_now=True
     )
 
+    class Meta:
+        verbose_name = 'Lote de Café'
+        verbose_name_plural = 'Lotes de Café'
+
     def valor_total(self):
         return self.quantidade_sacas * self.preco_saca
 
     def __str__(self):
         return self.codigo
+
 
 
 class RegistroOperacional(models.Model):
@@ -165,8 +190,8 @@ class RegistroOperacional(models.Model):
     )
 
     etapa = models.CharField(
-    max_length=30
-)
+        max_length=30
+    )
 
     local = models.CharField(
         max_length=100,
@@ -174,15 +199,18 @@ class RegistroOperacional(models.Model):
         null=True
     )
 
+    class Meta:
+        verbose_name = 'Registro Operacional'
+        verbose_name_plural = 'Registros Operacionais'
+
     def __str__(self):
         return f"{self.funcionario.username} - {self.data}"
-    
+
 
 class MovimentacaoFinanceira(models.Model):
 
     TIPOS = (
         ('LUCRO', 'Lucro'),
-
         ('DESPESA', 'Despesa'),
     )
 
@@ -214,20 +242,14 @@ class MovimentacaoFinanceira(models.Model):
         auto_now_add=True
     )
 
-    
-
-    def __str__(self):
-
-        return self.titulo
-    
-class MovimentacaoFinanceira(models.Model):
-
-    ...
-
     class Meta:
         verbose_name = 'Movimentação Financeira'
         verbose_name_plural = 'Movimentações Financeiras'
-    
+
+    def __str__(self):
+        return self.titulo
+
+
 class FuncionarioPropriedade(models.Model):
 
     funcionario = models.ForeignKey(
@@ -247,10 +269,13 @@ class FuncionarioPropriedade(models.Model):
 
     class Meta:
         unique_together = ('funcionario', 'propriedade')
+        verbose_name = 'Funcionário da Propriedade'
+        verbose_name_plural = 'Funcionários das Propriedades'
 
     def __str__(self):
         return f"{self.funcionario.username} - {self.propriedade.nome}"
-    
+
+
 class Notificacao(models.Model):
 
     usuario = models.ForeignKey(
@@ -272,33 +297,61 @@ class Notificacao(models.Model):
         auto_now_add=True
     )
 
+    class Meta:
+        verbose_name = 'Notificação'
+        verbose_name_plural = 'Notificações'
+
     def __str__(self):
         return self.titulo
-    
-    
+
+
 class Relatorio(models.Model):
 
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(
+        max_length=100
+    )
 
     descricao = models.TextField()
 
-    criado_em = models.DateTimeField(auto_now_add=True)
+    criado_em = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        verbose_name = 'Relatório'
+        verbose_name_plural = 'Relatórios'
 
     def __str__(self):
         return self.nome
-    
+
+
 class Equipamento(models.Model):
 
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(
+        max_length=100
+    )
 
-    status = models.CharField(max_length=50)
+    status = models.CharField(
+        max_length=50
+    )
+
+    class Meta:
+        verbose_name = 'Equipamento'
+        verbose_name_plural = 'Equipamentos'
 
     def __str__(self):
         return self.nome
-    
+
+
 class Fornecedor(models.Model):
 
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(
+        max_length=100
+    )
+
+    telefone = models.CharField(
+        max_length=20
+    )
 
     class Meta:
         verbose_name = 'Fornecedor'
