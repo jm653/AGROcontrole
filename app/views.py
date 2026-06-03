@@ -200,9 +200,6 @@ def funcionarios_view(request):
     )
 
 
-
-
-
 @login_required
 def produtor_dashboard(request):
 
@@ -238,6 +235,34 @@ def produtor_dashboard(request):
     }
 
     return render(request, 'produtor_dashboard.html', context)
+
+@login_required
+def marcar_notificacao_lida(request, id):
+
+    notificacao = get_object_or_404(
+        Notificacao,
+        id=id,
+        usuario=request.user
+    )
+
+    notificacao.lida = True
+    notificacao.save()
+
+    return redirect('notificacoes')
+
+@login_required
+def marcar_notificacao_lida(request, id):
+
+    notificacao = get_object_or_404(
+        Notificacao,
+        id=id,
+        usuario=request.user
+    )
+
+    notificacao.lida = True
+    notificacao.save()
+
+    return redirect('notificacoes')
 
 
 # =========================================================
@@ -557,6 +582,8 @@ def rastreabilidade_view(request):
         'lotes_finalizados': lotes_finalizados,
 
         'registros': registros,
+
+        
 
     }
 

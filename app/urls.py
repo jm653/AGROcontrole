@@ -54,6 +54,13 @@ urlpatterns = [
     path('funcionarios/',                     views.funcionarios_view,      name='funcionarios'),
 
     path('notificacoes/',                     views.notificacoes,           name='notificacoes'),
+    path('notificacao/lida/<int:id>/',        views.marcar_notificacao_lida,name='marcar_notificacao_lida'),
+
+    path(
+    'notificacao/lida/<int:id>/',
+    views.marcar_notificacao_lida,
+    name='marcar_notificacao_lida'
+),
 
     # =========================
     # FUNCIONÁRIO

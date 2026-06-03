@@ -214,9 +214,19 @@ class MovimentacaoFinanceira(models.Model):
         auto_now_add=True
     )
 
+    
+
     def __str__(self):
 
         return self.titulo
+    
+class MovimentacaoFinanceira(models.Model):
+
+    ...
+
+    class Meta:
+        verbose_name = 'Movimentação Financeira'
+        verbose_name_plural = 'Movimentações Financeiras'
     
 class FuncionarioPropriedade(models.Model):
 
@@ -290,7 +300,9 @@ class Fornecedor(models.Model):
 
     nome = models.CharField(max_length=100)
 
-    telefone = models.CharField(max_length=20)
+    class Meta:
+        verbose_name = 'Fornecedor'
+        verbose_name_plural = 'Fornecedores'
 
     def __str__(self):
         return self.nome

@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% block title %}Notificações | AgroControle{% endblock %}
+{% block content %}
+
+<style>
+.notif-actions{
+    margin-top:.75rem;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.btn-lida{
+
+    background:linear-gradient(
+        135deg,
+        var(--success),
+        #52b37a
+    );
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:.45rem .9rem;
+
+    font-size:.72rem;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    transition:.2s;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:.35rem;
+}
+
+.btn-lida:hover{
+
+    transform:translateY(-2px);
+
+    color:white;
+
+    box-shadow:
+    0 6px 18px rgba(45,122,79,.25);
+}
+
+:root {
+  --esp:#1c0a03;--roast:#3b1a07;--coffee:#4E342E;--mid:#6D4C41;
+  --caramel:#c8813a;--gold:#e8a84e;--ivory:#fdfaf4;--muted:#9a8878;
+  --success:#2d7a4f;--danger:#b83232;--warn:#b87d1a;--info:#1a5fa0;
+  --s-bg:#edf7f1;--d-bg:#fdf0f0;--w-bg:#fef9ec;--i-bg:#e8f2fc;
+  --white:#ffffff;--card-r:20px;--sm-r:12px;
+  --shd:0 2px 16px rgba(62,39,35,0.09);
+  --shd-md:0 8px 32px rgba(62,39,35,0.13);
+}
+@keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
+
+.page-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;animation:fadeUp .45s ease both; }
+.page-title  { font-size:1.7rem;font-weight:700;color:var(--esp);letter-spacing:-.03em;line-height:1.2; }
+.page-sub    { font-size:.8rem;color:var(--muted);margin-top:.2rem;font-weight:400; }
+
+.kpi-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-bottom:1.5rem; }
+.kpi-card { background:var(--white);border-radius:var(--card-r);padding:1.4rem 1.6rem;border:1px solid rgba(62,39,35,.06);box-shadow:var(--shd);position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s;animation:fadeUp .5s ease both; }
+.kpi-card:nth-child(1){animation-delay:.05s}.kpi-card:nth-child(2){animation-delay:.1s}.kpi-card:nth-child(3){animation-delay:.15s}
+.kpi-card:hover { transform:translateY(-4px);box-shadow:var(--shd-md); }
+.kpi-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--card-r) var(--card-r) 0 0; }
+.kpi-card.k1::before{background:linear-gradient(90deg,var(--coffee),var(--mid));}
+.kpi-card.k2::before{background:linear-gradient(90deg,var(--caramel),var(--gold));}
+.kpi-card.k3::before{background:linear-gradient(90deg,var(--success),#52b37a);}
+.kpi-blob { position:absolute;bottom:-20px;right:-16px;width:80px;height:80px;border-radius:50%;opacity:.05; }
+.kpi-card.k1 .kpi-blob{background:var(--coffee);}.kpi-card.k2 .kpi-blob{background:var(--caramel);}.kpi-card.k3 .kpi-blob{background:var(--success);}
+.kpi-icon { width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:.9rem; }
+.kpi-card.k1 .kpi-icon{background:rgba(78,52,46,.1);color:var(--coffee);}
+.kpi-card.k2 .kpi-icon{background:rgba(200,129,58,.1);color:var(--caramel);}
+.kpi-card.k3 .kpi-icon{background:rgba(45,122,79,.1);color:var(--success);}
+.kpi-label { font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem; }
+.kpi-value { font-size:2rem;font-weight:700;letter-spacing:-.04em;color:var(--esp);line-height:1; }
+
+.sc { background:var(--white);border-radius:var(--card-r);box-shadow:var(--shd);border:1px solid rgba(62,39,35,.06);overflow:hidden;animation:fadeUp .5s ease both; }
+.sc-head { display:flex;justify-content:space-between;align-items:center;padding:1.4rem 1.8rem 0;margin-bottom:1rem; }
+.sc-head h4 { font-size:.95rem;font-weight:700;color:var(--esp);margin:0 0 .1rem; }
+.sc-head p  { font-size:.75rem;color:var(--muted);margin:0; }
+.sc-ico { width:38px;height:38px;background:rgba(78,52,46,.08);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--coffee);font-size:1.1rem;flex-shrink:0; }
+
+.notif-feed { padding:0 1.6rem 1.5rem; }
+
+.notif-item {
+  display:flex;gap:1rem;
+  padding:1rem .5rem;
+  border-bottom:1px solid rgba(62,39,35,.05);
+  animation:slideIn .4s ease both;
+  transition:background .15s,padding .15s;
+  border-radius:var(--sm-r);
+}
+.notif-item:last-child { border-bottom:none; }
+.notif-item:hover { background:rgba(245,245,220,.45); }
+.notif-item.nao-lida { background:rgba(200,129,58,.03); }
+.notif-item.nao-lida:hover { background:rgba(200,129,58,.07); }
+
+.notif-icon {
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;margin-top:.1rem;
+}
+.notif-icon.info   { background:var(--i-bg);color:var(--info); }
+.notif-icon.warn   { background:var(--w-bg);color:var(--warn); }
+.notif-icon.ok     { background:var(--s-bg);color:var(--success); }
+.notif-icon.alert  { background:var(--d-bg);color:var(--danger); }
+.notif-icon.coffee { background:rgba(78,52,46,.08);color:var(--coffee); }
+
+.notif-body  { flex:1;min-width:0; }
+.notif-top   { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.25rem; }
+.notif-title { font-size:.87rem;font-weight:700;color:var(--esp); }
+.notif-date  { font-size:.7rem;color:var(--muted);white-space:nowrap;margin-left:.5rem; }
+.notif-msg   { font-size:.8rem;color:#4a3020;line-height:1.55; }
+
+.unread-dot { width:8px;height:8px;border-radius:50%;background:var(--caramel);flex-shrink:0;margin-top:.55rem; }
+
+.badge-lida   { display:inline-flex;align-items:center;gap:3px;background:var(--s-bg);color:var(--success);font-size:.65rem;font-weight:600;padding:2px 7px;border-radius:20px;border:1px solid rgba(45,122,79,.18); }
+.badge-nolida { display:inline-flex;align-items:center;gap:3px;background:rgba(200,129,58,.1);color:var(--caramel);font-size:.65rem;font-weight:600;padding:2px 7px;border-radius:20px;border:1px solid rgba(200,129,58,.2); }
+
+.filter-bar {
+  display:flex;align-items:center;gap:.6rem;
+  background:var(--white);border-radius:var(--sm-r);
+  padding:.6rem .8rem;box-shadow:var(--shd);
+  border:1px solid rgba(62,39,35,.06);
+  margin-bottom:1.5rem;
+  animation:fadeUp .45s ease both .05s;
+  flex-wrap:wrap;
+}
+.filter-label { font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap; }
+.filter-sep   { width:1px;height:20px;background:rgba(62,39,35,.1); }
+.filter-btn {
+  padding:.38rem .9rem;border-radius:8px;border:1.5px solid transparent;
+  font-size:.76rem;font-weight:600;cursor:pointer;
+  background:transparent;color:var(--muted);transition:all .18s;
+  text-decoration:none;display:inline-block;
+}
+.filter-btn:hover { border-color:rgba(200,129,58,.4);color:var(--caramel); }
+.filter-btn.active { background:var(--esp);color:#fff;border-color:var(--esp); }
+
+.empty-state { padding:3rem 1rem;text-align:center;color:var(--muted); }
+.empty-state i { font-size:2.5rem;opacity:.3;display:block;margin-bottom:.75rem; }
+.empty-state p { font-size:.85rem;margin:0; }
+
+@media(max-width:900px) { .kpi-grid{grid-template-columns:1fr;} .page-header{flex-direction:column;gap:1rem;} }
+</style>
+
+<div class="container-fluid px-2">
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">Notificações</div>
+      <div class="page-sub">Acompanhe alertas e atualizações do sistema</div>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi-card k1">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-bell-fill"></i></div>
+      <div class="kpi-label">Total</div>
+      <div class="kpi-value">{{ notificacoes|length }}</div>
+    </div>
+    <div class="kpi-card k2">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-bell-slash"></i></div>
+      <div class="kpi-label">Não lidas</div>
+      <div class="kpi-value" id="countNaoLidas">—</div>
+    </div>
+    <div class="kpi-card k3">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-check-circle-fill"></i></div>
+      <div class="kpi-label">Lidas</div>
+      <div class="kpi-value" id="countLidas">—</div>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <span class="filter-label">Filtrar</span>
+    <div class="filter-sep"></div>
+    <button class="filter-btn active" onclick="filtrarNotif('todas', this)">Todas</button>
+    <button class="filter-btn" onclick="filtrarNotif('nao-lida', this)">Não lidas</button>
+    <button class="filter-btn" onclick="filtrarNotif('lida', this)">Lidas</button>
+  </div>
+
+  <!-- FEED -->
+  <div class="sc" style="animation-delay:.2s;">
+    <div class="sc-head">
+      <div><h4>Central de Notificações</h4><p>Todos os alertas e atualizações</p></div>
+      <div class="sc-ico"><i class="bi bi-bell-fill"></i></div>
+    </div>
+    <div class="notif-feed" id="notifFeed">
+
+      {% for n in notificacoes %}
+      <div class="notif-item {% if not n.lida %}nao-lida{% else %}lida{% endif %}"
+           data-status="{% if not n.lida %}nao-lida{% else %}lida{% endif %}">
+
+        {% if not n.lida %}<div class="unread-dot"></div>{% endif %}
+
+        {% if 'lote' in n.titulo|lower or 'etapa' in n.titulo|lower %}
+          <div class="notif-icon coffee"><i class="bi bi-box-seam"></i></div>
+        {% elif 'financeiro' in n.titulo|lower or 'pagamento' in n.titulo|lower %}
+          <div class="notif-icon ok"><i class="bi bi-cash-coin"></i></div>
+        {% elif 'alerta' in n.titulo|lower or 'atenção' in n.titulo|lower %}
+          <div class="notif-icon warn"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        {% elif 'erro' in n.titulo|lower or 'falha' in n.titulo|lower %}
+          <div class="notif-icon alert"><i class="bi bi-x-circle-fill"></i></div>
+        {% else %}
+          <div class="notif-icon info"><i class="bi bi-info-circle-fill"></i></div>
+        {% endif %}
+
+        <div class="notif-body">
+          <div class="notif-top">
+            <div style="display:flex;align-items:center;gap:.5rem;">
+              <span class="notif-title">{{ n.titulo }}</span>
+              {% if n.lida %}
+                <span class="badge-lida"><i class="bi bi-check2"></i> Lida</span>
+              {% else %}
+                <span class="badge-nolida"><i class="bi bi-circle-fill" style="font-size:.35rem;"></i> Nova</span>
+              {% endif %}
+            </div>
+            <span class="notif-date">{{ n.criada_em|date:"d/m/Y H:i" }}</span>
+          </div>
+          <div class="notif-msg">
+
+    {{ n.mensagem }}
+
+</div>
+
+{% if not n.lida %}
+
+<div class="notif-actions">
+
+</div>
+
+{% endif %}
+
+{% if not n.lida %}
+
+<div class="notif-actions">
+
+    <a
+        href="{% url 'marcar_notificacao_lida' n.id %}"
+        class="btn-lida"
+    >
+
+        <i class="bi bi-check2-circle"></i>
+
+        concluir
+
+    </a>
+
+</div>
+
+{% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty-state">
+        <i class="bi bi-bell-slash"></i>
+        <p>Nenhuma notificação por enquanto.</p>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function filtrarNotif(tipo, btn) {
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.notif-item').forEach(function(item) {
+    item.style.display = (tipo === 'todas' || item.dataset.status === tipo) ? '' : 'none';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var items = document.querySelectorAll('.notif-item');
+  var naoLidas = 0, lidas = 0;
+  items.forEach(function(i) {
+    if (i.dataset.status === 'nao-lida') naoLidas++;
+    else lidas++;
+  });
+  document.getElementById('countNaoLidas').textContent = naoLidas;
+  document.getElementById('countLidas').textContent = lidas;
+});
+</script>
+{% endblock %}
