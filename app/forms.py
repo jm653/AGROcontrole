@@ -86,6 +86,7 @@ class LoteForm(forms.ModelForm):
             'preco_saca',
             'etapa',
             'responsavel',
+            'observacoes'
         ]
 
         widgets = {
@@ -118,6 +119,11 @@ class LoteForm(forms.ModelForm):
 
             'responsavel': forms.Select(attrs={
                 'class': 'form-select'
+            }),
+
+            'observacoes': forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3
             }),
 
         }

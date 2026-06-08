@@ -164,6 +164,8 @@
               <div style="display:flex;gap:6px;justify-content:center;">
                 <a href="{% url 'visualizar_lote' lote.id %}" class="btn-action view" title="Visualizar"><i class="bi bi-eye-fill"></i></a>
                 <a href="{% url 'editar_lote' lote.id %}" class="btn-action edit" title="Editar"><i class="bi bi-pencil-fill"></i></a>
+                <a href="{% url 'avancar_etapa' lote.id %}"class="btn-action"title="Avançar etapa"><i class="bi bi-arrow-right-circle-fill"></i>
+</a>
                 <a href="{% url 'excluir_lote' lote.id %}" class="btn-action del" title="Excluir"><i class="bi bi-trash-fill"></i></a>
               </div>
             </td>
@@ -191,34 +193,60 @@
       </div>
       <form method="POST">
         {% csrf_token %}
-        <div class="modal-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
-            <div><label class="form-label">Código do Lote</label>{{ form.codigo }}</div>
-            <div><label class="form-label">Lavoura</label>{{ form.lavoura }}</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
-            <div><label class="form-label">Quantidade de Sacas</label>{{ form.quantidade_sacas }}</div>
-            <div><label class="form-label">Qualidade</label>{{ form.qualidade }}</div>
-            <div><label class="form-label">Preço da Saca (R$)</label>{{ form.preco_saca }}</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+<div class="modal-body">
 
-    <div>
-        <label class="form-label">Etapa</label>
-        {{ form.etapa }}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+
+        <div>
+            <label class="form-label">Código do Lote</label>
+            {{ form.codigo }}
+        </div>
+
+        <div>
+            <label class="form-label">Lavoura</label>
+            {{ form.lavoura }}
+        </div>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+
+        <div>
+            <label class="form-label">Quantidade de Sacas</label>
+            {{ form.quantidade_sacas }}
+        </div>
+
+        <div>
+            <label class="form-label">Qualidade</label>
+            {{ form.qualidade }}
+        </div>
+
+        <div>
+            <label class="form-label">Preço da Saca (R$)</label>
+            {{ form.preco_saca }}
+        </div>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+
+        <div>
+            <label class="form-label">Etapa</label>
+            {{ form.etapa }}
+        </div>
+
+        <div>
+            <label class="form-label">Funcionário Responsável</label>
+            {{ form.responsavel }}
+        </div>
+
     </div>
 
     <div>
-        <label class="form-label">Funcionário Responsável</label>
-        {{ form.responsavel }}
+        <label class="form-label">Observações</label>
+        {{ form.observacoes }}
     </div>
 
-</div>
-
-<div>
-    <label class="form-label">Observações</label>
-    {{ form.observacoes }}
-</div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>

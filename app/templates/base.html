@@ -268,41 +268,65 @@
 
       <div class="sidebar-section">Principal</div>
 
-      <a href="{% url 'produtor_dashboard' %}">
-        <i class="bi bi-speedometer2"></i> Dashboard
-      </a>
+      {% if request.user.tipo == 'funcionario' %}
+<a href="{% url 'funcionario_dashboard' %}">
+    <i class="bi bi-speedometer2"></i> Dashboard
+</a>
+
+{% elif request.user.tipo == 'produtor' %}
+<a href="{% url 'produtor_dashboard' %}">
+    <i class="bi bi-speedometer2"></i> Dashboard
+</a>
+
+{% elif request.user.tipo == 'admin' %}
+<a href="{% url 'admin_dashboard' %}">
+    <i class="bi bi-speedometer2"></i> Dashboard
+</a>
+{% endif %}
 
       <div class="sidebar-section">Produção</div>
 
+      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'propriedades' %}">
         <i class="bi bi-house-fill"></i> Propriedades
       </a>
+      {% endif %}
 
+      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'lavouras' %}">
         <i class="bi bi-tree-fill"></i> Lavouras
       </a>
+      {% endif %}
 
       <a href="{% url 'lotes' %}">
         <i class="bi bi-box-seam"></i> Lotes
       </a>
 
+      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'rastreabilidade' %}">
         <i class="bi bi-arrow-repeat"></i> Rastreabilidade
       </a>
+      {% endif %}
 
       <div class="sidebar-section">Gestão</div>
 
+      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'financeiro' %}">
         <i class="bi bi-cash-stack"></i> Financeiro
       </a>
+      {% endif %}
 
+      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'relatorios' %}">
         <i class="bi bi-bar-chart-fill"></i> Relatórios
       </a>
+      {% endif %}
 
+      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'funcionarios' %}">
         <i class="bi bi-people-fill"></i> Funcionários
       </a>
+      {% endif %}
 
       <a href="{% url 'notificacoes' %}">
         <i class="bi bi-bell-fill"></i> Notificações
@@ -314,9 +338,7 @@
         <i class="bi bi-person-circle"></i> Perfil
       </a>
 
-    </div>
-
-    <div class="sidebar-footer">
+          <div class="sidebar-footer">
       <a href="{% url 'logout' %}">
         <i class="bi bi-box-arrow-right"></i> Sair
       </a>
@@ -324,13 +346,29 @@
 
   </div>
 
+    </div>
+
+  </div>
+
+
+
   <!-- CONTEÚDO -->
   <div class="content">
 
     <div class="navbar-custom">
       <div>
-        <div class="navbar-title">Painel do Produtor</div>
-        <div class="navbar-subtitle">Gestão inteligente da produção cafeeira</div>
+{% if request.user.tipo == 'funcionario' %}
+<div class="navbar-title">Painel do Funcionário</div>
+<div class="navbar-subtitle">Controle operacional da produção cafeeira</div>
+
+{% elif request.user.tipo == 'produtor' %}
+<div class="navbar-title">Painel do Produtor</div>
+<div class="navbar-subtitle">Gestão inteligente da produção cafeeira</div>
+
+{% elif request.user.tipo == 'admin' %}
+<div class="navbar-title">Painel Administrativo</div>
+<div class="navbar-subtitle">Controle geral do sistema</div>
+{% endif %}
       </div>
       <div class="user-box">
         <i class="bi bi-person-circle"></i>

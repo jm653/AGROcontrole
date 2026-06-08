@@ -116,7 +116,7 @@ def avancar_etapa(request, lote_id):
         lote.save()
 
         RegistroOperacional.objects.create(
-            LoteDeCafe=lote,
+            lote_cafe=lote,
             funcionario=request.user,
             descricao=f"Lote avançado para {lote.etapa}",
             etapa=lote.etapa
@@ -423,11 +423,62 @@ def visualizar_lavoura(request, id):
 @login_required
 def lotes_view(request):
 
+    # FUNCIONÁRIO
+    if request.user.tipo == 'funcionario':
+
+        lotes = LoteDeCafe.objects.filter(
+        responsavel=request.user
+    )
+
+    total_sacas = sum(
+        lote.quantidade_sacas
+        for lote in lotes
+    )
+
+    form = LoteForm()
+
+    propriedades_ids = FuncionarioPropriedade.objects.filter(
+        funcionario=request.user
+    ).values_list(
+        'propriedade_id',
+        flat=True
+    )
+
+    form.fields['lavoura'].queryset = Lavoura.objects.filter(
+        propriedade_id__in=propriedades_ids
+    )
+
+    form.fields['responsavel'].queryset = Usuario.objects.filter(
+        id=request.user.id
+    )
+
+    return render(
+        request,
+        'lotes.html',
+        {
+            'lotes': lotes,
+            'total_sacas': total_sacas,
+            'form': form
+        }
+    )
+
+    # PRODUTOR / ADMIN
+
     lotes = LoteDeCafe.objects.filter(
         lavoura__propriedade__produtor=request.user
     )
 
-    total_sacas = sum(l.quantidade_sacas for l in lotes)
+    total_sacas = sum(
+        lote.quantidade_sacas
+        for lote in lotes
+    )
+
+    funcionarios_ids = FuncionarioPropriedade.objects.filter(
+        propriedade__produtor=request.user
+    ).values_list(
+        'funcionario_id',
+        flat=True
+    )
 
     if request.method == 'POST':
 
@@ -438,25 +489,25 @@ def lotes_view(request):
         )
 
         form.fields['responsavel'].queryset = Usuario.objects.filter(
-            tipo='funcionario'
+            id__in=funcionarios_ids
         )
 
         if form.is_valid():
 
-
             lote = form.save()
 
+            if lote.responsavel:
 
-            RegistroOperacional.objects.create(
-                    LoteDeCafe=lote,
+                RegistroOperacional.objects.create(
+                    lote_cafe=lote,
                     funcionario=lote.responsavel,
-                    descricao="Lote cadastrado no sistema"
-            )
+                    descricao="Lote cadastrado no sistema",
+                    etapa=lote.etapa
+                )
 
             return redirect('lotes')
 
-        else:
-            print(form.errors)
+        print(form.errors)
 
     else:
 
@@ -467,8 +518,10 @@ def lotes_view(request):
         )
 
         form.fields['responsavel'].queryset = Usuario.objects.filter(
-            tipo='funcionario'
+            id__in=funcionarios_ids
         )
+
+        print(form)
 
     return render(
         request,
@@ -480,39 +533,104 @@ def lotes_view(request):
         }
     )
 
+
+
 @login_required
 def editar_lote(request, id):
+
     lote = LoteDeCafe.objects.get(id=id)
-    if lote.lavoura.propriedade.produtor != request.user:
-        return HttpResponse("Acesso negado")
-    if request.method == 'POST':
-        form = LoteForm(request.POST, instance=lote)
-        form.fields['lavoura'].queryset = Lavoura.objects.filter(propriedade__produtor=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('lotes')
+
+    if request.user.tipo == 'funcionario':
+
+        if lote.responsavel != request.user:
+            return HttpResponse("Acesso negado")
+
     else:
+
+        if lote.lavoura.propriedade.produtor != request.user:
+            return HttpResponse("Acesso negado")
+
+    if request.method == 'POST':
+
+        form = LoteForm(
+            request.POST,
+            instance=lote
+        )
+
+        if request.user.tipo != 'funcionario':
+
+            form.fields['lavoura'].queryset = Lavoura.objects.filter(
+                propriedade__produtor=request.user
+            )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('lotes')
+
+    else:
+
         form = LoteForm(instance=lote)
-        form.fields['lavoura'].queryset = Lavoura.objects.filter(propriedade__produtor=request.user)
-    return render(request, 'editar_lote.html', {'form': form, 'lote': lote})
+
+        if request.user.tipo != 'funcionario':
+
+            form.fields['lavoura'].queryset = Lavoura.objects.filter(
+                propriedade__produtor=request.user
+            )
+
+    return render(
+        request,
+        'editar_lote.html',
+        {
+            'form': form,
+            'lote': lote
+        }
+    )
 
 
 @login_required
 def excluir_lote(request, id):
+
     lote = LoteDeCafe.objects.get(id=id)
-    if lote.lavoura.propriedade.produtor != request.user:
-        return HttpResponse("Acesso negado")
+
+    if request.user.tipo == 'funcionario':
+
+        if lote.responsavel != request.user:
+            return HttpResponse("Acesso negado")
+
+    else:
+
+        if lote.lavoura.propriedade.produtor != request.user:
+            return HttpResponse("Acesso negado")
+
     lote.delete()
+
     return redirect('lotes')
 
 
 @login_required
 def visualizar_lote(request, id):
-    lote = LoteDeCafe.objects.get(id=id)
-    if lote.lavoura.propriedade.produtor != request.user:
-        return HttpResponse("Acesso negado")
-    return render(request, 'visualizar_lote.html', {'lote': lote})
 
+    lote = LoteDeCafe.objects.get(id=id)
+
+    if request.user.tipo == 'funcionario':
+
+        if lote.responsavel != request.user:
+            return HttpResponse("Acesso negado")
+
+    else:
+
+        if lote.lavoura.propriedade.produtor != request.user:
+            return HttpResponse("Acesso negado")
+
+    return render(
+        request,
+        'visualizar_lote.html',
+        {
+            'lote': lote
+        }
+    )
 
 # =========================================================
 # RASTREABILIDADE
@@ -1078,7 +1196,26 @@ def tarefas_view(request):
 
 @login_required
 def registros_view(request):
-    return render(request, 'registros.html')
+
+    if request.user.tipo == 'funcionario':
+
+        registros = RegistroOperacional.objects.filter(
+            funcionario=request.user
+        )
+
+    else:
+
+        registros = RegistroOperacional.objects.filter(
+            lote_cafe__lavoura__propriedade__produtor=request.user
+        )
+
+    return render(
+        request,
+        'registros.html',
+        {
+            'registros': registros
+        }
+    )
 
 
 # =========================================================
@@ -1098,3 +1235,4 @@ def estatisticas_view(request):
 @login_required
 def auditoria_view(request):
     return render(request, 'auditoria.html')
+
