@@ -415,22 +415,20 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ══════════════════════════════════════════
-     COFFEE PRICE WIDGET
-     Chama o backend Django /api/coffee-prices/
-     que faz o proxy seguro para a Anthropic
+     COFFEE PRICE WIDGET — Yahoo Finance via Django proxy
   ══════════════════════════════════════════ */
   var sparklineChart = null;
 
-  function renderSparkline(data) {
+  function renderSparkline(labels, values) {
     var sCtx = document.getElementById('sparklineChart');
     if (!sCtx) return;
     if (sparklineChart) sparklineChart.destroy();
     sparklineChart = new Chart(sCtx, {
       type: 'line',
       data: {
-        labels: data.labels,
+        labels: labels,
         datasets: [{
-          data: data.values,
+          data: values,
           borderColor: '#c8813a',
           borderWidth: 2,
           pointRadius: 0,
@@ -480,12 +478,13 @@ document.addEventListener('DOMContentLoaded', function () {
       return resp.json();
     })
     .then(function(prices) {
+      if (prices.error) throw new Error(prices.error);
 
       /* Arábica main card */
       document.getElementById('arabicaVal').textContent =
         parseFloat(prices.arabica_usc_lb).toFixed(2);
       document.getElementById('arabicaSub').textContent =
-        'ICE Futures · Referência de mercado';
+        'ICE Futures · USD/BRL: ' + parseFloat(prices.usd_brl).toFixed(2);
 
       var chEl = document.getElementById('arabicaChange');
       chEl.style.display = 'inline-flex';
@@ -503,28 +502,25 @@ document.addEventListener('DOMContentLoaded', function () {
       );
       setMiniCard(
         'pm-brl',
-        'R$ ' + parseInt(prices.brasil_brl_saca).toLocaleString('pt-BR') +
+        'R$ ' + parseFloat(prices.brasil_brl_saca).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) +
         '<span style="font-size:.7rem;opacity:.55;">/saca</span>',
         prices.brasil_change, prices.brasil_up
       );
       setMiniCard(
         'pm-esp',
-        'R$ ' + parseInt(prices.especial_brl_saca).toLocaleString('pt-BR') +
+        'R$ ' + parseFloat(prices.especial_brl_saca).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) +
         '<span style="font-size:.7rem;opacity:.55;">/saca</span>',
         prices.especial_change, prices.especial_up
       );
       setMiniCard(
         'pm-sol',
-        'R$ ' + parseInt(prices.soluvel_brl_kg).toLocaleString('pt-BR') +
+        'R$ ' + parseFloat(prices.soluvel_brl_kg).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) +
         '<span style="font-size:.7rem;opacity:.55;">/kg</span>',
         prices.soluvel_change, prices.soluvel_up
       );
 
       /* Sparkline */
-      renderSparkline({
-        labels: prices.sparkline_labels,
-        values: prices.sparkline_values
-      });
+      renderSparkline(prices.sparkline_labels, prices.sparkline_values);
 
       /* Badge */
       document.getElementById('priceUpdateBadge').style.display = 'flex';
@@ -536,5 +532,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
-
-{% endblock %}

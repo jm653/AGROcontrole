@@ -172,7 +172,7 @@ class LoteDeCafe(models.Model):
 
 class RegistroOperacional(models.Model):
 
-    LoteDeCafe = models.ForeignKey(
+    lote_cafe = models.ForeignKey(
         LoteDeCafe,
         on_delete=models.CASCADE
     )

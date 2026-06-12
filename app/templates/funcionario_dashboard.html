@@ -1,9 +1,328 @@
 {% extends 'base.html' %}
-
+{% block title %}Dashboard Funcionário | AgroControle{% endblock %}
 {% block content %}
-<h1>Funcionário</h1>
 
-<div class="card p-3 bg-dark">
-    <p>Registrar atividade</p>
+<style>
+:root {
+  --esp:#1c0a03;--roast:#3b1a07;--coffee:#4E342E;--mid:#6D4C41;
+  --caramel:#c8813a;--gold:#e8a84e;--ivory:#fdfaf4;--muted:#9a8878;
+  --success:#2d7a4f;--danger:#b83232;--warn:#b87d1a;--info:#1a5fa0;
+  --s-bg:#edf7f1;--w-bg:#fef9ec;--i-bg:#e8f2fc;
+  --white:#ffffff;--card-r:20px;--sm-r:12px;
+  --shd:0 2px 16px rgba(62,39,35,0.09);
+  --shd-md:0 8px 32px rgba(62,39,35,0.13);
+}
+@keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulseDot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.6} }
+@keyframes shimmer  { 0%{background-position:-600px 0} 100%{background-position:600px 0} }
+
+.page-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;animation:fadeUp .45s ease both; }
+.page-title  { font-size:1.7rem;font-weight:700;color:var(--esp);letter-spacing:-.03em;line-height:1.2; }
+.page-sub    { font-size:.8rem;color:var(--muted);margin-top:.2rem; }
+.dash-live   { display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--success);font-weight:600;margin-top:.45rem; }
+.live-dot    { width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulseDot 1.8s ease-in-out infinite; }
+
+.kpi-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-bottom:1.5rem; }
+.kpi-card { background:var(--white);border-radius:var(--card-r);padding:1.4rem 1.6rem;border:1px solid rgba(62,39,35,.06);box-shadow:var(--shd);position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s;animation:fadeUp .5s ease both; }
+.kpi-card:nth-child(1){animation-delay:.04s}.kpi-card:nth-child(2){animation-delay:.09s}
+.kpi-card:nth-child(3){animation-delay:.14s}.kpi-card:nth-child(4){animation-delay:.19s}
+.kpi-card:hover { transform:translateY(-4px);box-shadow:var(--shd-md); }
+.kpi-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--card-r) var(--card-r) 0 0; }
+.kpi-card.k1::before{background:linear-gradient(90deg,var(--coffee),var(--mid));}
+.kpi-card.k2::before{background:linear-gradient(90deg,var(--caramel),var(--gold));}
+.kpi-card.k3::before{background:linear-gradient(90deg,var(--success),#52b37a);}
+.kpi-card.k4::before{background:linear-gradient(90deg,var(--info),#3a8fd4);}
+.kpi-blob { position:absolute;bottom:-20px;right:-16px;width:80px;height:80px;border-radius:50%;opacity:.05; }
+.kpi-card.k1 .kpi-blob{background:var(--coffee);}.kpi-card.k2 .kpi-blob{background:var(--caramel);}
+.kpi-card.k3 .kpi-blob{background:var(--success);}.kpi-card.k4 .kpi-blob{background:var(--info);}
+.kpi-icon { width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:.9rem; }
+.kpi-card.k1 .kpi-icon{background:rgba(78,52,46,.1);color:var(--coffee);}
+.kpi-card.k2 .kpi-icon{background:rgba(200,129,58,.1);color:var(--caramel);}
+.kpi-card.k3 .kpi-icon{background:rgba(45,122,79,.1);color:var(--success);}
+.kpi-card.k4 .kpi-icon{background:rgba(26,95,160,.1);color:var(--info);}
+.kpi-label { font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem; }
+.kpi-value { font-size:2rem;font-weight:700;letter-spacing:-.04em;color:var(--esp);line-height:1; }
+.kpi-trend { display:inline-flex;align-items:center;gap:4px;margin-top:.55rem;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:20px; }
+.kpi-trend.up  {background:var(--s-bg);color:var(--success);}
+.kpi-trend.neu {background:#f3ede6;color:var(--muted);}
+.kpi-trend.warn{background:var(--w-bg);color:var(--warn);}
+
+.mid-grid { display:grid;grid-template-columns:1fr 340px;gap:1.25rem;margin-bottom:1.5rem; }
+
+.sc { background:var(--white);border-radius:var(--card-r);box-shadow:var(--shd);border:1px solid rgba(62,39,35,.06);overflow:hidden;animation:fadeUp .5s ease both; }
+.sc-head { display:flex;justify-content:space-between;align-items:center;padding:1.4rem 1.6rem 0;margin-bottom:1.1rem; }
+.sc-head h4 { font-size:.95rem;font-weight:700;color:var(--esp);margin:0 0 .1rem; }
+.sc-head p  { font-size:.75rem;color:var(--muted);margin:0; }
+.sc-ico { width:38px;height:38px;background:rgba(78,52,46,.08);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--coffee);font-size:1.1rem;flex-shrink:0; }
+.sc-body { padding:0 1.6rem 1.5rem; }
+
+.fin-table-wrap { overflow-x:auto;padding:0 .4rem 1.4rem; }
+.fin-table { width:100%;border-collapse:separate;border-spacing:0;font-size:.83rem; }
+.fin-table thead th { padding:.55rem 1.1rem;font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(62,39,35,.08);white-space:nowrap; }
+.fin-table tbody tr { transition:background .13s; }
+.fin-table tbody tr:hover { background:rgba(245,245,220,.55); }
+.fin-table tbody td { padding:.85rem 1.1rem;color:#2a1810;border-bottom:1px solid rgba(62,39,35,.05);vertical-align:middle; }
+.fin-table tbody tr:last-child td { border-bottom:none; }
+.td-bold { font-weight:700;color:var(--esp); }
+.td-code { font-family:'Courier New',monospace;font-size:.78rem;background:rgba(78,52,46,.07);color:var(--coffee);padding:3px 8px;border-radius:6px;font-weight:700; }
+.eb { display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:20px; }
+.eb-plant{background:var(--s-bg);color:var(--success);border:1px solid rgba(45,122,79,.18);}
+.eb-colh {background:var(--w-bg);color:var(--warn);border:1px solid rgba(184,125,26,.18);}
+.eb-sec  {background:var(--i-bg);color:var(--info);border:1px solid rgba(26,95,160,.18);}
+.eb-arm  {background:#f3ede6;color:var(--muted);border:1px solid rgba(154,136,120,.2);}
+.eb-tor  {background:rgba(184,50,50,.08);color:var(--danger);border:1px solid rgba(184,50,50,.18);}
+.eb-def  {background:#f3ede6;color:var(--muted);border:1px solid rgba(154,136,120,.2);}
+.btn-action { display:inline-flex;align-items:center;gap:5px;border:none;border-radius:8px;padding:.35rem .75rem;font-size:.75rem;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none; }
+.btn-action:hover { transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.12); }
+.btn-action.view { background:rgba(26,95,160,.1);color:var(--info); }
+.btn-action.next { background:rgba(45,122,79,.12);color:var(--success); }
+
+.cotacao-main { background:var(--esp);border-radius:var(--sm-r);padding:1.2rem 1.4rem;position:relative;overflow:hidden;margin-bottom:.8rem; }
+.cotacao-main::before { content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(200,129,58,.1); }
+.cotacao-label { font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,237,224,.45);margin-bottom:.3rem; }
+.cotacao-val   { font-size:1.9rem;font-weight:700;color:#F5F5DC;letter-spacing:-.03em;line-height:1;position:relative;z-index:1; }
+.cotacao-val span { font-size:.9rem;opacity:.55;margin-right:3px; }
+.cotacao-sub   { font-size:.72rem;color:rgba(245,237,224,.4);margin-top:.25rem; }
+.cotacao-mini-grid { display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem; }
+.cotacao-mini { background:var(--ivory);border-radius:var(--sm-r);padding:.85rem 1rem;border:1px solid rgba(62,39,35,.06); }
+.cotacao-mini-label { font-size:.63rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem; }
+.cotacao-mini-val   { font-size:1.05rem;font-weight:700;color:var(--esp); }
+.skeleton { background:linear-gradient(90deg,#f3ede6 25%,#ece3d8 50%,#f3ede6 75%);background-size:600px 100%;animation:shimmer 1.4s infinite;border-radius:6px; }
+.cotacao-update { display:none;align-items:center;gap:5px;font-size:.68rem;font-weight:600;color:var(--success);background:var(--s-bg);padding:3px 9px;border-radius:20px;border:1px solid rgba(45,122,79,.18); }
+
+.profile-card { background:var(--esp);border-radius:var(--card-r);padding:1.4rem;color:#fff;position:relative;overflow:hidden;margin-bottom:.8rem; }
+.profile-card::before { content:'';position:absolute;top:-25px;right:-25px;width:100px;height:100px;border-radius:50%;background:rgba(200,129,58,.1); }
+.profile-avatar { width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--caramel),var(--gold));display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.8rem;position:relative;z-index:1; }
+.profile-name { font-size:1rem;font-weight:700;color:#fff;margin-bottom:.1rem;position:relative;z-index:1; }
+.profile-role { font-size:.68rem;color:rgba(245,237,224,.5);text-transform:uppercase;letter-spacing:.06em;position:relative;z-index:1; }
+.profile-stats { display:flex;justify-content:space-between;margin-top:.9rem;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.1);position:relative;z-index:1; }
+.ps-item { text-align:center; }
+.ps-val  { font-size:1.2rem;font-weight:700;color:#F5F5DC; }
+.ps-lbl  { font-size:.6rem;color:rgba(245,237,224,.4);text-transform:uppercase;letter-spacing:.05em; }
+
+.quick-actions { display:grid;grid-template-columns:1fr 1fr;gap:.65rem; }
+.qa-btn { display:flex;flex-direction:column;align-items:center;gap:.4rem;background:var(--ivory);border:1px solid rgba(62,39,35,.06);border-radius:var(--sm-r);padding:.85rem .5rem;text-decoration:none;transition:transform .2s,box-shadow .2s;cursor:pointer; }
+.qa-btn:hover { transform:translateY(-2px);box-shadow:var(--shd);background:#fff; }
+.qa-btn i    { font-size:1.25rem; }
+.qa-btn span { font-size:.7rem;font-weight:600;color:var(--esp);text-align:center; }
+.qa-btn.green i{color:var(--success);} .qa-btn.blue i{color:var(--info);}
+.qa-btn.orange i{color:var(--caramel);} .qa-btn.red i{color:var(--danger);}
+
+.empty-state { padding:2.5rem 1rem;text-align:center;color:var(--muted); }
+.empty-state i { font-size:2.2rem;opacity:.3;display:block;margin-bottom:.6rem; }
+.empty-state p { font-size:.82rem;margin:0; }
+
+@media(max-width:1100px){ .kpi-grid{grid-template-columns:repeat(2,1fr);} .mid-grid{grid-template-columns:1fr;} }
+@media(max-width:640px) { .kpi-grid{grid-template-columns:1fr;} .page-header{flex-direction:column;gap:1rem;} }
+</style>
+
+<div class="container-fluid px-2">
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">Olá, {{ request.user.get_full_name|default:request.user.username }} 👋</div>
+      <div class="page-sub">Bem-vindo ao seu painel de trabalho</div>
+      <div class="dash-live"><span class="live-dot"></span> Dados atualizados</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card k1">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
+      <div class="kpi-label">Total de Lotes</div>
+      <div class="kpi-value">{{ total_lotes }}</div>
+      <div class="kpi-trend neu"><i class="bi bi-dash"></i> Atribuídos</div>
+    </div>
+    <div class="kpi-card k2">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-cup-hot"></i></div>
+      <div class="kpi-label">Total de Sacas</div>
+      <div class="kpi-value">{{ total_sacas }}</div>
+      <div class="kpi-trend warn"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Sob gestão</div>
+    </div>
+    <div class="kpi-card k3">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-tree-fill"></i></div>
+      <div class="kpi-label">Lavouras Vinculadas</div>
+      <div class="kpi-value">{{ total_lavouras }}</div>
+      <div class="kpi-trend up"><i class="bi bi-arrow-up"></i> Ativas</div>
+    </div>
+    <div class="kpi-card k4">
+      <div class="kpi-blob"></div>
+      <div class="kpi-icon"><i class="bi bi-journal-text"></i></div>
+      <div class="kpi-label">Registros Realizados</div>
+      <div class="kpi-value">{{ total_registros }}</div>
+      <div class="kpi-trend neu"><i class="bi bi-dash"></i> Histórico</div>
+    </div>
+  </div>
+
+  <div class="mid-grid">
+
+    <div class="sc" style="animation-delay:.22s;">
+      <div class="sc-head">
+        <div><h4>Meus Lotes</h4><p>Lotes atribuídos a você</p></div>
+        <a href="{% url 'meus_lotes' %}" style="font-size:.78rem;font-weight:600;color:var(--caramel);text-decoration:none;">
+          Ver todos <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+      <div class="fin-table-wrap" style="padding-top:.3rem;">
+        <table class="fin-table">
+          <thead>
+            <tr><th>Código</th><th>Lavoura</th><th>Sacas</th><th>Etapa</th><th style="text-align:center;">Ações</th></tr>
+          </thead>
+          <tbody>
+            {% for lote in lotes %}
+            <tr>
+              <td><span class="td-code">{{ lote.codigo }}</span></td>
+              <td class="td-bold">{{ lote.lavoura.nome }}</td>
+              <td>{{ lote.quantidade_sacas }}</td>
+              <td>
+                {% if lote.etapa == 'plantio' %}<span class="eb eb-plant"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Plantio</span>
+                {% elif lote.etapa == 'colheita' %}<span class="eb eb-colh"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Colheita</span>
+                {% elif lote.etapa == 'secagem' %}<span class="eb eb-sec"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Secagem</span>
+                {% elif lote.etapa == 'armazenamento' %}<span class="eb eb-arm"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Armazenamento</span>
+                {% elif lote.etapa == 'torra' %}<span class="eb eb-tor"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>Torra</span>
+                {% else %}<span class="eb eb-def"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i>{{ lote.get_etapa_display }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <div style="display:flex;gap:5px;justify-content:center;">
+                  <a href="{% url 'visualizar_lote' lote.id %}" class="btn-action view"><i class="bi bi-eye-fill"></i></a>
+                  <a href="{% url 'avancar_etapa' lote.id %}" class="btn-action next"><i class="bi bi-arrow-right-circle-fill"></i> Avançar</a>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5"><div class="empty-state"><i class="bi bi-box-seam"></i><p>Nenhum lote atribuído ainda.</p></div></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:.9rem;">
+
+      <div class="profile-card">
+        <div class="profile-avatar">{{ request.user.username|slice:":1"|upper }}</div>
+        <div class="profile-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+        <div class="profile-role">Funcionário · AgroControle</div>
+        <div class="profile-stats">
+          <div class="ps-item"><div class="ps-val">{{ total_lotes }}</div><div class="ps-lbl">Lotes</div></div>
+          <div class="ps-item"><div class="ps-val">{{ total_sacas }}</div><div class="ps-lbl">Sacas</div></div>
+          <div class="ps-item"><div class="ps-val">{{ total_registros }}</div><div class="ps-lbl">Registros</div></div>
+        </div>
+      </div>
+
+      <div class="sc" style="animation-delay:.28s;">
+        <div class="sc-head">
+          <div><h4>Cotação do Café</h4><p>Preços em tempo real</p></div>
+          <div id="cotacaoUpdateBadge" class="cotacao-update"><span class="live-dot"></span> Ao vivo</div>
+        </div>
+        <div style="padding:0 1.6rem 1.5rem;">
+          <div class="cotacao-main">
+            <div class="cotacao-label">Café Arábica · Saca 60kg</div>
+            <div class="cotacao-val"><span>R$</span><span id="arabicaVal">—</span></div>
+            <div class="cotacao-sub" id="arabicaSub">Carregando...</div>
+          </div>
+          <div class="cotacao-mini-grid">
+            <div class="cotacao-mini" id="pm-conilon">
+              <div class="cotacao-mini-label">Conilon</div>
+              <div class="cotacao-mini-val skeleton" style="height:1.1rem;width:75%;">&nbsp;</div>
+            </div>
+            <div class="cotacao-mini" id="pm-hora">
+              <div class="cotacao-mini-label">Atualizado</div>
+              <div class="cotacao-mini-val skeleton" style="height:1.1rem;width:75%;">&nbsp;</div>
+            </div>
+          </div>
+          <div style="font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;">Variação Arábica</div>
+          <div style="height:70px;position:relative;"><canvas id="sparklineFunc"></canvas></div>
+        </div>
+      </div>
+
+      <div class="sc" style="animation-delay:.33s;">
+        <div class="sc-head"><div><h4>Ações Rápidas</h4><p>Acesso direto</p></div></div>
+        <div class="sc-body" style="padding-top:.3rem;">
+          <div class="quick-actions">
+            <a href="{% url 'meus_lotes' %}" class="qa-btn green"><i class="bi bi-box-seam"></i><span>Meus Lotes</span></a>
+            <a href="{% url 'rastreabilidade_funcionario' %}" class="qa-btn blue"><i class="bi bi-arrow-repeat"></i><span>Rastrear</span></a>
+            <a href="{% url 'registros' %}" class="qa-btn orange"><i class="bi bi-clipboard2-check-fill"></i><span>Registros</span></a>
+            <a href="{% url 'notificacoes' %}" class="qa-btn red"><i class="bi bi-bell-fill"></i><span>Notificações</span></a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var sparkChart = null;
+
+  function renderSparkline(labels, values) {
+    var ctx = document.getElementById('sparklineFunc');
+    if (!ctx) return;
+    if (sparkChart) sparkChart.destroy();
+    sparkChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{ data: values, borderColor: '#c8813a', borderWidth: 2, pointRadius: 0,
+          fill: { target: 'origin', above: 'rgba(200,129,58,0.08)' }, tension: 0.42 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display: false }, y: { display: false } },
+        animation: { duration: 800, easing: 'easeOutQuart' }
+      }
+    });
+  }
+
+  function setMini(id, val) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.querySelector('.cotacao-mini-val').className = 'cotacao-mini-val';
+    el.querySelector('.cotacao-mini-val').textContent = val;
+  }
+
+  function carregarCotacao() {
+    fetch('/api/cafe-preco/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var arabica = data.arabica && data.arabica !== 'Não encontrado'
+        ? data.arabica.replace('R$','').trim() : '—';
+      document.getElementById('arabicaVal').textContent = arabica;
+      document.getElementById('arabicaSub').textContent = 'Fonte: cotacaodocafe.com';
+      setMini('pm-conilon', data.conilon && data.conilon !== 'Não encontrado' ? data.conilon : '—');
+      setMini('pm-hora', new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
+      document.getElementById('cotacaoUpdateBadge').style.display = 'flex';
+    })
+    .catch(function() {
+      document.getElementById('arabicaVal').textContent = '—';
+      document.getElementById('arabicaSub').textContent = 'API indisponível. Rode: python api.py';
+    });
+  }
+
+  function carregarHistorico() {
+    fetch('/api/cafe-historico/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+    .then(function(r) { return r.json(); })
+    .then(function(hist) {
+      if (!hist.length) return;
+      var labels = hist.map(function(h) { return h.datahora.substring(11,16); });
+      var values = hist.map(function(h) {
+        if (!h.arabica) return null;
+        return parseFloat(h.arabica.replace('R$','').trim().replace(/\./g,'').replace(',','.'));
+      }).filter(function(v) { return v !== null; });
+      if (values.length) renderSparkline(labels.slice(-values.length), values);
+    }).catch(function(){});
+  }
+
+  carregarCotacao();
+  carregarHistorico();
+  setInterval(carregarCotacao, 60000);
+});
+</script>
 {% endblock %}

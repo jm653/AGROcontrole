@@ -1,321 +1,152 @@
 {% extends 'base.html' %}
-
-{% block title %}
-Perfil | AgroControle
-{% endblock %}
-
+{% block title %}Perfil | AgroControle{% endblock %}
 {% block content %}
 
-<div class="container-fluid">
+<style>
+:root {
+  --esp:#1c0a03;--roast:#3b1a07;--coffee:#4E342E;--mid:#6D4C41;
+  --caramel:#c8813a;--gold:#e8a84e;--ivory:#fdfaf4;--muted:#9a8878;
+  --success:#2d7a4f;--danger:#b83232;--info:#1a5fa0;
+  --s-bg:#edf7f1;--white:#ffffff;--card-r:20px;--sm-r:12px;
+  --shd:0 2px 16px rgba(62,39,35,0.09);--shd-md:0 8px 32px rgba(62,39,35,0.13);
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
-    <!-- TOPO -->
+.page-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;animation:fadeUp .45s ease both; }
+.page-title  { font-size:1.7rem;font-weight:700;color:var(--esp);letter-spacing:-.03em;line-height:1.2; }
+.page-sub    { font-size:.8rem;color:var(--muted);margin-top:.2rem; }
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+.profile-grid { display:grid;grid-template-columns:320px 1fr;gap:1.25rem; }
 
-        <div>
+.sc { background:var(--white);border-radius:var(--card-r);box-shadow:var(--shd);border:1px solid rgba(62,39,35,.06);overflow:hidden;animation:fadeUp .5s ease both; }
+.sc-head { display:flex;justify-content:space-between;align-items:center;padding:1.4rem 1.8rem 0;margin-bottom:1rem; }
+.sc-head h4 { font-size:.95rem;font-weight:700;color:var(--esp);margin:0 0 .1rem; }
+.sc-head p  { font-size:.75rem;color:var(--muted);margin:0; }
+.sc-ico { width:38px;height:38px;background:rgba(78,52,46,.08);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--coffee);font-size:1.1rem;flex-shrink:0; }
+.sc-body { padding:0 1.8rem 1.6rem; }
 
-            <h2 class="fw-bold text-coffee">
-                Meu Perfil
-            </h2>
+.avatar-card { padding:2rem 1.5rem;text-align:center;animation:fadeUp .5s ease both .05s; }
+.avatar-circle { width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--coffee),var(--mid));display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:700;color:#fff;margin:0 auto 1rem; }
+.avatar-name   { font-size:1.2rem;font-weight:700;color:var(--esp);margin-bottom:.25rem; }
+.avatar-role   { font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem; }
+.badge-ativo   { display:inline-flex;align-items:center;gap:4px;background:var(--s-bg);color:var(--success);font-size:.72rem;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid rgba(45,122,79,.18); }
 
-            <p class="text-muted">
-                Gerencie suas informações pessoais
-            </p>
+.info-list { list-style:none;padding:0;margin:0; }
+.info-list li { display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid rgba(62,39,35,.06); }
+.info-list li:last-child { border-bottom:none; }
+.info-list .lbl { font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted); }
+.info-list .val { font-size:.85rem;font-weight:600;color:var(--esp); }
 
+.form-label { font-size:.7rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;display:block; }
+.form-field { width:100%;border:1.5px solid #e5d9cc;border-radius:var(--sm-r);padding:.72rem 1rem;font-size:.88rem;color:var(--muted);background:#fdfaf4;font-family:'Poppins',sans-serif;cursor:not-allowed; }
+
+.stats-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem; }
+.stat-cell { background:var(--ivory);border-radius:var(--sm-r);padding:1.2rem;text-align:center;border:1px solid rgba(62,39,35,.06);transition:transform .2s,box-shadow .2s; }
+.stat-cell:hover { transform:translateY(-3px);box-shadow:var(--shd); }
+.stat-cell i   { font-size:1.6rem;color:var(--coffee);display:block;margin-bottom:.5rem; }
+.stat-cell h2  { font-size:1.8rem;font-weight:700;color:var(--esp);margin-bottom:.15rem;letter-spacing:-.03em; }
+.stat-cell p   { font-size:.72rem;color:var(--muted);margin:0;font-weight:500; }
+
+@media(max-width:900px) { .profile-grid{grid-template-columns:1fr;} .page-header{flex-direction:column;gap:1rem;} }
+</style>
+
+<div class="container-fluid px-2">
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">Meu Perfil</div>
+      <div class="page-sub">Gerencie suas informações pessoais</div>
+    </div>
+  </div>
+
+  <div class="profile-grid">
+
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div class="sc">
+        <div class="avatar-card">
+          <div class="avatar-circle">{{ request.user.username|slice:":1"|upper }}</div>
+          <div class="avatar-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+          <div class="avatar-role">{{ request.user.tipo }}</div>
+          <span class="badge-ativo"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Conta Ativa</span>
         </div>
+      </div>
 
-        <button class="btn btn-coffee">
-
-            <i class="bi bi-pencil-square"></i>
-            Editar Perfil
-
-        </button>
+      <div class="sc" style="animation-delay:.1s;">
+        <div class="sc-head">
+          <div><h4>Informações da Conta</h4><p>Dados do sistema</p></div>
+          <div class="sc-ico"><i class="bi bi-shield-check"></i></div>
+        </div>
+        <div class="sc-body">
+          <ul class="info-list">
+            <li><span class="lbl">Tipo de Usuário</span><span class="val">{{ request.user.tipo|capfirst }}</span></li>
+            <li><span class="lbl">Último Login</span><span class="val">{{ request.user.last_login|date:"d/m/Y H:i" }}</span></li>
+            <li><span class="lbl">Conta criada em</span><span class="val">{{ request.user.date_joined|date:"d/m/Y" }}</span></li>
+            <li>
+              <span class="lbl">Status</span>
+              <span class="badge-ativo" style="font-size:.65rem;"><i class="bi bi-circle-fill" style="font-size:.35rem;"></i> Ativo</span>
+            </li>
+          </ul>
+        </div>
+      </div>
 
     </div>
 
-    <!-- PERFIL -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
 
-    <div class="row g-4">
-
-        <!-- CARD ESQUERDA -->
-
-        <div class="col-lg-4">
-
-            <div class="card card-dashboard">
-
-                <div class="card-body text-center p-5">
-
-                    <div
-                        class="mx-auto mb-4 d-flex align-items-center justify-content-center"
-                        style="
-                            width:120px;
-                            height:120px;
-                            border-radius:50%;
-                            background:#4E342E;
-                            color:white;
-                            font-size:50px;
-                        ">
-
-                        <i class="bi bi-person-fill"></i>
-
-                    </div>
-
-                    <h3 class="fw-bold text-coffee">
-
-                        {{ request.user.username }}
-
-                    </h3>
-
-                    <p class="text-muted">
-
-                        Produtor Rural
-
-                    </p>
-
-                    <div class="mt-4">
-
-                        <span class="badge bg-success p-2 px-3">
-
-                            Conta Ativa
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- STATUS -->
-
-            <div class="card card-dashboard mt-4">
-
-                <div class="card-body">
-
-                    <h5 class="fw-bold text-coffee mb-4">
-
-                        Informações da Conta
-
-                    </h5>
-
-                    <div class="mb-3">
-
-                        <small class="text-muted">
-                            Tipo de Usuário
-                        </small>
-
-                        <div class="fw-semibold">
-
-                            {{ request.user.tipo }}
-
-                        </div>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <small class="text-muted">
-                            Último Login
-                        </small>
-
-                        <div class="fw-semibold">
-
-                            {{ request.user.last_login }}
-
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <small class="text-muted">
-                            Conta criada em
-                        </small>
-
-                        <div class="fw-semibold">
-
-                            {{ request.user.date_joined }}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+      <div class="sc" style="animation-delay:.08s;">
+        <div class="sc-head">
+          <div><h4>Dados Pessoais</h4><p>Suas informações cadastradas</p></div>
+          <div class="sc-ico"><i class="bi bi-person-fill"></i></div>
         </div>
-
-        <!-- DIREITA -->
-
-        <div class="col-lg-8">
-
-            <!-- DADOS -->
-
-            <div class="card card-dashboard mb-4">
-
-                <div class="card-body p-4">
-
-                    <h4 class="fw-bold text-coffee mb-4">
-
-                        Dados Pessoais
-
-                    </h4>
-
-                    <div class="row g-4">
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Nome de Usuário
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                value="{{ request.user.username }}"
-                                disabled>
-
-                        </div>
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Email
-                            </label>
-
-                            <input
-                                type="email"
-                                class="form-control"
-                                value="{{ request.user.email }}"
-                                disabled>
-
-                        </div>
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Tipo de Conta
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                value="{{ request.user.tipo }}"
-                                disabled>
-
-                        </div>
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Status
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                value="Ativa"
-                                disabled>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+        <div class="sc-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+              <label class="form-label">Nome de Usuário</label>
+              <input type="text" class="form-field" value="{{ request.user.username }}" disabled>
             </div>
-
-            <!-- ESTATÍSTICAS -->
-
-            <div class="card card-dashboard">
-
-                <div class="card-body p-4">
-
-                    <h4 class="fw-bold text-coffee mb-4">
-
-                        Estatísticas do Produtor
-
-                    </h4>
-
-                    <div class="row g-4">
-
-                        <div class="col-md-4">
-
-                            <div class="bg-light rounded-4 p-4 text-center">
-
-                                <i class="bi bi-tree-fill fs-1 text-coffee"></i>
-
-                                <h2 class="fw-bold mt-3">
-
-                                    {{ lavouras.count }}
-
-                                </h2>
-
-                                <p class="text-muted m-0">
-
-                                    Lavouras
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-4">
-
-                            <div class="bg-light rounded-4 p-4 text-center">
-
-                                <i class="bi bi-house-fill fs-1 text-coffee"></i>
-
-                                <h2 class="fw-bold mt-3">
-
-                                    {{ propriedades.count }}
-
-                                </h2>
-
-                                <p class="text-muted m-0">
-
-                                    Propriedades
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-4">
-
-                            <div class="bg-light rounded-4 p-4 text-center">
-
-                                <i class="bi bi-box-seam fs-1 text-coffee"></i>
-
-                                <h2 class="fw-bold mt-3">
-
-                                    {{ lotes.count }}
-
-                                </h2>
-
-                                <p class="text-muted m-0">
-
-                                    Lotes
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div>
+              <label class="form-label">E-mail</label>
+              <input type="email" class="form-field" value="{{ request.user.email|default:'Não informado' }}" disabled>
             </div>
-
+            <div>
+              <label class="form-label">Tipo de Conta</label>
+              <input type="text" class="form-field" value="{{ request.user.tipo|capfirst }}" disabled>
+            </div>
+            <div>
+              <label class="form-label">Status</label>
+              <input type="text" class="form-field" value="Ativa" disabled>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div class="sc" style="animation-delay:.15s;">
+        <div class="sc-head">
+          <div><h4>Estatísticas</h4><p>Resumo da sua atividade no sistema</p></div>
+          <div class="sc-ico"><i class="bi bi-bar-chart-fill"></i></div>
+        </div>
+        <div class="sc-body">
+          {% if request.user.tipo == 'produtor' %}
+          <div class="stats-grid">
+            <div class="stat-cell"><i class="bi bi-tree-fill"></i><h2>{{ lavouras.count }}</h2><p>Lavouras</p></div>
+            <div class="stat-cell"><i class="bi bi-house-fill"></i><h2>{{ propriedades.count }}</h2><p>Propriedades</p></div>
+            <div class="stat-cell"><i class="bi bi-box-seam"></i><h2>{{ lotes.count }}</h2><p>Lotes</p></div>
+          </div>
+          {% elif request.user.tipo == 'funcionario' %}
+          <div class="stats-grid">
+            <div class="stat-cell"><i class="bi bi-box-seam"></i><h2>{{ lotes.count }}</h2><p>Meus Lotes</p></div>
+            <div class="stat-cell"><i class="bi bi-journal-text"></i><h2>{{ registros_count|default:0 }}</h2><p>Registros</p></div>
+            <div class="stat-cell"><i class="bi bi-check-circle-fill"></i><h2>{{ lotes_finalizados|default:0 }}</h2><p>Finalizados</p></div>
+          </div>
+          {% else %}
+          <p style="color:var(--muted);font-size:.85rem;text-align:center;padding:1rem 0;">Estatísticas não disponíveis para este perfil.</p>
+          {% endif %}
+        </div>
+      </div>
 
     </div>
+  </div>
 
 </div>
-
 {% endblock %}

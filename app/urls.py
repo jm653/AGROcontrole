@@ -3,25 +3,23 @@ from . import views
 
 urlpatterns = [
 
-    # =========================
     # LOGIN
-    # =========================
     path('', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
-    # =========================
     # DASHBOARDS
-    # =========================
     path('admin-dashboard/',       views.admin_dashboard,       name='admin_dashboard'),
     path('produtor-dashboard/',    views.produtor_dashboard,    name='produtor_dashboard'),
     path('funcionario-dashboard/', views.funcionario_dashboard, name='funcionario_dashboard'),
 
-    # ── API DE PREÇOS DO CAFÉ ──
+    # APIs DE COTAÇÃO DO CAFÉ (Flask proxy)
+    path('api/cafe-preco/',     views.cafe_preco_api,     name='cafe_preco_api'),
+    path('api/cafe-historico/', views.cafe_historico_api, name='cafe_historico_api'),
+
+    # API ANTHROPIC
     path('api/coffee-prices/', views.coffee_prices_api, name='coffee_prices_api'),
 
-    # =========================
     # PRODUTOR
-    # =========================
     path('propriedades/',                     views.propriedades_view,      name='propriedades'),
     path('cadastrar-propriedade/',            views.cadastrar_propriedade,  name='cadastrar_propriedade'),
     path('editar-propriedade/<int:id>/',      views.editar_propriedade,     name='editar_propriedade'),
@@ -39,8 +37,9 @@ urlpatterns = [
     path('excluir-lote/<int:id>/',            views.excluir_lote,           name='excluir_lote'),
     path('visualizar-lote/<int:id>/',         views.visualizar_lote,        name='visualizar_lote'),
 
-    path('rastreabilidade/',                  views.rastreabilidade_view,   name='rastreabilidade'),
-    path('rastreabilidade/lote/<int:lote_id>/', views.detalhe_lote_view,    name='detalhe_lote'),
+    path('rastreabilidade/',                    views.rastreabilidade_view,             name='rastreabilidade'),
+    path('rastreabilidade/funcionario/',        views.rastreabilidade_funcionario_view, name='rastreabilidade_funcionario'),
+    path('rastreabilidade/lote/<int:lote_id>/', views.detalhe_lote_view,                name='detalhe_lote'),
 
     path('financeiro/',                       views.financeiro_view,        name='financeiro'),
     path('editar-movimentacao/<int:id>/',     views.editar_movimentacao,    name='editar_movimentacao'),
@@ -50,31 +49,25 @@ urlpatterns = [
     path('exportar-pdf/',                     views.exportar_pdf,           name='exportar_pdf'),
 
     path('perfil/',                           views.perfil_view,            name='perfil'),
-
     path('funcionarios/',                     views.funcionarios_view,      name='funcionarios'),
-
     path('notificacoes/',                     views.notificacoes,           name='notificacoes'),
-    path('notificacao/lida/<int:id>/',        views.marcar_notificacao_lida,name='marcar_notificacao_lida'),
+    path('marcar-lida/<int:id>/',             views.marcar_notificacao_lida,name='marcar_notificacao_lida'),
 
     path(
-    'notificacao/lida/<int:id>/',
-    views.marcar_notificacao_lida,
-    name='marcar_notificacao_lida'
+    'etapas/',
+    views.etapas_view,
+    name='etapas'
 ),
 
-    # =========================
     # FUNCIONÁRIO
-    # =========================
-    path('tarefas/',                          views.tarefas_view,           name='tarefas'),
-    path('registros/',                        views.registros_view,         name='registros'),
-    path('meus-lotes/',                       views.meus_lotes,             name='meus_lotes'),
-    path('avancar-etapa/<int:lote_id>/',      views.avancar_etapa,          name='avancar_etapa'),
-    path('excluir-vinculo/<int:id>/',         views.excluir_vinculo,        name='excluir_vinculo'),
+    path('tarefas/',                          views.tarefas_view,    name='tarefas'),
+    path('registros/',                        views.registros_view,  name='registros'),
+    path('meus-lotes/',                       views.meus_lotes,      name='meus_lotes'),
+    path('avancar-etapa/<int:lote_id>/',      views.avancar_etapa,   name='avancar_etapa'),
+    path('excluir-vinculo/<int:id>/',         views.excluir_vinculo, name='excluir_vinculo'),
 
-    # =========================
     # ADMIN
-    # =========================
-    path('usuarios/',                         views.usuarios_view,          name='usuarios'),
-    path('estatisticas/',                     views.estatisticas_view,      name='estatisticas'),
-    path('auditoria/',                        views.auditoria_view,         name='auditoria'),
+    path('usuarios/',                         views.usuarios_view,     name='usuarios'),
+    path('estatisticas/',                     views.estatisticas_view, name='estatisticas'),
+    path('auditoria/',                        views.auditoria_view,    name='auditoria'),
 ]

@@ -266,86 +266,100 @@
 
     <div class="sidebar-nav">
 
+      <!-- PRINCIPAL -->
       <div class="sidebar-section">Principal</div>
 
       {% if request.user.tipo == 'funcionario' %}
-<a href="{% url 'funcionario_dashboard' %}">
-    <i class="bi bi-speedometer2"></i> Dashboard
-</a>
+      <a href="{% url 'funcionario_dashboard' %}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
 
-{% elif request.user.tipo == 'produtor' %}
-<a href="{% url 'produtor_dashboard' %}">
-    <i class="bi bi-speedometer2"></i> Dashboard
-</a>
+      {% elif request.user.tipo == 'produtor' %}
+      <a href="{% url 'produtor_dashboard' %}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
 
-{% elif request.user.tipo == 'admin' %}
-<a href="{% url 'admin_dashboard' %}">
-    <i class="bi bi-speedometer2"></i> Dashboard
-</a>
-{% endif %}
+      {% elif request.user.tipo == 'admin' %}
+      <a href="{% url 'produtor_dashboard' %}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      {% endif %}
 
+
+      <!-- PRODUÇÃO -->
       <div class="sidebar-section">Produção</div>
 
-      {% if request.user.tipo != 'funcionario' %}
+      {% if request.user.tipo == 'produtor' or request.user.tipo == 'admin' %}
       <a href="{% url 'propriedades' %}">
         <i class="bi bi-house-fill"></i> Propriedades
       </a>
       {% endif %}
 
-      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'lavouras' %}">
         <i class="bi bi-tree-fill"></i> Lavouras
       </a>
-      {% endif %}
 
       <a href="{% url 'lotes' %}">
         <i class="bi bi-box-seam"></i> Lotes
       </a>
 
-      {% if request.user.tipo != 'funcionario' %}
+      <a href="{% url 'etapas' %}">
+        <i class="bi bi-arrow-repeat"></i> Etapas
+      </a>
+
+      {% if request.user.tipo == 'produtor' or request.user.tipo == 'admin' %}
       <a href="{% url 'rastreabilidade' %}">
         <i class="bi bi-arrow-repeat"></i> Rastreabilidade
       </a>
       {% endif %}
 
+
+      <!-- GESTÃO -->
       <div class="sidebar-section">Gestão</div>
 
-      {% if request.user.tipo != 'funcionario' %}
+      {% if request.user.tipo == 'funcionario' %}
+      <a href="{% url 'registros' %}">
+        <i class="bi bi-journal-text"></i> Registros
+      </a>
+      {% endif %}
+
+      {% if request.user.tipo == 'produtor' or request.user.tipo == 'admin' %}
       <a href="{% url 'financeiro' %}">
         <i class="bi bi-cash-stack"></i> Financeiro
       </a>
-      {% endif %}
 
-      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'relatorios' %}">
         <i class="bi bi-bar-chart-fill"></i> Relatórios
       </a>
-      {% endif %}
 
-      {% if request.user.tipo != 'funcionario' %}
       <a href="{% url 'funcionarios' %}">
         <i class="bi bi-people-fill"></i> Funcionários
       </a>
+
+      <a href="{% url 'registros' %}">
+        <i class="bi bi-journal-text"></i> Registros
+      </a>
       {% endif %}
+
+
+      <!-- CONTA -->
+      <div class="sidebar-section">Conta</div>
 
       <a href="{% url 'notificacoes' %}">
         <i class="bi bi-bell-fill"></i> Notificações
       </a>
 
-      <div class="sidebar-section">Conta</div>
-
       <a href="{% url 'perfil' %}">
         <i class="bi bi-person-circle"></i> Perfil
       </a>
 
-          <div class="sidebar-footer">
+    </div>
+
+    <!-- RODAPÉ -->
+    <div class="sidebar-footer">
       <a href="{% url 'logout' %}">
         <i class="bi bi-box-arrow-right"></i> Sair
       </a>
-    </div>
-
-  </div>
-
     </div>
 
   </div>
@@ -383,3 +397,5 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+

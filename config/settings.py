@@ -207,4 +207,4 @@ LOGOUT_REDIRECT_URL = 'login'
 
 # ── ANTHROPIC API ──────────────────────────────────────
 # Obtenha sua chave em: https://console.anthropic.com/
-ANTHROPIC_API_KEY = 'SUA_CHAVE_AQUI'
+ANTHROPIC_API_KEY = 'sk-ant-...'  
